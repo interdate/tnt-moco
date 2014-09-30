@@ -1,0 +1,109 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}TNT MoCo - Control Panel{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('bundles/tntmocoapp/libs/semantic/packaged/css/semantic.css') }}" />
+	<link rel="stylesheet" href="{{ asset('bundles/tntmocoapp/css/perfect-scrollbar.min.css') }}" />
+	<link rel="stylesheet" href="{{ asset('bundles/tntmocoapp/css/backend.css') }}" />
+{% endblock %}
+
+
+{% block js %}	
+	<script src="{{ asset('bundles/tntmocoapp/js/jquery.js') }}"></script>        
+	<script src="{{ asset('bundles/tntmocoapp/libs/semantic/packaged/javascript/semantic.js') }}"></script>	
+	<script src="{{ asset('bundles/tntmocoapp/js/jquery.address.js') }}"></script>
+	<script src="{{ asset('bundles/tntmocoapp/js/perfect-scrollbar.min.js') }}"></script>
+	<script src="{{ asset('bundles/tntmocoapp/js/perfect-scrollbar.with-mousewheel.min.js') }}"></script>
+	<script src="{{ asset('bundles/tntmocoapp/js/backend.js') }}"></script>
+{% endblock %}
+
+
+{% block body%}
+
+{% if app.user %}
+
+	<div id="top">
+		<div class="left first">
+			{#<img class="ui avatar image" src="{{ asset('bundles/tntmocoapp/images/admin_icon.png') }}">#}
+			<div class="ui avatar image"></div>
+			{{ app.user.username }}
+			<div class="iconWrapper" id="getSideBar" onclick="window.location.href='{{ path('logout') }}'"><i class="off icon link"></i></div>
+		</div>
+		<div class="left second">
+			<h4 class="depth" title="TNT MOCO CONTROL PANEL">TNT MOCO CONTROL PANEL</h4>
+					
+			<div class="ui top sidebar small multipleParamSettings" id="topSidebar">		
+			{#	{{ include ('TGAppBundle:Backend/Params:multipleParamsForm.html.twig', {'multipleParamsForm': multipleParamsForm}) }} #}
+			</div>
+			
+		</div>
+	</div>
+
+{% endif %}
+
+<div id="middle">
+
+	
+	{% if app.user %}
+	
+		<div id="menu_wrapper">
+		
+			<div class="ui vertical small menu inverted">
+				{#
+				<div class="header item">
+					<i class="tasks icon"></i>
+					Catalog
+				</div>
+				#}
+				
+				<a class="item" href="{{ path('home') }}">
+					<i class="home icon"></i> Home
+				</a>
+				
+				<a class="item" href="{{ path('users') }}">
+					<i class="user icon"></i> Users
+				</a>
+				
+				<a class="item" href="{{ path('countries') }}">
+					<i class="globe icon"></i> Countries
+				</a>
+				
+				<a class="item">
+					<i class="map marker icon"></i> Depots
+				</a>
+				
+				<a class="item">
+					<i class="keyboard icon"></i> Data Entries
+				</a>
+				
+				<a class="item">
+					<i class="ordered list icon"></i> Reports
+				</a>
+				
+				<a class="item">
+					<i class="file outline icon"></i> Status File
+				</a>
+				
+				
+				{#
+				<div class="header item">
+					<i class="bullhorn icon"></i>
+					News
+				</div>
+				#}
+				
+							
+				
+			  
+			</div>
+		
+		</div>
+	
+	{% endif %} 
+	
+	
+	{% block content %}{% endblock %}
+	
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="globe icon"></i>
+				Countries
+			</h4>
+		</div>
+		
+		{{ include ('TNTMOCOAppBundle:Backend/Countries:mainMenu.html.twig', {'activeTab': 2}) }}	
+		
+		<div class="desktop">
+			<div class="tabSegments">	
+				<div class="ui active tab segment stacked countriesEditing">	
+					<div class="block">
+						<div class="ui form">
+							<select class="countries">					
+								<option value="">Choose a country</option>	
+							{% for country in countries %}
+								{% if country.isActive %}<option value="{{ country.id }}">{{ country.name }}</option>{% endif %}
+							{% endfor %}
+							</select>
+						</div>
+						
+					</div>
+					<div class="block"></div>
+					<div class="block last"></div>
+					<div class="clear"></div>					
+				</div>				
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+

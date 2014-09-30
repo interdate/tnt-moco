@@ -1,0 +1,8 @@
+TNTMOCO\AppBundle\Entity\User:
+    exclusion_policy: none 
+    properties:
+        password:
+            exclude: true
+        role:
+            exclude: true    
+        

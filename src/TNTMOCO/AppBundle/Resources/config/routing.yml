@@ -1,0 +1,43 @@
+
+home:
+    path:     /home
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Default:index }
+
+login:
+    path:     /login
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Security:login }
+    
+login_check:
+    path: /login_check 
+
+logout:
+    path: /logout
+    
+    
+    
+countries:
+    path:     /countries
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:index }
+    
+entity_method:
+    path:     /entity/{entityName}/{entityId}/{entityMethod}/{value}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Global:entityMethod }    
+
+countries_edit:
+    path:     /countries/edit
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:edit }
+
+users:
+    path:     /users
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:index }
+
+users_edit:
+    path:     /users/edit/{userId}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:edit }
+   
+
+users_create:
+    path:     /users/create
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:create }    
+    
+

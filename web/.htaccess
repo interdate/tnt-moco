@@ -1,0 +1,28 @@
+php_value memory_limit 1024M 
+
+
+RewriteEngine on
+
+<IfModule mod_php5.c>
+php_value max_execution_time 259200
+</IfModule>
+
+RewriteCond ${REQUEST_URI} ^.+$
+RewriteCond %{REQUEST_FILENAME} \.(gif|jpg|jpeg|png|js|css|swf|php|ico|txt|pdf|xml|mp3)$ [OR]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -l
+RewriteRule ^ - [L]
+
+
+
+RewriteCond %{HTTP_HOST} ^tnt-moco.loc$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^tnt-moco.loc$
+RewriteCond %{REQUEST_URI} !app_dev.php
+
+RewriteRule (.*) /app_dev.php/$1 [L]
+
+
+
+
+

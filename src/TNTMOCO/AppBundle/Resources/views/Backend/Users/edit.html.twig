@@ -1,0 +1,242 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="user icon"></i>
+				Users
+			</h4>
+		</div>
+		
+		{{ include ('TNTMOCOAppBundle:Backend/Users:mainMenu.html.twig', {'activeTab': 0}) }}	
+		
+		<div class="desktop">
+			<div class="tabSegments">	
+				<div class="ui active tab segment stacked userCreation">
+				
+					{% if error %}
+						<div class="ui icon message red">
+							<i class="remove sign icon"></i>
+							<div class="content">						    
+								<strong>THERE ARE SOME ERRORS:</strong><br>
+								{{ form_errors(userForm.username) }}
+								{{ form_errors(userForm.password)|raw }}
+								{{ form_errors(userForm.email) }}								
+							</div>
+						</div>
+					{% endif %}
+				
+					{% if created %}
+						<div class="ui icon message blue">
+							<i class="save icon"></i>
+							<div class="content">						    
+								The user has been created successfully
+							</div>
+						</div>
+					{% endif %}
+					
+					{% if userShouldConfirmAssigning %}
+						<div class="ui icon message yellow">
+							<i class="warning icon"></i>
+							<div class="content">						    
+								<strong>WARNING! THIS USER HAS NOT BEEN CREATED YET</strong> <br>																
+								There are <strong>country admins</strong> already assigned to some of choosen countries: <br>
+								
+								{% for admin in alreadyAssignedAdmins %}								
+									User <strong>{{ admin.username }}</strong> assigned to [{{ admin.countries|join(', ') }}]<br>									
+								{% endfor %}								
+								Please confirm your action if you want choosen countries will be assigned to new user.
+								
+								
+								<br>
+								<div class="ui labeled icon blue small button confirm" onclick="$('#confirmButton').click();">
+									<i class="inverted checkmark icon"></i>
+									Confirm
+								</div>
+								
+								<form action="{{ path('users_edit', {'userId': app.request.get('userId') }) }}" method="post">
+								
+									<input type="hidden" name="confirm" value="true">
+									
+									{% set user = app.request.get('user') %}
+											
+									{% for key,value in user %}
+										{% if user[key] is iterable %}						
+											{% for key2,value2 in user[key] %}
+												<input type="hidden" name="user[{{ key }}][{{ key2 }}]" value="{{ value2 }}" />
+											{% endfor %}
+										{% else %}
+											<input type="hidden" name="user[{{ key }}]" value="{{ value }}" />
+										{% endif %}						
+									{% endfor %}
+									
+									<input type="submit" class="hidden" id="confirmButton">
+								
+								</form>
+								
+							</div>
+						</div>
+					{% endif %}
+					
+					
+					<form action="{{ path('users_edit', {'userId': app.request.get('userId') }) }}" method="post">	
+						
+						<div class="ui form">
+												
+							<div class="block">							
+								<h3 class="ui header">
+									<i class="sign in circular icon"></i>
+									Authentication Data
+								</h3>
+								
+								<div class="field">
+									{{ form_label(userForm.username) }} <span>*</span>
+									{{ form_widget(userForm.username) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.password) }}
+									{{ form_widget(userForm.password) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.role) }} <span>*</span>
+									<div class="clear"></div>
+									{{ form_widget(userForm.role) }}
+								</div>
+								
+							</div>								
+							
+							<div class="block last">
+								<h3 class="ui header">
+									<i class="basic id circular icon"></i>
+									General Information
+								</h3>
+								
+								<div class="field">
+									{{ form_label(userForm.firstName) }} <span>*</span>
+									{{ form_widget(userForm.firstName) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.lastName) }} <span>*</span>
+									{{ form_widget(userForm.lastName) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.email) }} <span>*</span>
+									{{ form_widget(userForm.email) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.phone) }} <span>*</span>
+									{{ form_widget(userForm.phone) }}
+								</div>
+								
+								<div class="clear"></div>
+								
+								<div class="field hidden">
+									<div class="ui toggle checkbox">
+										{{ form_widget(userForm.pickup) }}														
+										{{ form_label(userForm.pickup) }}							
+									</div>
+								</div>
+								
+								<div class="clear"></div>
+								
+								
+								<div class="field">
+									{{ form_label(userForm.country) }}
+									<div class="clear"></div>
+									
+									
+									{% if editedUser.role.id == 2 %}
+										<div id="user_country">
+											<div class="countries_scrollbar grayGradient">											
+												
+												{% set itemsNumber = userForm.country|length %}								
+									
+												{% if numberInColumn is not defined or numberInColumn == 0 %}
+													{% set numberInColumn = ( itemsNumber / 2 )|round %}																	
+												{% endif %}			
+								    						
+								    			{% for country in countries %}
+								    						
+								    				{% if (loop.index - 1) % numberInColumn == 0 %}						    								
+								    					<div class="left countriesWrapper">						    							
+								    				{% endif %}
+								    												    							
+															<div class="ui checkbox">																																	
+																{% set checked = '' %}
+																{% for userCountry in editedUser.countries %}
+																	{% if userCountry.country == country %}
+																		{% set checked = 'checked="checked"' %}
+																	{% endif %}
+																{% endfor %}
+																
+																<input type="checkbox" value="{{ country.id }}" {{ checked }} name="user[country][]">
+																<label>{{ country.name }}</label>
+																
+															</div>
+															<div class="clear"></div>
+															
+													{% if loop.index % numberInColumn == 0  or loop.index == itemsNumber %}
+								    					</div>						    							
+								    				{% endif %}
+																
+								    			{% endfor %}	
+								    			
+											</div>
+										</div>
+									{% else %}
+										{{ form_widget(userForm.country) }}
+									{% endif %}
+								</div>
+								
+								<div class="clear"></div>
+								
+								<div class="field hidden">
+									<label>Depot</label>
+									<div class="clear"></div>
+									{{ form_widget(userForm.depot) }}
+								</div>
+								
+								
+								<div class="createUserButtonWrapper">
+									
+									<div class="ui labeled icon blue small button" onclick="$('#submitButton').click();">
+										<i class="inverted save icon"></i>
+										Save
+									</div>
+																		
+									<input type="submit" class="hidden" id="submitButton">
+									
+								</div>
+								
+								
+							</div>
+							<div class="clear"></div>
+						
+						</div>
+						
+						{#<input type="hidden" name="user[_token]" value="{{ userForm._token }}">#}
+						
+						
+					</form>
+					
+					
+					<div class="clear"></div>					
+				</div>				
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+

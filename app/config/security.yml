@@ -1,0 +1,52 @@
+security:    
+    encoders:        
+        TNTMOCO\AppBundle\Entity\User: sha512    
+
+    role_hierarchy:
+        ROLE_COURIER:     ROLE_COURIER
+        ROLE_USER:        ROLE_USER
+        ROLE_CUSTOMER_SERVICE:   ROLE_CUSTOMER_SERVICE
+        ROLE_COUNTRY_ADMIN:       [ROLE_COURIER, ROLE_USER, ROLE_CUSTOMER_SERVICE]
+        ROLE_SUPER_ADMIN: [ROLE_COURIER, ROLE_USER, ROLE_CUSTOMER_SERVICE, ROLE_COUNTRY_ADMIN, ROLE_ALLOWED_TO_SWITCH]         
+        
+    providers:        
+        user_db:
+            entity: { class: TNTMOCOAppBundle:User, property: username }    
+
+    firewalls:
+        
+        api_area:
+            context: my_context            
+            pattern:   ^/api
+            anonymous: ~
+            stateless: true
+            form_login: false            
+            http_basic:                
+                realm: "Secured Area"
+        
+        backend_area:
+            context: my_context            
+            pattern:   ^/
+            anonymous: ~
+            form_login:
+                login_path: login
+                check_path: login_check
+                default_target_path: home 
+                provider: user_db                
+            logout:
+                path:   /logout
+                target: /login
+        
+                    
+                
+    access_control:
+        - { path: ^/api/v1, roles: ROLE_COURIER }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_USER }
+        
+                
+        
+        
+        
+        
+                

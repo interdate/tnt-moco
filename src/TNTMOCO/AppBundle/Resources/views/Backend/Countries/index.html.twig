@@ -1,0 +1,51 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="globe icon"></i>
+				Countries
+			</h4>
+		</div>
+		
+		{{ include ('TNTMOCOAppBundle:Backend/Countries:mainMenu.html.twig', {'activeTab': 1}) }}
+		
+		<div class="desktop">
+			<div class="tabSegments">			
+				<div class="ui active tab segment stacked countriesMainList">
+					{% set itemsNumber = countries|length %}
+					{% set numberInColumn = ( itemsNumber / 4)|round %}
+					<div class="ui form">
+						{% for country in countries %}
+							{% if (loop.index - 1) % numberInColumn == 0 %}						    								
+								<div class="left">						    							
+							{% endif %}
+									<div class="inline field">
+										<div class="ui toggle checkbox">
+											<input type="checkbox" name="setIsActive" value="{{ country.id }}" {% if country.isActive %} checked="checked" {% endif %}>																																				
+											<label>{{ country.name }}</label>
+										</div>
+									</div>
+													
+									<div class="clear"></div>
+							{% if loop.index % numberInColumn == 0  or loop.index == itemsNumber %}
+								</div>						    							
+							{% endif %}
+						{% endfor %}
+						<input type="hidden" class="entityName" value="Country">
+						<div class="clear"></div>
+					</div>								
+				</div>							
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+

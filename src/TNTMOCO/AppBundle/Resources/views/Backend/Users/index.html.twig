@@ -1,0 +1,87 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="user icon"></i>
+				Users
+			</h4>
+		</div>
+		
+		{{ include ('TNTMOCOAppBundle:Backend/Users:mainMenu.html.twig', {'activeTab': 1}) }}
+		
+		<div class="desktop">
+			<div class="tabSegments">			
+				<div class="ui active tab segment stacked">
+					<div class="ui form">
+						<table class="ui basic table small usersTable">
+							<thead>
+								<tr>
+									<th>Active</th>
+									<th>Username</th>
+									<th>First Name</th>														
+									<th>Last Name</th>
+									<th>E-mail</th>														
+									<th>Phone</th>
+									<th>Role</th>
+									<th>Countries</th>
+									<th>Depot</th>
+									<th>Properties</th>
+									<th>Edit</th>																																
+								</tr>
+							</thead>
+							
+							<tbody>					
+							{% for user in users %}						
+								<tr id="user_{{ user.id }}">
+									<td>
+										<div class="ui toggle checkbox">								
+											<input type="checkbox" name="setIsActive" value="{{ user.id }}" {% if user.isActive %}checked="checked"{% endif %}>
+											<label></label>
+										</div>																														
+									</td>
+									<td>{{ user.username }}</td>
+									<td>{{ user.firstName }}</td>
+									<td>{{ user.lastName }}</td>
+									<td>{{ user.email }}</td>
+									<td>{{ user.phone }}</td>
+									<td>{{ user.role.name }}</td>
+									<td>{{ user.countries|join(', ') }}</td>
+									<td>{% if user.depot %}{{ user.depot.name }}{% endif %}</td>
+									<td>
+										{% if user.isNew %}<i class="icon empty star purple large"></i>{% endif %}
+										{% if not user.isNonLocked %}<i class="icon block basic red large"></i>{% endif %}
+									</td>
+									<td><a href="{{ path('users_edit', {'userId': user.id}) }}"><i class="icon edit blue large"></i></a></td>																									
+									
+								</tr>
+								<tr class="hidden">
+									<td colspan="11" class="profileWraper">
+										<div class="ui inverted dimmer">
+										    <div class="ui text large loader">Loading</div>
+										</div>
+										<div class="profile" id="profile_{{ user.id }}">
+											
+										</div>	
+									</td>
+								</tr>								
+							{% endfor %}			
+							</tbody>
+						</table>
+						<input type="hidden" class="entityName" value="User">
+					</div>
+											
+				</div>							
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+

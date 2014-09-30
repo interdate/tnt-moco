@@ -1,0 +1,15 @@
+tntmoco_api:
+    type: rest
+    resource: "@TNTMOCOAppBundle/Resources/config/api_routing.yml"    
+    prefix: /api
+    
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc    
+    
+tntmoco:    
+    resource: "@TNTMOCOAppBundle/Resources/config/routing.yml"    
+    prefix: /     
+    
+    
+

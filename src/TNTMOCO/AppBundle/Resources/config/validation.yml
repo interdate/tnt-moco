@@ -1,0 +1,21 @@
+TNTMOCO\AppBundle\Entity\User:
+  properties:
+    email:
+      - Email:
+            message: The email {{ value }} is not a valid email.
+            checkMX: true
+    username:
+      - Length:
+            min: 4
+            minMessage: Letters number in Username must be from 4 to 12
+            max: 12
+            maxMessage: Letters number in Username must be from 4 to 12
+    password:
+      - Length:
+            min: 8 { groups: [creation] }
+            minMessage: Letters number in Password must be from 8 to 15
+            max: 15 { groups: [creation] }
+            maxMessage: Letters number in Password must be from 8 to 15
+      - Regex:
+            pattern: "/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[A-Z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[a-z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[a-z])(?=\S*[A-Z])\S*$/"            
+            message: "3 of 4 of the rules must be used in Password: [Lowercase Letters, Uppercase Letters, Numbers, Symbols]"

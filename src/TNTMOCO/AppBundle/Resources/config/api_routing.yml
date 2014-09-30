@@ -1,0 +1,21 @@
+
+tntmoco_api_v1_users:
+    type: rest
+    prefix: /v1
+    resource: "TNTMOCO\AppBundle\Controller\API\V1\UserController"
+
+tntmoco_api_v1_delivery:
+    type: rest
+    prefix: /v1/delivery
+    resource: "TNTMOCO\AppBundle\Controller\API\V1\DeliveryController"    
+    
+tntmoco_api_v1_postpone_reasons:
+    type: rest
+    prefix: /v1/postpone
+    resource: "TNTMOCO\AppBundle\Controller\API\V1\\PostponeController"
+    
+    
+tntmoco_api_v1_pick_up:
+    type: rest
+    prefix: /v1
+    resource: "TNTMOCO\AppBundle\Controller\API\V1\FilesController"    

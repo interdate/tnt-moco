@@ -1,0 +1,50 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+<div class="outer">
+	<div class="middle">
+		<div id="login_wraper" class="inner">
+			<form action="{{ path('login_check') }}" method="post" id="login_form">	
+				{% if error %}    
+				     <div class="error rounded">	    	
+				    	{{error.message}}
+				  	</div>
+				{% endif %}			
+				<div class="ui form segment red stacked login">
+				  	<div class="field">
+				    	<label>Username</label>
+				    	<div class="ui left labeled icon input">
+				      		<input type="text" id="username" name="_username" value="{{ last_username }}">
+				      		<i class="user icon"></i>				      		
+				      	</div>
+					</div>
+					<br /><br />
+				    <div class="field">
+						<label>Password</label>
+				    	<div class="ui left labeled icon input">
+				      		<input type="password" id="password" name="_password">
+				      		<i class="lock icon"></i>				      		
+				    	</div>
+					</div>	  	
+				  	<br /><br /><br /> 	
+				  	{#<div class="ui red button">Login</div>#}
+				  	
+				  	<div class="ui labeled icon button red" onclick="$('#login_form').submit();">
+						<i class="inverted sign in icon"></i>
+						Login
+					</div>
+				</div>		
+				<input type="hidden" name="_target_path" value="{{ path('home') }}" />		
+			</form>
+		</div>
+
+	
+	</div>	
+</div>
+
+{% endblock %} 
+

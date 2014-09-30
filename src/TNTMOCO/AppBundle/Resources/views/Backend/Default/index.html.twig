@@ -1,0 +1,54 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="home icon"></i>
+				Home
+			</h4>
+		</div>
+		
+		<div class="tabMenu">
+			<div class="ui pointing secondary menu floated left">
+			    <a class="active item blue" data-tab="countriesList">
+				    <i class="add sign box icon"></i>					    
+				    Some Notifications
+				</a>
+			    <a class="item blue" data-tab="activeCountriesEditing">
+				    <i class="list folder icon"></i>
+				    Another data
+				</a>	    
+			</div>
+		</div>	
+			
+		<div class="clear"></div>
+	
+		<div class="desktop">	
+			
+			<div class="tabSegments">
+			
+				<div class="ui active tab segment stacked countriesTab" data-tab="countriesList">
+															
+				</div>
+				
+				<div class="ui tab segment stacked countriesTab" data-tab="activeCountriesEditing">	
+										
+				</div>	
+				
+				
+				
+				
+							
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+
