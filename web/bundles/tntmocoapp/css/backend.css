@@ -586,6 +586,9 @@ select.countries{
 .ui.table tbody tr.editedUser td, .ui.table tbody tr.editedUser td div{
 	color:#fff;	
 }
+.ui.red.message ul{
+	margin-left:15px;
+}
 
 
 

@@ -38,6 +38,10 @@ users_edit:
 
 users_create:
     path:     /users/create
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:create }    
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:create }   
+    
+depots:
+    path:     /depots
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Depots:index }
     
 

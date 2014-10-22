@@ -1,0 +1,81 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="map marker icon"></i>
+				Depots
+			</h4>
+		</div>
+		
+		{{ include ('TNTMOCOAppBundle:Backend/Depots:mainMenu.html.twig', {'activeTab': 1}) }}
+		
+		<div class="desktop">
+			{% if message is defined and message.success|length %}
+				{% for mesSuc in message.success %}
+					<div class="ui green message">
+						{{ mesSuc }}
+					</div>
+				{% endfor %}
+		{#
+			{% elseif message is defined %}
+				<div class="ui red message">
+					Don't upload deports!
+				</div>
+		#}
+			{% endif %}
+			{% if message is defined and message.error != '' %}
+				<div class="ui red message">
+					<p>{{ message.error.message }}</p>
+					{% if message.error.data|length %}
+						<ul>
+							{% for arrErr in message.error.data %}
+								<li>CountryCode: "{{ arrErr.code }}". DepotName: "{{ arrErr.value }}" - {{ arrErr.error}}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				</div>
+			{% endif %}		
+			<div class="tabSegments" style="max-width:400px">	
+				
+				<div class="ui active tab segment stacked depots">
+					
+					<form name="depots" method="post" action="{{ path('depots') }}" enctype="multipart/form-data">
+					
+					<div class="ui form">
+						<div class="field">
+							{{ form_label(form.file) }}
+							
+							<div class="ui input">
+								{{ form_widget(form.file) }}
+							</div>
+							{% if form.file.vars.errors|length %}
+								<div class="ui red message">
+									{{ form_errors(form.file) }}
+								</div>
+							{% endif %}
+						</div>
+						<div class="clear"></div>   
+			            <div class="createUserButtonWrapper">
+							<div class="ui labeled icon blue small button" onclick="$('#submitButton').click();">
+								<i class="inverted upload icon"></i>
+								Upload
+							</div>
+							<input type="submit" class="hidden" id="submitButton">
+						</div>
+					</div>
+					{{ form_end(form) }}						
+				</div>							
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+
