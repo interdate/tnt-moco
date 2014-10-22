@@ -21,7 +21,8 @@
         "friendsofsymfony/rest-bundle": "1.3.*",        
         "nelmio/api-doc-bundle": "@dev",
         "jms/serializer-bundle": "@dev",
-        "jms/di-extra-bundle": "~1.3"
+        "jms/di-extra-bundle": "~1.3",
+        "knplabs/knp-paginator-bundle": "~2.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

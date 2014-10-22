@@ -23,9 +23,10 @@ entity_method:
     path:     /entity/{entityName}/{entityId}/{entityMethod}/{value}
     defaults: { _controller: TNTMOCOAppBundle:Backend\Global:entityMethod }    
 
-countries_edit:
-    path:     /countries/edit
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:edit }
+countries_assign:
+    path:     /countries/assign
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:assign }
+
 
 users:
     path:     /users
@@ -40,4 +41,10 @@ users_create:
     path:     /users/create
     defaults: { _controller: TNTMOCOAppBundle:Backend\Users:create }    
     
-
+users_depots:
+    path:     /users/depots
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:depots }
+    
+test_files:
+    path: /test/files
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Test:files }    

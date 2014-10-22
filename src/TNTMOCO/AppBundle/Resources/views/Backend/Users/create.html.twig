@@ -18,7 +18,7 @@
 		
 		<div class="desktop">
 			<div class="tabSegments">	
-				<div class="ui active tab segment stacked userCreation">
+				<div class="ui active tab segment stacked userProfile">
 				
 					{% if error %}
 						<div class="ui icon message red">
@@ -85,7 +85,7 @@
 					{% endif %}
 					
 					
-					<form action="{{ path('users_create') }}" method="post">	
+					<form action="{{ path('users_create') }}" method="post" id="user_form">	
 						
 						<div class="ui form">
 												
@@ -150,48 +150,60 @@
 								
 								<div class="clear"></div>
 								
+								<div id="user_countries_container">
 								
-								<div class="field">
-									{{ form_label(userForm.country) }}
-									<div class="clear"></div>
-									
-									
-									{% if not choosenRole|length or choosenRole == 2 %}
-										<div id="user_country">
-											<div class="countries_scrollbar grayGradient">											
-												
-												{% set itemsNumber = userForm.country|length %}								
-									
-												{% if numberInColumn is not defined or numberInColumn == 0 %}
-													{% set numberInColumn = ( itemsNumber / 2 )|round %}																	
-												{% endif %}			
-								    						
-								    			{% for country in userForm.country %}
-								    						
-								    				{% if (loop.index - 1) % numberInColumn == 0 %}						    								
-								    					<div class="left countriesWrapper">						    							
-								    				{% endif %}
-								    												    							
-															<div class="ui checkbox">
-																{{ form_widget(country) }}														
-																{{ form_label(country) }}							
-															</div>
-															<div class="clear"></div>
-															
-													{% if loop.index % numberInColumn == 0  or loop.index == itemsNumber %}
-								    					</div>						    							
-								    				{% endif %}
+									<div class="field">
+										
+										{% if not choosenRole|length or choosenRole == 2 %}
+											{{ form_label(userForm.countries) }}
+											<div class="clear"></div>
+								
+																					
+											<div id="user_countries">
+												<div class="countries_scrollbar grayGradient">											
+													
+													{% set itemsNumber = userForm.countries|length %}								
+										
+													{% if numberInColumn is not defined or numberInColumn == 0 %}
+														{% set numberInColumn = ( itemsNumber / 2 )|round %}																	
+													{% endif %}			
+									    						
+									    			{% for country in userForm.countries %}
+									    						
+									    				{% if (loop.index - 1) % numberInColumn == 0 %}						    								
+									    					<div class="left countriesWrapper">						    							
+									    				{% endif %}
+									    												    							
+																<div class="ui checkbox">
+																	{{ form_widget(country) }}														
+																	{{ form_label(country) }}							
+																</div>
+																<div class="clear"></div>
 																
-								    			{% endfor %}	
-								    			
+														{% if loop.index % numberInColumn == 0  or loop.index == itemsNumber %}
+									    					</div>						    							
+									    				{% endif %}
+																	
+									    			{% endfor %}	
+									    			
+												</div>
 											</div>
-										</div>
-									{% else %}
-										{{ form_widget(userForm.country) }}
-									{% endif %}
+											
+											
+											
+											
+										{% else %}
+											{{ form_label(userForm.country) }}
+											<div class="clear"></div>
+											{{ form_widget(userForm.country) }}
+										{% endif %}
+									
+									</div>
+									
 								</div>
 								
 								<div class="clear"></div>
+								
 								
 								<div class="field hidden">
 									<label>Depot</label>
@@ -200,7 +212,8 @@
 								</div>
 								
 								
-								<div class="createUserButtonWrapper">
+																
+								<div class="userProfileButtonWrapper">
 									
 									<div class="ui labeled icon blue small button" onclick="$('#submitButton').click();">
 										<i class="inverted save icon"></i>
@@ -230,5 +243,9 @@
 	</div>
 
 
+
+
+	<div class="er"></div>
+	
 {% endblock %} 
 

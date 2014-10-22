@@ -6,21 +6,41 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Intl\Intl;
 
 use TNTMOCO\AppBundle\Entity\Country;
+use TNTMOCO\AppBundle\Entity\User;
+use TNTMOCO\AppBundle\Form\Type\UserType;
+
 
 class CountriesController extends Controller
 {
     public function indexAction()
     {	
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');    	
-    	$countries = $countryRepo->findAll();    	
-    	return $this->render('TNTMOCOAppBundle:Backend/Countries:index.html.twig', array('countries' => $countries));
+    	$countries = $countryRepo->findAll();
+    	return $this->render('TNTMOCOAppBundle:Backend/Countries:index.html.twig', array('countries' => $countries));    	
     }
     
-    public function editAction()
-    {
+    public function assignAction()
+    {	
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country'); 
+    	$userRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:User');
     	$countries = $countryRepo->findByIsActive(true);
-    	return $this->render('TNTMOCOAppBundle:Backend/Countries:edit.html.twig', array('countries' => $countries));
+    	$users = $userRepo->findAll();
+    	
+    	$user = new User();
+    	$request = $this->getRequest();
+    	$em = $this->getDoctrine()->getManager();    	
+    	$userForm = $this->createForm(new UserType($em, $user), $user);
+    	$adminForm = $this->createForm(new UserType($em, $user), $user);
+    	//$userForm->handleRequest($request);
+    	
+    	return $this->render('TNTMOCOAppBundle:Backend/Countries:assign.html.twig', array(
+    		'countries' => $countries,
+    		'userForm' => $userForm->createView(),
+    		'adminForm' => $adminForm->createView(),
+    		'users' => $users,
+    	));
+    	
+    	
     }
     
     public function propertyAction($countryId, $setter, $value)
@@ -37,5 +57,6 @@ class CountriesController extends Controller
     	//return $this->render('TNTMOCOAppBundle:Backend/Countries:index.html.twig', array('countries' => $countries));
     }
 }
+
 
 

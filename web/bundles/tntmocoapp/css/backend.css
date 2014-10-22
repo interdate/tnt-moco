@@ -253,7 +253,7 @@ body{
 }
 
 
-.segment h3, .segment h2{
+.segment h3, .segment h2, .segment .ui.header{
 	color: #828282;
 }
 
@@ -466,14 +466,14 @@ label{
 
 
 
-.countriesEditing .block{
+.countriesAssigning .block{
 	float: left;
 	width: 32%;
-	height: 200px;
+	height: 1100px;
 	border-right: 1px solid #e0e0e0;
 }
 
-.countriesEditing .section.last{
+.countriesAssigning .block.last{
 	border-right: 0px;
 }
 
@@ -482,6 +482,26 @@ select.countries{
 	max-width:280px;
 }
 
+
+.countriesAssigning .block .ui.header{
+	margin-left: 15px;
+}
+
+.countriesAssigning .block .fieldsWrapper{
+	margin: 15px;
+	color: #828282;	
+}
+
+
+.countriesAssigning .block .users_scrollbar{
+	height:200px;
+	position: relative;
+	overflow: hidden;
+	-moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    -khtml-border-radius:10px;
+    border-radius:10px;
+}
 
 .outer {
     display: table;
@@ -518,7 +538,12 @@ select.countries{
 	background: #dedede;
 }
 
-.userCreation .block{
+.userProfile{
+	position: relative;
+}
+
+
+.userProfile .block{
 	float: left;
 	width: 445px;
 	height: 750px;
@@ -528,33 +553,25 @@ select.countries{
 	box-sizing: border-box;	
 }
 
-.userCreation .last.block{	
+.userProfile .last.block{	
 	border-right: 0px;
 	margin-right: 0px;
 	padding-right: 0px;
 }
 
-.userCreation .field span{
+.userProfile .field span{
 	margin-left: 5px;
 	color: red;	
 }
 
-#user_country .countries_scrollbar{
-	
+#user_countries .countries_scrollbar{	
 	height:197px;
 	position: relative;
 	overflow: hidden;
-	/*background: #f0f0f0;*/
-	
 	-moz-border-radius:10px;
     -webkit-border-radius:10px;
     -khtml-border-radius:10px;
     border-radius:10px;
-    
-    /*border: 1px solid #f0f0f0;*/	 
-	/*width: 70%;*/
-	/*padding: 20px;*/
-	
 }
 
 .grayGradient {
@@ -565,7 +582,7 @@ select.countries{
 }
 
 
-.createUserButtonWrapper{
+.userProfileButtonWrapper{
 	margin: 40px auto 0px auto;
 	width: 176px;
 }
@@ -574,7 +591,7 @@ select.countries{
 	margin-top: 10px;
 }
 
-#user_country .countriesWrapper{
+#user_countries .countriesWrapper{
 	margin: 15px 20px; 
 	width:180px;	
 }
@@ -585,6 +602,31 @@ select.countries{
 
 .ui.table tbody tr.editedUser td, .ui.table tbody tr.editedUser td div{
 	color:#fff;	
+}
+
+
+#changePasswordForm{
+	position: absolute;
+	top: 250px;
+	left: 15px;
+	
+	-moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    -khtml-border-radius:10px;
+    border-radius:10px;
+    
+    background: #f0f0f0;
+    width: 430px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#changePasswordForm .ui.button.mini{
+	font-size: 0.6rem;
+}
+
+#changePasswordForm .ui.form input[type="text"]{
+	font-size: 0.7em;
 }
 
 

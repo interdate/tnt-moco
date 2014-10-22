@@ -53,6 +53,11 @@ class Country
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      */
     private $userCountries;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="User", mappedBy="country")
+     */
+    private $users;
 
 
     /**
@@ -208,7 +213,41 @@ class Country
         return $this->isActive;
     }
     
+    /**
+     * Add users
+     *
+     * @param \TNTMOCO\AppBundle\Entity\User $users
+     * @return Country
+     */
+    public function addUser(\TNTMOCO\AppBundle\Entity\User $users)
+    {
+        $this->users[] = $users;
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \TNTMOCO\AppBundle\Entity\User $users
+     */
+    public function removeUser(\TNTMOCO\AppBundle\Entity\User $users)
+    {
+        $this->users->removeElement($users);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+    
     public function __toString(){
     	return $this->name;
     }
+    
 }

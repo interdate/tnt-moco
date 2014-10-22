@@ -18,8 +18,117 @@
 		
 		<div class="desktop">
 			<div class="tabSegments">			
+				<div class="ui active tab segment stacked">					
+					<div class="search">
+					
+						<input type="hidden" id="loadDepotsRoute" value="{{ path('users_depots') }}">
+
+						<div class="block first">
+							<h3 class="ui header">
+								<i class="search circular icon"></i>
+								Search By Filters
+							</h3>
+						
+							<div class="fieldsWrapper">								
+								<div class="ui form">
+									
+									<div class="ui two fields">
+										<div class="field">
+											<select>
+												<option value="">Property</option>
+												<option vlaue="">Active</option>
+												<option vlaue="">Inactive</option>
+												<option vlaue="">Blocked</option>
+												<option vlaue="">New</option>
+												<option vlaue="">Old</option>
+												
+											</select>
+										</div>
+										<div class="field">
+											<select id="search_role">
+												<option value="">Role</option>
+												{% for role in roles %}
+													<option vlaue="{{ role.id }}">{{ role.name }}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+									
+									<div class="ui two fields">
+										<div class="field">
+											<select id="search_country">
+												<option value="">Country</option>
+												{% for country in countries %}
+													<option vlaue="{{ country.id }}">{{ country.name }}</option>
+												{% endfor %}
+											</select>
+										</div>
+										<div class="field">
+											<select>
+												<option value="">Depot</option>											
+											</select>
+										</div>
+									</div>
+									<div class="right">
+										<div class="ui labeled icon blue small button" onclick="$('#submitButton_1').click();">
+											<i class="inverted search icon"></i>
+											Find
+										</div>
+									</div>
+									<input type="submit" class="hidden" id="submitButton_1">
+									
+								</div>
+							</div>
+						</div>						
+
+						<div class="block second">
+							<h3 class="ui header">
+								<i class="search circular icon"></i>
+								Text Search
+							</h3>
+							<div class="fieldsWrapper">
+								<div class="ui form">
+									<div class="field">
+										<select>
+											<option value="">Username</option>
+											<option vlaue="">E-mail</option>
+											<option vlaue="">First Name</option>
+											<option vlaue="">Last Name</option>
+										</select>
+									</div>
+									
+									<div class="field">										
+										<input type="text">
+									</div>
+									
+									<div class="right">
+										<div class="ui labeled icon blue small button" onclick="$('#submitButton_1').click();">
+											<i class="inverted search icon"></i>
+											Find
+										</div>
+									</div>
+									<input type="submit" class="hidden" id="submitButton_1">
+									
+								</div>
+	
+							</div>
+						</div>
+
+						<div class="clear"></div>
+					</div>
+				
+				</div>
+				
+				
 				<div class="ui active tab segment stacked">
 					<div class="ui form">
+					
+						<h3 class="ui header">
+							<i class="users circular icon"></i>
+							All Users
+						</h3>
+					
+					
 						<table class="ui basic table small usersTable">
 							<thead>
 								<tr>
@@ -52,7 +161,7 @@
 									<td>{{ user.email }}</td>
 									<td>{{ user.phone }}</td>
 									<td>{{ user.role.name }}</td>
-									<td>{{ user.countries|join(', ') }}</td>
+									<td>{% if user.countries|length %}{{ user.countries|join(', ') }}{% else %}{{ user.country }}{% endif %}</td>
 									<td>{% if user.depot %}{{ user.depot.name }}{% endif %}</td>
 									<td>
 										{% if user.isNew %}<i class="icon empty star purple large"></i>{% endif %}
@@ -75,6 +184,9 @@
 							</tbody>
 						</table>
 						<input type="hidden" class="entityName" value="User">
+						
+						{{ knp_pagination_render(users) }}
+						
 					</div>
 											
 				</div>							

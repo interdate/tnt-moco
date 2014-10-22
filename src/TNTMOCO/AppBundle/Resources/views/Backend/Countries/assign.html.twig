@@ -1,0 +1,223 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="globe icon"></i>
+				Countries
+			</h4>
+		</div>
+		
+		{{ include ('TNTMOCOAppBundle:Backend/Countries:mainMenu.html.twig', {'activeTab': 2}) }}	
+		
+		<div class="desktop">
+			<div class="tabSegments">	
+				<div class="ui active tab segment stacked countriesAssigning">	
+					<div class="block">
+						<div class="ui form">
+							<select class="countries">					
+								<option value="">Choose a country</option>	
+							{% for country in countries %}
+								{% if country.isActive %}<option value="{{ country.id }}">{{ country.name }}</option>{% endif %}
+							{% endfor %}
+							</select>
+						</div>
+						
+					</div>
+					<div class="block">
+						<div class="ui form">
+							<div class="ui tiny header">
+								<i class="user circular icon"></i>
+								Assign Country Admin
+							</div>
+							<div class="fieldsWrapper">
+								<div class="field">
+									<input type="text" value="" placeholder="Start type to find Admin...">
+								</div>
+								
+								
+								<div class="users_scrollbar grayGradient" style="padding: 15px;">
+									
+									{% for user in users %}										
+										{% if user.role.id == 2 %}
+											{{ user.username }}<br>
+										{% endif  %}
+									{% endfor %}
+								</div>
+								
+								<div class="ui labeled icon blue mini button" onclick="$('#submitButton').click();">
+									<i class="inverted save icon"></i>
+									Assign
+								</div>
+								
+								
+								<br><br><strong>Or create new Admin...</strong><br><br>
+								
+								
+								<div class="field">
+									{{ form_label(adminForm.username) }} <span>*</span>
+									{{ form_widget(adminForm.username) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(adminForm.password) }} <span>*</span>
+									{{ form_widget(adminForm.password) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(adminForm.role) }} <span>*</span>
+									<div class="clear"></div>
+									{{ form_widget(adminForm.role) }}
+								</div>								
+								
+								<div class="field">
+									{{ form_label(adminForm.firstName) }} <span>*</span>
+									{{ form_widget(adminForm.firstName) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(adminForm.lastName) }} <span>*</span>
+									{{ form_widget(adminForm.lastName) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(adminForm.email) }} <span>*</span>
+									{{ form_widget(adminForm.email) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(adminForm.phone) }} <span>*</span>
+									{{ form_widget(adminForm.phone) }}
+								</div>
+								
+								<div class="clear"></div>
+								
+								<div class="field hidden">
+									<div class="ui toggle checkbox">
+										{{ form_widget(userForm.pickup) }}														
+										{{ form_label(userForm.pickup) }}							
+									</div>
+								</div>
+								
+								<div class="field hidden">
+									<label>Depot</label>
+									<div class="clear"></div>
+									{{ form_widget(userForm.depot) }}
+								</div>
+								
+								<div class="ui labeled icon blue mini button" onclick="$('#submitButton').click();">
+									<i class="inverted save icon"></i>
+									Create and Assign
+								</div>
+								
+								
+							</div>
+							
+							
+							
+						</div>					
+					</div>
+					<div class="block last">
+						<div class="ui form">
+							<div class="ui tiny header">
+								<i class="users circular icon"></i>
+								Assign Users
+							</div>
+							
+							<div class="fieldsWrapper">
+								<div class="field">
+									<input type="text" value="" placeholder="Start type to find User...">
+								</div>
+								
+								
+								<div class="users_scrollbar grayGradient">
+								
+								
+								</div>
+								
+								<div class="ui labeled icon blue mini button" onclick="$('#submitButton').click();">
+									<i class="inverted save icon"></i>
+									Assign
+								</div>
+								
+								
+								<br><br><strong>Or create new User...</strong><br><br>
+								
+								
+								<div class="field">
+									{{ form_label(userForm.username) }} <span>*</span>
+									{{ form_widget(userForm.username) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.password) }} <span>*</span>
+									{{ form_widget(userForm.password) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.role) }} <span>*</span>
+									<div class="clear"></div>
+									{{ form_widget(userForm.role) }}
+								</div>								
+								
+								<div class="field">
+									{{ form_label(userForm.firstName) }} <span>*</span>
+									{{ form_widget(userForm.firstName) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.lastName) }} <span>*</span>
+									{{ form_widget(userForm.lastName) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.email) }} <span>*</span>
+									{{ form_widget(userForm.email) }}
+								</div>
+								
+								<div class="field">
+									{{ form_label(userForm.phone) }} <span>*</span>
+									{{ form_widget(userForm.phone) }}
+								</div>
+								
+								<div class="clear"></div>
+								
+								<div class="field hidden">
+									<div class="ui toggle checkbox">
+										{{ form_widget(userForm.pickup) }}														
+										{{ form_label(userForm.pickup) }}							
+									</div>
+								</div>
+								
+								<div class="field hidden">
+									<label>Depot</label>
+									<div class="clear"></div>
+									{{ form_widget(userForm.depot) }}
+								</div>
+								
+								<div class="ui labeled icon blue mini button" onclick="$('#submitButton').click();">
+									<i class="inverted save icon"></i>
+									Create and Assign
+								</div>
+								
+								
+							</div>
+							
+							
+						</div>
+					</div>
+					<div class="clear"></div>					
+				</div>				
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+

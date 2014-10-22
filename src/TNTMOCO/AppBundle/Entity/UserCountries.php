@@ -28,7 +28,7 @@ class UserCountries
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Country", inversedBy="userCountries")
+     * @ORM\ManyToOne(targetEntity="Country", inversedBy="userCountries", cascade={"persist"})
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      */
     private $country;

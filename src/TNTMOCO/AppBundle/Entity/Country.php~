@@ -50,8 +50,14 @@ class Country
     
     /**
      * @ORM\OneToMany(targetEntity="UserCountries", mappedBy="country")
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      */
     private $userCountries;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="User", mappedBy="country")
+     */
+    private $users;
 
 
     /**
@@ -182,5 +188,32 @@ class Country
     public function getUserCountries()
     {
         return $this->userCountries;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     * @return Country
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean 
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+    
+    public function __toString(){
+    	return $this->name;
     }
 }

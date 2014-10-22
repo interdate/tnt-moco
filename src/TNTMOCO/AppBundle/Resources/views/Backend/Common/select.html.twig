@@ -1,0 +1,8 @@
+<select name="{{ list.name }}" id="{{ list.id }}">
+	{% if list.empty_value is defined %}
+		<option value="">{{ list.empty_value }}</option>
+	{% endif %}
+	{% for item in list.items %}
+		<option value="{{ item.id }}">{{ item.name }}</option>
+	{% endif %}
+</select>

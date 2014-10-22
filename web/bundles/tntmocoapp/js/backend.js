@@ -17,7 +17,10 @@ $(document).ready(
 		
 		
 		$('#user_role').change(function(){
-			loadUserData($(this), $('#user_country'));
+			//alert(1);   
+			//loadUserData($(this), $('#user_countries_wrapper'));
+			
+			modifyUserFormByRole($(this), $('#user_pickup'));
 		});
 		
 		
@@ -25,251 +28,7 @@ $(document).ready(
 			wheelSpeed: 35,			
 			minScrollbarLength: 20
 		});
-		
-		/*
-		$('.usersTable tbody .edit.icon').click(function(){
-			$(this).parents('tr').addClass("editedUser");			
-			$(this).parents('tr').next().removeClass('hidden');			
-			var userId = $(this).siblings('.userId').val();
-			getUserProfile(userId);
-		});
-		*/
-		
-		
-		
-		/*
-		
-		var $role = $('#user_role');
-		// When role gets selected ...
-		$role.change(function() {
-		  // ... retrieve the corresponding form.
-		  var $form = $(this).closest('form');
-		  // Simulate form data, but only include the selected role value.
-		  var data = {};
-		  data[$role.attr('name')] = $role.val();
-		  // Submit data via AJAX to the form's action path.
-		  $.ajax({
-		    url : $form.attr('action'),
-		    type: $form.attr('method'),
-		    data : data,
-		    error: function(error){
-		    	console.log(error.responseText);
-		    },
-		    success: function(html) {
-		    	
-		    	//$('.test').html(html);
-		      // Replace current countries field ...
-		      $('#user_countries').replaceWith(
-		        // ... with the returned one from the AJAX response.
-		        $(html).find('#user_countries')
-		      );
-		      // countries field now displays the appropriate countries.
-		      
-		      
-		      
-		      
-		      
-		      var $countries = $('#user_countries');
-				// When role gets selected ...
-				$countries.change(function() {
-					
-					console.log("DATA:" + $countries.val());
-					
-				  // ... retrieve the corresponding form.
-				  var $form = $(this).closest('form');
-				  // Simulate form data, but only include the selected role value.
-				  var data = {};
-				  data[$countries.attr('name')] = $countries.val();
-				  // Submit data via AJAX to the form's action path.
-				  $.ajax({
-				    url : $form.attr('action'),
-				    type: $form.attr('method'),
-				    data : data,
-				    error: function(error){
-				    	console.log(error.responseText);
-				    },
-				    success: function(html) {
-				    	
-				    	//$('body').html(html);
-				    	//return;
-				    	var depot = $(html).find('#user_depot');
-				    	$('#user_countries').parent().after(depot);
-				     
-				    }
-				  });
-				});
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		      
-		    }
-		  });
-		});
-		
-		
-		*/
-		
-		
-		
-		
-		/*
-		$('.tabMenu .menu .item').tab();
-		$('.ui.checkbox').checkbox();
-		$('.notChecked .ui.checkbox').checkbox({
-			disable: true,
-		});
-		
-		$('.notChecked .ui.checkbox').checkbox('disable');
-		
-		
-		$('.ui.dropdown').dropdown({
-			'on':'click',
-			'delay': {
-				show: 100,
-				hide: 100
-			},
-			'duration' : 150
-		});
-		
-		 
-		$('#add_category, #save_category, #add_param_group, #save_group, #save_param_group_settings, #save_param_group, #add_param, #save_param').click(function(){
-			var form = $(this).parents('form');
-			var empty = false;
-		
-			//console.log(5555);
-			
-			form.find('input[required="required"]').each(function(){				
-				if(!$(this).val().trim().length){					
-					empty = true;
-				}				
-			});
-			
-			if(empty){
-				alert('Please fill all the fields');
-				return;
-			}
-			
-			if(form.find('.ui.checkbox input[class="required"]').length){
-				var checked = false;				
-				form.find('.ui.checkbox input[class="required"]').each(function(){
-					if($(this).is(':checked')){
-						checked = true;
-					}				
-				});
-				
-				if(!checked){
-					alert('Please choose at least one category');
-					return;
-				}
-			}
-			
-			form.submit();			
-			
-		});
-		
-		sections = [];		
-		accordionInit();
-		paramCheckboxesInit();
-		
-		
-		
-		
-		
-		$('.multipleParamSettings .button').click(function(){
-			var action = ( $(this).parent('div').hasClass('apply') ) ? 'apply' : 'remove';
-			if(action == 'remove' && !confirm('Remove selected parameters? Are you sure?')){
-				return false;
-			}
-			var paramsIds = [];
-			$('.selParam input[type="checkbox"]:checked').each(function(){
-				var itemId = $(this).attr('id');
-				itemIdArr = itemId.split('_');
-				paramsIds.push(itemIdArr[1]); 
-			});
-			executeMultupleParamsAction(action, paramsIds);
-		});
-		
-		$('#multipleParamsForm .header .ui.checkbox').checkbox({
-			onEnable: function(){
-				$(this).parents('.header').siblings('.fields').find('select, input').attr('disabled', false);
-			},
-			onDisable: function(){
-				$(this).parents('.header').siblings('.fields').find('select, input').attr('disabled', true);				
-			}
-		});
-		
-		
-		
-		
-		
-		
-		
-		$('#selectAll').click(function(){
-			$(this).checkbox('toggle');
-			
-			if($(this).find('input[type="checkbox"]').is(":checked")){
-				$('.ui.checkbox').checkbox('disable');			
-			}
-			else{
-				$('.ui.checkbox').checkbox('enable');
-			}
-		});
-		
-		
-		
-		
-		
-		$('#statWraper .location').popup({
-			delay: 1, //miliseconds
-			duration: 50 //miliseconds,			
-		});  
-		
-		
-		
-		$('#getSideBar').click(function(){
-			
-			$('.sidebar')			
-			  .sidebar({
-			    overlay: true
-			  })
-			  .sidebar('show')			  
-			;
-			
-			if($('.sidebar').hasClass('active')){
-				//$('#content_wrapper .headerWrapper').css({"z-index":"1"});				
-			}
-			else{
-				//$('#content_wrapper .headerWrapper').css({"z-index":"999999"});
-			}
-			
-		});		
-		
-		$('#usersMenuActions .item').click(function(){
-			var action = $(this).attr('id');
-			alert(action);
-		});
-		
-		
-		
-		
-		
-		
-		//$('.ui.checkbox').checkbox();
-		
-		
-		*/
-		
+
 		
 	}
 );
@@ -307,11 +66,105 @@ function collectSelected(wrapper){
 	return itemsIds;
 }
 
+
+function modifyUserFormByRole(roleWrapper, pickupWrapper){
+	
+	var data = {};
+	var roleVal = roleWrapper.val();
+	
+	if(roleVal == 5){		
+		pickupWrapper.parents('.field').show();		
+	}
+	else{
+		pickupWrapper.parents('.field').hide();		
+	}
+	
+	$('#user_depot').parent().hide();
+	
+	
+	console.log(pickupWrapper.parents('.field').html());
+	
+	data[roleWrapper.attr('name')] = roleVal;
+	
+	console.log(JSON.stringify(data));
+	console.log(roleWrapper.closest('form').attr('action'));
+	//return;
+	
+		
+	
+		
+	$.ajax({
+		url: roleWrapper.closest('form').attr('action'),
+		type: 'Post',		
+		data: data,
+		error: function(response){
+			//console.log(response.responseText);
+			$('.er').html(response.responseText);
+			//alert(response.responseText);
+		},
+		success: function(data){	
+			$('#user_countries_container').replaceWith( $(data).find('#user_countries_container') );				
+			$('#user_countries_container').find('select').change(function(){
+				modifyUserFormByCountry($(this), roleWrapper, $('#user_pickup'));
+			});
+						
+			$('.countries_scrollbar').perfectScrollbar({
+				wheelSpeed: 35,			
+				minScrollbarLength: 20
+			});
+			
+			$('.ui.checkbox').checkbox();			
+		}
+	});
+}
+
+
+function modifyUserFormByCountry(countryWrapper, roleWrapper, pickupWrapper){
+	
+	var roleId = roleWrapper.val();
+	if(roleId != 5)
+		return;
+	
+	var data = {};	
+	data[countryWrapper.attr('name')] = countryWrapper.val();
+	data['role'] = roleWrapper.val();
+	console.log(JSON.stringify(data));
+	
+	$('#user_depot').parent().hide();	
+		
+	$.ajax({
+		url: countryWrapper.closest('form').attr('action'),
+		type: 'Post',		
+		data: data,
+		error: function(response){
+			console.log(response.responseText);
+			$('.er').html(response.responseText);
+			alert(response.responseText);
+		},
+		success: function(data){
+			console.log($(data).find('#user_depot').html() );
+			//$('.er').html(data);
+			//return;
+			
+			$('#user_depot').replaceWith( $(data).find('#user_depot') );			
+			$('#user_depot').parent().show();
+					
+		}
+	});
+}
+
+
+/*
+
 function loadUserData(choosenItem, replacedItem){
 	
 	var form = choosenItem.closest('form');	
 	var data = {};
+	
 	data[choosenItem.attr('name')] = choosenItem.val();
+	if(choosenItem.attr('name') != 'user[role]'){
+		data['user[role]'] = $('#user_role').val();
+	}
 	
 	console.log(JSON.stringify(data));
 	//return;
@@ -321,14 +174,20 @@ function loadUserData(choosenItem, replacedItem){
 		type: 'Post',		
 		data: data,
 		error: function(response){
-			console.log(response.responseText);
+			//console.log(response.responseText);
+			$('.er').html(response.responseText);
+			//alert(response.responseText);
 		},
 		success: function(data){
+			
+			//$('.er').html(data);
+			//alert(data);
+			
 			$('#user_depot').parent().hide();
 			$('#user_pickup').parents('.field').hide();
 			//$('#' + id).parent().show();
 			var id = replacedItem.attr('id');
-			console.log('ID: '+ replacedItem.html());
+			
 			
 			replacedItem.replaceWith($(data).find('#' + id));
 			
@@ -336,8 +195,9 @@ function loadUserData(choosenItem, replacedItem){
 			
 			var roleId = $('#user_role').val();
 			
-			if(roleId == 5 && id != 'user_depot'){			
-				$('#' + id).change(function(){
+			if(roleId == 5 && id != 'user_depot'){
+				console.log('ID: '+ id);				
+				$('#' + id).change(function(){					
 					loadUserData($(this), $('#user_depot'));
 				});
 			}
@@ -353,11 +213,16 @@ function loadUserData(choosenItem, replacedItem){
 			
 			//console.log($(data).find('#' + id).html());
 			
+			$('.ui.checkbox').checkbox();
+			
+			
+			
+			
 			
 		}
 	});
 }
-
+*/
 
 function getUserProfile(userId){	
 	//var route = $('#profileRoute').val();

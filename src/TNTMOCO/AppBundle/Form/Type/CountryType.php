@@ -9,18 +9,18 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CountryType extends AbstractType{	
 		
-public function buildForm(FormBuilderInterface $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'entity', array(
-        	'class' => 'TNTMOCOAppBundle:Country',
-        	'property' => 'name',
+        $builder->add('name', 'text', array(
+        	//'class' => 'TNTMOCOAppBundle:Country',
+        	//'property' => 'name',
         ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'TNTMOCO\AppBundle\Entity\Country',
+            'data_class' => null,
         ));
     }
     

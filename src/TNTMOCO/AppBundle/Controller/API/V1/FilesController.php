@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use TNTMOCO\AppBundle\Entity\File;
+use TNTMOCO\AppBundle\Factory\FileFactory;
 
 
 class FilesController extends FOSRestController{
@@ -38,44 +38,24 @@ class FilesController extends FOSRestController{
 		$files = $request->files;
 		$em = $this->getDoctrine()->getManager();
 		//$fileRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:File');
-		//$type = $fileRepo->getFilesTypeByOperation( $request-request->get('operation') );
-		$type = '';
-	
-		return array( 'respponse' => $request->request->all() );
-	
-		foreach ($files as $file) {
-			if($file instanceof UploadedFile){
-				$file = new File($type);
-				$file->setFile($file);
+		$type = $request->request->get('operationId');
+		$user = $this->get('security.context')->getToken()->getUser();
+		
+		foreach ($files as $uploadedFile) {
+			if($uploadedFile instanceof UploadedFile){
+				$file = FileFactory::create($type);
+				$file->setFile($uploadedFile);				
+				$file->setUser($user);
+				$file->setLocation('test location');
+				$file->setDatetime(new \DateTime());
 				$em->persist($file);
 				$em->flush();
 				$file->preUpload();
 				$file->upload();
 			}
 		}
+		
+		return array( 'response' => $request->request->all() );
+			
 	}
-	
-	
-	/*
-	public function postFilesAction()
-	{		
-		$request = $this->get('request');
-		$files = $request->files;
-		$em = $this->getDoctrine()->getManager();
-		
-		
-		return array( 'respponse' => $request->request->all() );
-		
-		foreach ($files as $file) {
-			if($file instanceof UploadedFile){
-				$pickUpFile = new PickUpFile();
-				$pickUpFile->setFile($file);
-				$em->persist($pickUpFile);				
-				$em->flush();
-				$pickUpFile->preUpload();
-				$pickUpFile->upload();
-			}
-		}
-	}
-	*/
 }

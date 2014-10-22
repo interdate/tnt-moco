@@ -1,0 +1,28 @@
+<?php
+
+namespace TNTMOCO\AppBundle\Factory;
+
+use TNTMOCO\AppBundle\Entity\ImageFile;
+use TNTMOCO\AppBundle\Entity\TextFile;
+use TNTMOCO\AppBundle\Entity\PdfFile;
+
+class FileFactory 
+{
+	public static function create($type){
+		switch ($type){
+			case 'PU':
+				return new ImageFile($type);
+				break;
+				
+			case 'DL':
+			case 'PP':
+				return new TextFile($type);
+				break;
+				
+			case 'CN':
+				return new PdfFile($type);
+				break;
+				
+		}		
+	}
+}
