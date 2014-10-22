@@ -1,0 +1,56 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="home icon"></i>
+				Test Files
+			</h4>
+		</div>
+			
+		<div class="clear"></div>
+	
+		<div class="desktop">	
+			
+			<div class="tabSegments">
+			
+				<div class="ui active tab segment stacked">
+					<form action="/api/v1/files" enctype="multipart/form-data" method="post">
+						<br><br>
+						<input type="file" name="files_0">
+						<br><br>
+						<input type="file" name="files_1">
+						<br><br>
+						<input type="file" name="files_2">
+						<br><br>
+						<input type="file" name="files_3">
+						<br><br>
+						<input type="file" name="files_4">
+						<br><br>
+						<input type="file" name="files_5">
+						<br><br>
+						
+						<input type="hidden" name="operationId" value="PU">
+						<input type="hidden" name="filesNumber" value="6">
+						
+						<br>
+						<input type="submit" value="Upload">
+					
+					</form>
+															
+				</div>
+				
+							
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+

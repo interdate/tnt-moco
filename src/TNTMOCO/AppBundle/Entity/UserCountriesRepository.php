@@ -12,4 +12,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserCountriesRepository extends EntityRepository
 {
+	public function removeUserCountries($user) 
+	{	
+		$em = $this->getEntityManager();
+		$userCountries = $this->findByUser($user);		
+		foreach ($userCountries as $userCountry){
+			$em->remove($userCountry);
+		}	
+	}
 }

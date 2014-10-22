@@ -3,19 +3,19 @@
 {% block title %}TNT MoCo - Control Panel{% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('bundles/tntmocoapp/libs/semantic/packaged/css/semantic.css') }}" />
-	<link rel="stylesheet" href="{{ asset('bundles/tntmocoapp/css/perfect-scrollbar.min.css') }}" />
-	<link rel="stylesheet" href="{{ asset('bundles/tntmocoapp/css/backend.css') }}" />
+	<link rel="stylesheet" href="{{ asset('assets/libs/semantic/packaged/css/semantic.css') }}" />
+	<link rel="stylesheet" href="{{ asset('assets/css/perfect-scrollbar.min.css') }}" />
+	<link rel="stylesheet" href="{{ asset('assets/css/backend.css') }}" />
 {% endblock %}
 
 
 {% block js %}	
-	<script src="{{ asset('bundles/tntmocoapp/js/jquery.js') }}"></script>        
-	<script src="{{ asset('bundles/tntmocoapp/libs/semantic/packaged/javascript/semantic.js') }}"></script>	
-	<script src="{{ asset('bundles/tntmocoapp/js/jquery.address.js') }}"></script>
-	<script src="{{ asset('bundles/tntmocoapp/js/perfect-scrollbar.min.js') }}"></script>
-	<script src="{{ asset('bundles/tntmocoapp/js/perfect-scrollbar.with-mousewheel.min.js') }}"></script>
-	<script src="{{ asset('bundles/tntmocoapp/js/backend.js') }}"></script>
+	<script src="{{ asset('assets/js/jquery.js') }}"></script>        
+	<script src="{{ asset('assets/libs/semantic/packaged/javascript/semantic.js') }}"></script>	
+	<script src="{{ asset('assets/js/jquery.address.js') }}"></script>
+	<script src="{{ asset('assets/js/perfect-scrollbar.min.js') }}"></script>
+	<script src="{{ asset('assets/js/perfect-scrollbar.with-mousewheel.min.js') }}"></script>
+	<script src="{{ asset('assets/js/backend.js') }}"></script>
 {% endblock %}
 
 
@@ -25,7 +25,7 @@
 
 	<div id="top">
 		<div class="left first">
-			{#<img class="ui avatar image" src="{{ asset('bundles/tntmocoapp/images/admin_icon.png') }}">#}
+			{#<img class="ui avatar image" src="{{ asset('assets/images/admin_icon.png') }}">#}
 			<div class="ui avatar image"></div>
 			{{ app.user.username }}
 			<div class="iconWrapper" id="getSideBar" onclick="window.location.href='{{ path('logout') }}'"><i class="off icon link"></i></div>

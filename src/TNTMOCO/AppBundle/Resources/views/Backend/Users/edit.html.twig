@@ -18,7 +18,7 @@
 		
 		<div class="desktop">
 			<div class="tabSegments">	
-				<div class="ui active tab segment stacked userCreation">
+				<div class="ui active tab segment stacked userProfile">
 				
 					{% if error %}
 						<div class="ui icon message red">
@@ -140,8 +140,8 @@
 								</div>
 								
 								<div class="clear"></div>
-								
-								<div class="field hidden">
+																
+								<div class="field {% if editedUser.role.id is defined and editedUser.role.id != 5 %}hidden{% endif %}">
 									<div class="ui toggle checkbox">
 										{{ form_widget(userForm.pickup) }}														
 										{{ form_label(userForm.pickup) }}							
@@ -151,64 +151,70 @@
 								<div class="clear"></div>
 								
 								
-								<div class="field">
-									{{ form_label(userForm.country) }}
-									<div class="clear"></div>
+								<div id="user_countries_container">
 									
+									<div class="field">
 									
-									{% if editedUser.role.id == 2 %}
-										<div id="user_country">
-											<div class="countries_scrollbar grayGradient">											
-												
-												{% set itemsNumber = userForm.country|length %}								
-									
-												{% if numberInColumn is not defined or numberInColumn == 0 %}
-													{% set numberInColumn = ( itemsNumber / 2 )|round %}																	
-												{% endif %}			
-								    						
-								    			{% for country in countries %}
-								    						
-								    				{% if (loop.index - 1) % numberInColumn == 0 %}						    								
-								    					<div class="left countriesWrapper">						    							
-								    				{% endif %}
-								    												    							
-															<div class="ui checkbox">																																	
-																{% set checked = '' %}
-																{% for userCountry in editedUser.countries %}
-																	{% if userCountry.country == country %}
-																		{% set checked = 'checked="checked"' %}
-																	{% endif %}
-																{% endfor %}
+										{% if editedUser.role.id is defined and editedUser.role.id == 2 %}
+
+											{{ form_label(userForm.countries) }}
+											<div class="clear"></div>
+											
+											<div id="user_countries">
+												<div class="countries_scrollbar grayGradient">											
+													
+													{% set itemsNumber = userForm.countries|length %}								
+										
+													{% if numberInColumn is not defined or numberInColumn == 0 %}
+														{% set numberInColumn = ( itemsNumber / 2 )|round %}																	
+													{% endif %}			
+									    						
+									    			{% for country in countries %}
+									    						
+									    				{% if (loop.index - 1) % numberInColumn == 0 %}						    								
+									    					<div class="left countriesWrapper">						    							
+									    				{% endif %}
+									    												    							
+																<div class="ui checkbox">																																	
+																	{% set checked = '' %}
+																	{% for userCountry in editedUser.countries %}
+																		{% if userCountry.country == country %}
+																			{% set checked = 'checked="checked"' %}
+																		{% endif %}
+																	{% endfor %}
+																	
+																	<input type="checkbox" value="{{ country.id }}" {{ checked }} name="user[countries][]">
+																	<label>{{ country.name }}</label>
+																	
+																</div>
+																<div class="clear"></div>
 																
-																<input type="checkbox" value="{{ country.id }}" {{ checked }} name="user[country][]">
-																<label>{{ country.name }}</label>
-																
-															</div>
-															<div class="clear"></div>
-															
-													{% if loop.index % numberInColumn == 0  or loop.index == itemsNumber %}
-								    					</div>						    							
-								    				{% endif %}
-																
-								    			{% endfor %}	
-								    			
+														{% if loop.index % numberInColumn == 0  or loop.index == itemsNumber %}
+									    					</div>						    							
+									    				{% endif %}
+																	
+									    			{% endfor %}	
+									    			
+												</div>
 											</div>
-										</div>
-									{% else %}
-										{{ form_widget(userForm.country) }}
-									{% endif %}
+										{% else %}
+											{{ form_label(userForm.country) }}
+											<div class="clear"></div>
+											{{ form_widget(userForm.country) }}
+										{% endif %}
+									</div>
 								</div>
 								
 								<div class="clear"></div>
 								
-								<div class="field hidden">
+								<div class="field {% if editedUser.role.id is defined and editedUser.role.id != 5 %}hidden{% endif %}">
 									<label>Depot</label>
 									<div class="clear"></div>
 									{{ form_widget(userForm.depot) }}
 								</div>
 								
 								
-								<div class="createUserButtonWrapper">
+								<div class="userProfileButtonWrapper">
 									
 									<div class="ui labeled icon blue small button" onclick="$('#submitButton').click();">
 										<i class="inverted save icon"></i>
@@ -236,6 +242,10 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	<div class="er"></div>
+	
 
 
 {% endblock %} 

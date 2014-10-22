@@ -49,8 +49,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * @ORM\ManyToOne(targetEntity="Role", inversedBy="users")
      * @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     **/
-    
+     **/    
     private $role;
     
     /**
@@ -60,15 +59,22 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $salt;
     
+    /**
+     * @ORM\ManyToOne(targetEntity="Country", inversedBy="users")
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
+     **/
+    private $country;
+    
     /**     
-     * @ORM\OneToMany(targetEntity="UserCountries", mappedBy="user", cascade={"persist"})          
+     * @ORM\OneToMany(targetEntity="UserCountries", mappedBy="user", indexBy="userId,country_id", cascade={"persist"})               
      */
     private $countries;
     
-   
-    private $country;
-    
-    
+    /**
+     * @ORM\OneToMany(targetEntity="ImageFile", mappedBy="user")
+     */
+    private $imageFiles;
+        
     /**
      * @ORM\ManyToOne(targetEntity="Depot", inversedBy="users")
      * @ORM\JoinColumn(name="depot_id", referencedColumnName="id")
@@ -136,6 +142,7 @@ class User implements AdvancedUserInterface, \Serializable
     {    	
     	$this->salt = md5(uniqid(null, true));
     	$this->countries = new \Doctrine\Common\Collections\ArrayCollection();
+    	$this->imageFiles = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     public function getRoles()
@@ -156,12 +163,12 @@ class User implements AdvancedUserInterface, \Serializable
     public function serialize()
     {
     	return serialize(array(
-    			$this->id,
-    			$this->username,
-    			$this->password,
-    			$this->isActive,
-    			// see section on salt below
-    			// $this->salt,
+    		$this->id,
+    		$this->username,
+    		$this->password,
+    		$this->isActive,
+    		// see section on salt below
+    		// $this->salt,
     	));
     }
     
@@ -171,12 +178,12 @@ class User implements AdvancedUserInterface, \Serializable
     public function unserialize($serialized)
     {
     	list (
-    			$this->id,
-    			$this->username,
-    			$this->password,
-    			$this->isActive,
-    			// see section on salt below
-    			// $this->salt
+    		$this->id,
+    		$this->username,
+    		$this->password,
+    		$this->isActive,
+    		// see section on salt below
+    		// $this->salt
     	) = unserialize($serialized);
     }
     
@@ -406,82 +413,8 @@ class User implements AdvancedUserInterface, \Serializable
         return $this->phone;
     }
     
-    /**
-     * Add countries
-     *
-     * @param \TNTMOCO\AppBundle\Entity\UserCountries $countries
-     * @return User
-     */
-    public function addCountry($countries = null)
-    {
-        $this->countries[] = $countries;
-
-        return $this;
-    }
-
-    /**
-     * Remove countries
-     *
-     * @param \TNTMOCO\AppBundle\Entity\UserCountries $countries
-     */
-    public function removeCountry($countries = null)
-    {
-        $this->countries->removeElement($countries);
-    }
-
-    /**
-     * Get countries
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getCountries()
-    {
-        return $this->countries;
-    }
     
-    
-    public function setCountries($countries = null)
-    {
-    	$this->countries = $countries;
-    }
 
-    /**
-     * Set depot
-     *
-     * @param \TNTMOCO\AppBundle\Entity\Depot $depot
-     * @return User
-     */
-    public function setDepot(\TNTMOCO\AppBundle\Entity\Depot $depot = null)
-    {
-        $this->depot = $depot;
-
-        return $this;
-    }
-
-    /**
-     * Get depot
-     *
-     * @return \TNTMOCO\AppBundle\Entity\Depot 
-     */
-    public function getDepot()
-    {
-        return $this->depot;
-    }
-    
-    
-    public function getCountry()
-    {
-    	return $this->country;
-    }
-   
-    public function setCountry($country)
-    {
-    	$this->country = $country;
-    
-    	return $this;
-    }
-
-    
 
     /**
      * Set isNew
@@ -573,5 +506,103 @@ class User implements AdvancedUserInterface, \Serializable
     public function getPickup()
     {
         return $this->pickup;
+    }
+
+    /**
+     * Set country
+     *
+     * @param \TNTMOCO\AppBundle\Entity\Country $country
+     * @return User
+     */
+    public function setCountry(\TNTMOCO\AppBundle\Entity\Country $country = null)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return \TNTMOCO\AppBundle\Entity\Country 
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }    
+
+    /**
+     * Set depot
+     *
+     * @param \TNTMOCO\AppBundle\Entity\Depot $depot
+     * @return User
+     */
+    public function setDepot(\TNTMOCO\AppBundle\Entity\Depot $depot = null)
+    {
+        $this->depot = $depot;
+
+        return $this;
+    }
+
+    /**
+     * Get depot
+     *
+     * @return \TNTMOCO\AppBundle\Entity\Depot 
+     */
+    public function getDepot()
+    {
+        return $this->depot;
+    }
+    
+    public function addCountry($country)
+    {
+        if(!$this->countries->contains($country))
+    		$this->countries[] = $country;
+
+        return $this;
+    }
+
+    public function removeCountry($country)
+    {
+    	if($this->countries->contains($country))
+    		$this->countries->removeElement($country);
+    }
+    
+    public function getCountries()
+    {
+        return $this->countries;
+    }
+
+    /**
+     * Add imageFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\ImageFile $imageFiles
+     * @return User
+     */
+    public function addImageFile(\TNTMOCO\AppBundle\Entity\ImageFile $imageFiles)
+    {
+        $this->imageFiles[] = $imageFiles;
+
+        return $this;
+    }
+
+    /**
+     * Remove imageFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\ImageFile $imageFiles
+     */
+    public function removeImageFile(\TNTMOCO\AppBundle\Entity\ImageFile $imageFiles)
+    {
+        $this->imageFiles->removeElement($imageFiles);
+    }
+
+    /**
+     * Get imageFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getImageFiles()
+    {
+        return $this->imageFiles;
     }
 }

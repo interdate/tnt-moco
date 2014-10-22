@@ -21,7 +21,8 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
  */
 class UserRepository extends EntityRepository implements UserProviderInterface
 {
-	public function loadUserByUsername($username){
+	public function loadUserByUsername($username)
+	{
 		$q = $this
 		->createQueryBuilder('u')
 		->where('u.username = :username')
@@ -44,7 +45,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		return $user;
 	}
 	
-	public function refreshUser(UserInterface $user){
+	public function refreshUser(UserInterface $user)
+	{
 		$class = get_class($user);
 		if (!$this->supportsClass($class)) {
 			throw new UnsupportedUserException(
@@ -58,21 +60,14 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		return $this->find($user->getId());
 	}
 	
-	public function supportsClass($class){
+	public function supportsClass($class)
+	{
 		return $this->getEntityName() === $class
 		|| is_subclass_of($class, $this->getEntityName());
-	}
+	}	
 	
-	
-	
-	
-	
-	public function getUsersAssignedToUserCountries($inspectedUser){				
-		
-		//$users = $this->findByRole($inspectedUser->getRole());		
-		
-		//$this->findByCountryJoinedToUserCountries($country);
-		
+	public function getUsersAssignedToUserCountries($inspectedUser)
+	{
 		
 		$countries = array();		
 		foreach ($inspectedUser->getCountries() as $userCountry){
@@ -82,69 +77,72 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		if(count($countries) == 0)
 			return $countries;
 		
-		//echo count($inspectedUser->getCountries());
-		//die;
 		
 		$qb = $this->createQueryBuilder('u');
 		
-		$query = $qb->where('u.role = :role')
-			
+		$qb->where('u.role = :role')						
 			->andWhere(
 				$qb->expr()->in('uc.country',  $countries)
-			)			
+			)
 			->join('u.countries', 'uc')			
 			->join('uc.country', 'c')				
-			->setParameter('role', $inspectedUser->getRole())			
-			->getQuery();
+			->setParameter('role', $inspectedUser->getRole())
 		;
 		
+		$userId = $inspectedUser->getId();
+		if(!empty($userId)){
+			$qb->andWhere('uc.user <> :user')->setParameter('user', $inspectedUser);
+		}
+		
+		$query = $qb->getQuery();
+				
 		$users = $query->getResult();
 		
 		return $users;
-		
-		
-		
-		/*
-		
-		foreach ($users as $user){			
-			echo '<strong>' . $user->getUsername() . '</strong>: <br>';
-			foreach ($user->getCountries() as $c){
-				echo $c->getId() . '=>' . $c->getCountry()->getName() . '<br>';
-			}
-		}
-		
-		die;
-		*/
-		
-		/*
-		foreach ($users as $user){
-			
-			echo '<strong>' . $user->getUsername() . '</strong>: <br>';
-			foreach ($user->getCountries() as $c){
-				echo $c->getCountry()->getName() . '<br>';
-			}
-			 
-			
-			foreach ($inspectedUser->getCountries() as $inspectedUserCountry){
-				foreach ($user->getCountries() as $country){
-					
-				}
-				
-				
-				
-				if($user->getCountries()->contains($userCountry) && !in_array($user, $assignedUsers)){
-					echo "TEST58888899999";
-					die;
-					$assignedUsers[] = $user;
-				}
-						
-			}
-		}
-		*/		
-		
-		
-		return $assignedUsers;
 	}
 	
+	public function unassignUsersAssignedToUserCountries($user) 
+	{	
+		$em = $this->getEntityManager();
+		$alreadyAssignedAdmins = $this->getUsersAssignedToUserCountries($user);
+		
+		foreach ($user->getCountries() as $userCountry ){
+			$userCountries[] = $userCountry->getCountry();
+		}
+			
+		foreach ($alreadyAssignedAdmins as $admin){
+			foreach ($admin->getCountries() as $adminCountry){
+				if(in_array($adminCountry->getCountry(),  $userCountries)){
+					$em->remove($adminCountry);
+				}
+			}		
+		}
+	}
+	
+	public function setUserPassword($user, $factory, $encodedPassword)
+	{
+		$password = $user->getPassword();
+		$encoder = $factory->getEncoder($user);		
+		
+		if(!empty($password)){ 
+			$encodedPassword = $encoder->encodePassword($password, $user->getSalt());
+			$user->setIsNonLocked(true);
+		}	
+		
+		$user->setPassword($encodedPassword);
+	}
+	
+	public function createUserCountriesCollection($user)
+	{		
+		foreach ($user->getCountries() as $country){
+			if($country instanceof Country){
+				$userCountry = new UserCountries();
+				$userCountry->setUser($user);
+				$userCountry->setCountry($country);
+				$user->removeCountry($country);
+				$user->addCountry($userCountry);
+			}
+		}		
+	}
 	
 }

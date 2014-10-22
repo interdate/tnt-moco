@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use TNTMOCO\AppBundle\Entity\Country;
+//use Symfony\Component\Form\Extension\Core\Type\CountryType;
 
 
 class UserType extends AbstractType{
@@ -42,19 +43,18 @@ class UserType extends AbstractType{
     		},
     	));
     	
-    	
     	$builder->add('firstName', 'text', array('label' => 'First Name'));
     	$builder->add('lastName', 'text', array('label' => 'Last Name'));    	
     	$builder->add('email', 'text', array('label' => 'E-mail'));
     	$builder->add('phone', 'text', array('label' => 'Phone'));
-    	    	
     	
     	
     	$builder->add('country', 'entity', array(
     		'label' => 'Country',
     		'required' => false,
-    		'multiple' => true,
-    		'expanded' => true,
+    		'multiple' => false,
+    		'expanded' => false,
+    		'empty_value' => 'Choose a Country',
     		'class' => 'TNTMOCOAppBundle:Country',    		
     		'property' => 'name',    			
     		'query_builder' => function(EntityRepository $er) {
@@ -62,92 +62,136 @@ class UserType extends AbstractType{
     			->where('c.isActive = 1');
     		},    		
     	));
+    	
+    	
+    	$builder->add('countries', 'entity', array(
+    		'label' => 'Countries',
+    		'required' => false,
+    		'multiple' => true,
+    		'expanded' => true,
+    		'class' => 'TNTMOCOAppBundle:Country',
+    		'property' => 'name',
+    		'query_builder' => function(EntityRepository $er) {
+    			return $er->createQueryBuilder('c')
+    			->where('c.isActive = 1');
+    		},
+    	));  	
+    	
 
     	$builder->add('pickup', 'checkbox', array(
     		'label' => 'Pick Up',
     		'required' => false
     	));
-    	    	
-    	$modifyFormByRole = function (FormInterface $form, $role = null) {
-    		    		
-    		if($role !== null){    	
+    	
 
-    			$data = null;
-    			$userCountries = $this->user->getCountries();
-    			
-    			if($role->getRole() == 'ROLE_COUNTRY_ADMIN'){
-    				$miltipleExpanded = true;
-    				$data = $userCountries;
-    			}
-    			else{
-    				$miltipleExpanded = false;
-    				$data = is_object($userCountries[0]) ? $userCountries[0]->getCountry() : $userCountries;
-    			}	    		
-	    			    		
-	    		$form->add('country', 'entity', array(
-	    			'label' => 'Country',
-	    			'required' => false,
-	    			'multiple' => $miltipleExpanded,
-	    			'expanded' => $miltipleExpanded,
-	    			'class' => 'TNTMOCOAppBundle:Country',	    			
-	    			'data' => $data,
-	    			'property' => 'name',
-	    			'empty_value' => 'Choose a Country',
-	    			'query_builder' => function(EntityRepository $er) {
-	    				return $er->createQueryBuilder('c')
-	    				->where('c.isActive = 1');
-	    			},
-	    		));	    		
-    		}
-    	};
-    	
-    	
-    	
-    	$modifyFormByCountry = function (FormInterface $form, $country = null) {
-    		$depots = (!$country instanceof ArrayCollection && !$country instanceof PersistentCollection && null !== $country) ? $country->getDepots() : array();		   		
-    		
-    		$form->add('depot', 'entity', array(
-    			'class'       => 'TNTMOCOAppBundle:Depot',
-    			'required' => false,
-    			'empty_value' => 'Choose a Depot',    			
-    			'choices'     => $depots,
-    		));
-    	};
+    	$builder->add('depot', 'entity', array(
+    		'class'       => 'TNTMOCOAppBundle:Depot',
+    		'required' => false,
+    		'empty_value' => 'Choose a Depot',
+    	));
     	
     	
     	
     	$builder->get('role')->addEventListener(
     		FormEvents::POST_SUBMIT,
-    		function (FormEvent $event) use ($modifyFormByRole) {
+    		function (FormEvent $event){
+    			//echo "ROLE";
+    			//die;
     			// It's important here to fetch $event->getForm()->getData(), as
     			// $event->getData() will get you the client data (that is, the ID)
     			$role = $event->getForm()->getData();
-    				 
     			// since we've added the listener to the child, we'll have to pass on
     			// the parent to the callback functions!
-    			$modifyFormByRole($event->getForm()->getParent(), $role);
+    			$this->modifyFormByRole($event->getForm()->getParent(), $role);
     		}
     	);
-    	
     	
     	$builder->get('country')->addEventListener(
     		FormEvents::POST_SUBMIT,
-    		function (FormEvent $event) use ($modifyFormByCountry) {    			
-    			$country = $this->em->getRepository('TNTMOCOAppBundle:Country')->find($event->getData());
-    			$modifyFormByCountry($event->getForm()->getParent(), $country);
+    		function (FormEvent $event){
+    			//echo "COUNTRY";
+    			//die;
+    			// It's important here to fetch $event->getForm()->getData(), as
+    			// $event->getData() will get you the client data (that is, the ID)
+    			$country = $event->getForm()->getData();
+    			
+    			
+    			//echo $country->getName();
+    			// since we've added the listener to the child, we'll have to pass on
+    			// the parent to the callback functions!    			
+    			$this->modifyFormByCountry($event->getForm()->getParent(), $country);
     		}
     	);
     	
+    	/*
+    	$builder->get('depot')->addEventListener(
+    		FormEvents::POST_SUBMIT,
+    		function (FormEvent $event){
+    			//echo "COUNTRY";
+    			//die;
+    			// It's important here to fetch $event->getForm()->getData(), as
+    			// $event->getData() will get you the client data (that is, the ID)
+    			$depot = $event->getForm()->getData();
+    				 
+    				 
+    			echo $depot->getName();
+    			die;
+    			// since we've added the listener to the child, we'll have to pass on
+    			// the parent to the callback functions!
+    			//$this->modifyFormByCountry($event->getForm()->getParent(), $depot);
+    		}
+    	);
+    	*/
+    	
+    	/*
+    	$builder->get('country')->addEventListener(
+    		FormEvents::POST_SUBMIT,
+    		function (FormEvent $event){
+    			$data = $event->getData();
+    			if(!is_array($data)){
+    				$country = $this->em->getRepository('TNTMOCOAppBundle:Country')->find($data);
+    				$this->modifyFormByCountry($event->getForm()->getParent(), $country);
+    			}
+    		}
+    	);
+    	*/
+    	
+    	
+    	
     	$builder->addEventListener(
     		FormEvents::PRE_SET_DATA,
-    		function (FormEvent $event) use ($modifyFormByRole, $modifyFormByCountry) {
+    		function (FormEvent $event){
+    			//echo "PRE_SET_DATA";
     			// this would be your entity, i.e. User
     			$data = $event->getData();
-    			$form = $event->getForm();   			
+    			$form = $event->getForm();
+    			$this->modifyFormByRole($form, $data->getRole());	
+    			$this->modifyFormByCountry( $form, $data->getCountry());
     			
-    			$role = $data->getRole();
-    			$modifyFormByRole($form, $role);
-    			$modifyFormByCountry( $form, $data->getCountries() );
+    		}
+    	);   	
+    	
+    	$builder->addEventListener(
+    		FormEvents::SUBMIT,
+    		function (FormEvent $event){    			
+    			// this would be your entity, i.e. User
+    			$data = $event->getData();
+    			$form = $event->getForm();
+    			$this->modifyFormByCountry( $form, $data->getCountry());
+    			
+    			/*
+    			$countryArr = $data->getCountry();
+    			echo $countryArr[0];
+    			die;
+    			*/
+    			//$this->modifyFormByCountry( $form, $data->getCountry());
+    			//$depot = $this->em->getRepository('TNTMOCOAppBundle:Depot')->findByCountry($data->getCountry());
+    			
+    			//echo $form->get('depot')->getData();
+    			//die;
+    			
+    			//$depot = $this->em->getRepository('TNTMOCOAppBundle:Depot')->find($data->getDepot());    			
+    			//$this->user->setDepot($depot);
     			
     		}
     	);
@@ -159,12 +203,88 @@ class UserType extends AbstractType{
     	$resolver->setDefaults(array(
     		'csrf_protection' => false,
     		'validation_groups' => array('creation'),
+    		//'validation_groups' => false,
     	));
     }
     
     public function getName(){
         return 'user';
     }
+    
+    
+    
+    public function modifyFormByRole(FormInterface $form, $role = null) {
+    
+    	if($role !== null){
+    
+    		//$miltipleExpanded = $role->getRole() == 'ROLE_COUNTRY_ADMIN' ? true : false;
+    		if($role->getRole() == 'ROLE_COUNTRY_ADMIN'){
+    			$var = 'countries';
+    			$label = 'Countries';
+    			$miltipleExpanded = true;
+    		}
+    		else{
+    			$var = 'country';
+    			$label = 'Country';
+    			$miltipleExpanded = false;
+    		}
+    
+    		$form->add($var, 'entity', array(
+    			'label' => $label,
+    			'required' => false,
+    			'multiple' => $miltipleExpanded,
+    			'expanded' => $miltipleExpanded,
+    			'class' => 'TNTMOCOAppBundle:Country',    			
+    			'property' => 'name',
+    			'empty_value' => 'Choose a Country',
+    			'query_builder' => function(EntityRepository $er) {
+    				return $er->createQueryBuilder('c')
+    				->where('c.isActive = 1');
+    			},
+    		));
+    	}
+    }
+    
+    
+    public function modifyFormByCountry(FormInterface $form, $country = null) {
+
+    	$depots = (!$country instanceof ArrayCollection && !$country instanceof PersistentCollection && null !== $country) ? $country->getDepots() : array();
+    	
+    	/*
+    	if($country)
+    		echo $country->getName();
+    	*/
+    	
+    	//echo "DPOT:" . $this->user->getDepot();
+    	//die;
+    	
+    	$form->add('depot', 'entity', array(
+    		'class' => 'TNTMOCOAppBundle:Depot',
+    		'required' => false,
+    		'empty_value' => 'Choose a Depot',    		
+    		'data' => $this->user->getDepot(),
+    		'choices' => $depots,
+    		/*
+    		'query_builder' => function(EntityRepository $er) {
+    			return $er->createQueryBuilder('c')
+    			->where('c.isActive = 1');
+    		},
+    		*/
+    	));
+    	
+    }    
+    
+    
+    public function postSubmit(FormInterface $form) {
+    	 
+    	$form->add('depot', 'entity', array(
+    		'class' => 'TNTMOCOAppBundle:Depot',
+    		'required' => false,
+    		'empty_value' => 'Choose a Depot',
+    		'data' => $this->user->getDepot(),
+    	));
+    }
+    
 }
 
 

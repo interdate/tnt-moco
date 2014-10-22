@@ -49,8 +49,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * @ORM\ManyToOne(targetEntity="Role", inversedBy="users")
      * @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     **/
-    
+     **/    
     private $role;
     
     /**
@@ -60,15 +59,22 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $salt;
     
+    /**
+     * @ORM\ManyToOne(targetEntity="Country", inversedBy="users")
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
+     **/
+    private $country;
+    
     /**     
-     * @ORM\OneToMany(targetEntity="UserCountries", mappedBy="user", cascade={"persist"})          
+     * @ORM\OneToMany(targetEntity="UserCountries", mappedBy="user", indexBy="userId,country_id", cascade={"persist"})               
      */
     private $countries;
     
-   
-    private $country;
-    
-    
+    /**
+     * @ORM\OneToMany(targetEntity="ImageFile", mappedBy="user")
+     */
+    private $imageFiles;
+        
     /**
      * @ORM\ManyToOne(targetEntity="Depot", inversedBy="users")
      * @ORM\JoinColumn(name="depot_id", referencedColumnName="id")
@@ -159,6 +165,7 @@ class User implements AdvancedUserInterface, \Serializable
     			$this->id,
     			$this->username,
     			$this->password,
+    			$this->isActive,
     			// see section on salt below
     			// $this->salt,
     	));
@@ -173,6 +180,7 @@ class User implements AdvancedUserInterface, \Serializable
     			$this->id,
     			$this->username,
     			$this->password,
+    			$this->isActive,
     			// see section on salt below
     			// $this->salt
     	) = unserialize($serialized);
@@ -404,44 +412,123 @@ class User implements AdvancedUserInterface, \Serializable
         return $this->phone;
     }
     
+    
+
+
     /**
-     * Add countries
+     * Set isNew
      *
-     * @param \TNTMOCO\AppBundle\Entity\UserCountries $countries
+     * @param boolean $isNew
      * @return User
      */
-    public function addCountry($countries = null)
+    public function setIsNew($isNew)
     {
-        $this->countries[] = $countries;
+        $this->isNew = $isNew;
 
         return $this;
     }
 
     /**
-     * Remove countries
+     * Get isNew
      *
-     * @param \TNTMOCO\AppBundle\Entity\UserCountries $countries
+     * @return boolean 
      */
-    public function removeCountry($countries = null)
+    public function getIsNew()
     {
-        $this->countries->removeElement($countries);
+        return $this->isNew;
     }
 
     /**
-     * Get countries
+     * Set isActive
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @param boolean $isActive
+     * @return User
      */
-    public function getCountries()
+    public function setIsActive($isActive)
     {
-        return $this->countries;
+        $this->isActive = $isActive;
+
+        return $this;
     }
-    
-    
-    public function setCountries($countries = null)
+
+    /**
+     * Get isActive
+     *
+     * @return boolean 
+     */
+    public function getIsActive()
     {
-    	$this->countries = $countries;
+        return $this->isActive;
     }
+
+    /**
+     * Set isNonLocked
+     *
+     * @param boolean $isNonLocked
+     * @return User
+     */
+    public function setIsNonLocked($isNonLocked)
+    {
+        $this->isNonLocked = $isNonLocked;
+
+        return $this;
+    }
+
+    /**
+     * Get isNonLocked
+     *
+     * @return boolean 
+     */
+    public function getIsNonLocked()
+    {
+        return $this->isNonLocked;
+    }
+
+    /**
+     * Set pickup
+     *
+     * @param boolean $pickup
+     * @return User
+     */
+    public function setPickup($pickup)
+    {
+        $this->pickup = $pickup;
+
+        return $this;
+    }
+
+    /**
+     * Get pickup
+     *
+     * @return boolean 
+     */
+    public function getPickup()
+    {
+        return $this->pickup;
+    }
+
+    /**
+     * Set country
+     *
+     * @param \TNTMOCO\AppBundle\Entity\Country $country
+     * @return User
+     */
+    public function setCountry(\TNTMOCO\AppBundle\Entity\Country $country = null)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return \TNTMOCO\AppBundle\Entity\Country 
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }    
 
     /**
      * Set depot
@@ -466,18 +553,22 @@ class User implements AdvancedUserInterface, \Serializable
         return $this->depot;
     }
     
-    
-    public function getCountry()
+    public function addCountry($country)
     {
-    	return $this->country;
-    }
-   
-    public function setCountry($country)
-    {
-    	$this->country = $country;
-    
-    	return $this;
+        if(!$this->countries->contains($country))
+    		$this->countries[] = $country;
+
+        return $this;
     }
 
+    public function removeCountry($country)
+    {
+    	if($this->countries->contains($country))
+    		$this->countries->removeElement($country);
+    }
     
+    public function getCountries()
+    {
+        return $this->countries;
+    }
 }
