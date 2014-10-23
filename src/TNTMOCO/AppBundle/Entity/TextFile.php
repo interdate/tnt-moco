@@ -27,7 +27,11 @@ class TextFile extends File
 	 *     mimeTypesMessage = "Only the text files are allowed."
 	 * )
 	 */
-	protected $file;	    
+	protected $file;
+
+	public function __construct($type, $user){
+		parent::__construct($type, $user);
+	}
     
     public function getUploadDir()
     {    	

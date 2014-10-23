@@ -83,4 +83,14 @@ fos_rest:
         
 sensio_framework_extra:
     view:
-        annotations: false        
+        annotations: false
+        
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     /usr/local/bin/wkhtmltopdf
+        options:    []
+    image:
+        enabled:    true
+        binary:     /usr/local/bin/wkhtmltoimage
+        options:    []

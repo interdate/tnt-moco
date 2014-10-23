@@ -27,10 +27,14 @@ class PdfFile extends File
 	 *     mimeTypesMessage = "Only the pdf files are allowed."
 	 * )
 	 */
-	protected $file;	    
+	protected $file;
+
+	public function __construct($type, $user){
+		parent::__construct($type, $user);
+	}
     
     public function getUploadDir()
     {    	
-    	return '/docs/pickup/pdf';
+    	return '/docs/pickup/pdf/' . $this->user->getId();
     }
 }

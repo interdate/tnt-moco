@@ -28,8 +28,7 @@ abstract class File
 	protected $id;
 	
 	/**
-	 * File ext
-	 * @var string
+	 * @ORM\Column(type="string", length=4)
 	 */
 	protected $ext;
 	
@@ -41,7 +40,7 @@ abstract class File
 	
 	
 	/**	 	 	 
-	 * @ORM\Column(type="string", length=70)
+	 * @ORM\Column(type="string", length=70, nullable=true)
 	 */
 	protected $location;
 		
@@ -56,7 +55,13 @@ abstract class File
 	 * @ORM\ManyToOne(targetEntity="User", inversedBy="imageFiles")
 	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
 	 **/
-	private $user;
+	protected $user;
+	
+	
+	public function __construct($type, $user){
+		$this->type = $type;
+		$this->user = $user;
+	}
 	
 	
 	/**
@@ -138,9 +143,28 @@ abstract class File
 		return $this->user;
 	}
 	
+	/**
+	 * Set ext
+	 *
+	 * @param string $ext
+	 * @return ImageFile
+	 */
+	public function setExt($ext)
+	{
+		$this->ext = $ext;
 	
+		return $this;
+	}
 	
-	
+	/**
+	 * Get ext
+	 *
+	 * @return integer
+	 */
+	public function getExt()
+	{
+		return $this->ext;
+	}
 		
 	
 	/**
@@ -152,13 +176,19 @@ abstract class File
     public function preUpload()
     {
     	if (null !== $this->file) {
+    		
+    		if(!is_dir($this->getUploadRootDir())){
+    						
+    			mkdir($this->getUploadRootDir());
+    		}
+    		
     		// do whatever you want to generate a unique name
     		//$filename = sha1(uniqid(mt_rand(), true));
     		//$this->ext = $filename.'.'.$this->file->guessExtension();
     		$this->ext = $this->file->guessExtension();
+    		
     	}
     }
-    
     
     /**
      * Called before entity removal

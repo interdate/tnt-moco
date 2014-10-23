@@ -47,4 +47,8 @@ users_depots:
     
 test_files:
     path: /test/files
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Test:files }    
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Test:files }
+    
+display_files:
+    path: /display/files/{fileId}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Files:display }        

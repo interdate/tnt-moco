@@ -22,6 +22,10 @@
 			
 				<div class="ui active tab segment stacked">
 					<form action="/api/v1/files" enctype="multipart/form-data" method="post">
+						
+						<input type="file" name="file">
+						
+						{#
 						<br><br>
 						<input type="file" name="files_0">
 						<br><br>
@@ -35,7 +39,7 @@
 						<br><br>
 						<input type="file" name="files_5">
 						<br><br>
-						
+						#}
 						<input type="hidden" name="operationId" value="PU">
 						<input type="hidden" name="filesNumber" value="6">
 						

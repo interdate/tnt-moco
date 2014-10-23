@@ -8,19 +8,19 @@ use TNTMOCO\AppBundle\Entity\PdfFile;
 
 class FileFactory 
 {
-	public static function create($type){
+	public static function create($type, $user){		
 		switch ($type){
 			case 'PU':
-				return new ImageFile($type);
+				return new ImageFile($type, $user);
 				break;
 				
 			case 'DL':
 			case 'PP':
-				return new TextFile($type);
+				return new TextFile($type, $user);
 				break;
 				
 			case 'CN':
-				return new PdfFile($type);
+				return new PdfFile($type, $user);
 				break;
 				
 		}		

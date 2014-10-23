@@ -21,21 +21,20 @@ class ImageFile extends File
 	 * @var File
 	 *
 	 * @Assert\File(
-	 *     maxSize = "5M",
+	 *     maxSize = "300k",
 	 *     mimeTypes = {"image/jpeg", "image/gif", "image/png", "image/tiff"},
-	 *     maxSizeMessage = "The maxmimum allowed file size is 5MB.",
+	 *     maxSizeMessage = "The maxmimum allowed file size is .300Kb.",
 	 *     mimeTypesMessage = "Only the filetypes image are allowed."
 	 * )
 	 */
-	protected $file;	    
+	protected $file;
+	
+	public function __construct($type, $user){
+		parent::__construct($type, $user);
+	}
     
     public function getUploadDir()
     {	
-    	$uploadDir = '/docs/pickup/images/' . $this->user->getId();
-    	if(!is_dir($uplodDir)){
-    		mkdir($uploadDir);
-    	}    		
-    		
-    	return $uploadDir;
+    	return '/docs/pickup/images/' . $this->user->getId();
     }
 }
