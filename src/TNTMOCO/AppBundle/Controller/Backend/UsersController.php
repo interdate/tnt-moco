@@ -24,23 +24,21 @@ class UsersController extends Controller
 {
     public function indexAction()
     {	
-    	$em = $this->getDoctrine()->getManager();
     	$userRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:User');
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
     	$roleRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Role');
     	//$users = $userRepo->findAll();
-
+    	
     	$countries = $countryRepo->findByIsActive(true);
     	$roles = $roleRepo->createQueryBuilder('r')
 		    ->where('r.id > 1')
 		    ->orderBy('r.id', 'ASC')
 		    ->getQuery()
     		->getResult();
-
 		
-    	
-    	$dql   = "SELECT u FROM TNTMOCOAppBundle:User u";
-    	$query = $em->createQuery($dql);
+    	$request = $this->getRequest();
+		$depots = $userRepo->getSearchQuary($request, true);
+		$query = $userRepo->getSearchQuary($request);
     	
     	$paginator  = $this->get('knp_paginator');
     	$users = $paginator->paginate(
@@ -53,6 +51,7 @@ class UsersController extends Controller
     		'users' => $users,
     		'countries' => $countries,
     		'roles' => $roles,
+    		'depots' => $depots,
     	));
     }
     
@@ -197,7 +196,9 @@ class UsersController extends Controller
     
     public function depotsAction(){
     	$request = $this->getRequest();
-    	$countryId = $request->query->get('countryId');    	
+    	$countryId = $request->query->get('countryId');
+    	$countryId = ($countryId == null) ? $request->get('countryId') : $countryId; 
+    	
     	$country = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country')->find($countryId);
     	$depots = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Depot')->findByCountry($country);
     	

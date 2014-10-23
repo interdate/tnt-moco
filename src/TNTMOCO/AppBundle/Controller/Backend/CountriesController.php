@@ -24,7 +24,8 @@ class CountriesController extends Controller
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country'); 
     	$userRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:User');
     	$countries = $countryRepo->findByIsActive(true);
-    	$users = $userRepo->findAll();
+    	//$users = $userRepo->findAll();
+    	$users = $userRepo->findByIsNonLocked(true);
     	
     	$user = new User();
     	$request = $this->getRequest();

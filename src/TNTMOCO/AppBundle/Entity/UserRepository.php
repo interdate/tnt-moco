@@ -145,4 +145,75 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		}		
 	}
 	
+	public function getSearchQuary($request, $depotsReturn = false)
+	{
+		$em = $this->getEntityManager();
+		$countryRepo = $em->getRepository('TNTMOCOAppBundle:Country');
+		$depotRepo = $em->getRepository('TNTMOCOAppBundle:Depot');
+		
+		
+		$property = $request->get('property');
+		$role = $request->get('role');
+		$country_id = $request->get('country');
+		$depot = $request->get('depot');
+		 
+		$field = $request->get('field');
+		$value = $request->get('value');
+		 
+		$where = array();
+		
+		if($depotsReturn){
+			$depots = array();
+			if($role == 5 and (int)$country_id > 0){
+				$country = $countryRepo->find($country_id);
+				$depots = $depotRepo->findByCountry($country);
+			}
+			return $depots;
+		}
+		if($property != null and $property != ''){
+			$where[] = explode('.', $property);
+		}
+		if((int)$role > 0){
+			$where[] = array('role',$role);
+		}
+		if((int)$country_id > 0){
+			$where[] = array('country',$country_id);
+		}
+		if((int)$depot > 0){
+			$where[] = array('depot',$depot);
+		}
+		if($field != null and $field != '' and $value != null and $value != ''){
+			$where[] = array($field, '%' . $value . '%');
+		}
+		if(count($where) > 0){
+			foreach ($where as $row){
+				if($row[0] == 'country'){
+					$whereStrArr[] = ' (u.' . $row[0] . ' = :' . $row[0] . ' OR uc.' . $row[0] . ' = :countries)';
+				}elseif((int)$row[1] == 0){
+					$whereStrArr[] = ' u.' . $row[0] . ' LIKE :' . $row[0];
+				}else{
+					$whereStrArr[] = ' u.' . $row[0] . ' = :' . $row[0];
+				}
+			}
+		}
+		$whereStr = (count($where) > 0) ? ' WHERE' . implode(' AND', $whereStrArr) : '';
+		 
+		if((int)$country_id > 0){
+			$whereStr = ' JOIN u.countries uc' . $whereStr;
+		}
+		 
+		$dql   = "SELECT u FROM TNTMOCOAppBundle:User u" . $whereStr;
+		$query = $em->createQuery($dql);
+		 
+		if(count($where) > 0){
+			foreach ($where as $row){
+				$query->setParameter($row[0], $row[1]);
+				if($row[0] == 'country'){
+					$query->setParameter('countries', $row[1]);
+				}
+			}
+		}
+		return $query;
+	}
+	
 }

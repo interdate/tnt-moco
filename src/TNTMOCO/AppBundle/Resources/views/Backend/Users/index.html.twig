@@ -22,33 +22,35 @@
 					<div class="search">
 					
 						<input type="hidden" id="loadDepotsRoute" value="{{ path('users_depots') }}">
-
+						<input type="hidden" id="userRoute" value="{{ path('users') }}"/>
+						
 						<div class="block first">
 							<h3 class="ui header">
 								<i class="search circular icon"></i>
 								Search By Filters
 							</h3>
 						
-							<div class="fieldsWrapper">								
+							<div class="fieldsWrapper">	
+								<form action="{{ path('users') }}">							
 								<div class="ui form">
 									
 									<div class="ui two fields">
 										<div class="field">
-											<select>
+											<select name="property" id="userProperty">
 												<option value="">Property</option>
-												<option vlaue="">Active</option>
-												<option vlaue="">Inactive</option>
-												<option vlaue="">Blocked</option>
-												<option vlaue="">New</option>
-												<option vlaue="">Old</option>
-												
+												<option {% if app.request.get('property') == 'isActive.1' %}selected="selected" {% endif %}value="isActive.1">Active</option>
+												<option {% if app.request.get('property') == 'isActive.0' %}selected="selected" {% endif %}value="isActive.0">Inactive</option>
+												<option {% if app.request.get('property') == 'isNonLocked.0' %}selected="selected" {% endif %}value="isNonLocked.0">Blocked</option>
+												<option {% if app.request.get('property') == 'isNonLocked.1' %}selected="selected" {% endif %}value="isNonLocked.1">Non blocked</option>
+												<option {% if app.request.get('property') == 'isNew.1' %}selected="selected" {% endif %}value="isNew.1">New</option>
+												<option {% if app.request.get('property') == 'isNew.0' %}selected="selected" {% endif %}value="isNew.0">Old</option>
 											</select>
 										</div>
 										<div class="field">
-											<select id="search_role">
+											<select name="role" id="search_role">
 												<option value="">Role</option>
 												{% for role in roles %}
-													<option vlaue="{{ role.id }}">{{ role.name }}</option>
+													<option {% if app.request.get('role') == role.id %}selected="selected" {% endif %}value="{{ role.id }}">{{ role.name }}</option>
 												{% endfor %}
 											</select>
 										</div>
@@ -56,28 +58,34 @@
 									
 									<div class="ui two fields">
 										<div class="field">
-											<select id="search_country">
+											<select name="country" id="search_country">
 												<option value="">Country</option>
 												{% for country in countries %}
-													<option vlaue="{{ country.id }}">{{ country.name }}</option>
+													<option {% if app.request.get('country') == country.id %}selected="selected" {% endif %}value="{{ country.id }}">{{ country.name }}</option>
 												{% endfor %}
 											</select>
 										</div>
 										<div class="field">
-											<select>
-												<option value="">Depot</option>											
+											<select name="depot" id="search_depot"{% if app.request.get('role') != 5 %} disabled="disabled"{% endif %}>
+												<option value="">Depot</option>	
+												{% if depots is defined and depots|length %}
+													{% for depot in depots %}
+														<option {% if app.request.get('depot') == depot.id %}selected="selected" {% endif %}value="{{ depot.id }}">{{ depot.name }}</option>
+													{% endfor %}
+												{% endif %}										
 											</select>
 										</div>
 									</div>
 									<div class="right">
-										<div class="ui labeled icon blue small button" onclick="$('#submitButton_1').click();">
+										<div class="ui labeled icon blue small button" onclick="userSearch1();">
 											<i class="inverted search icon"></i>
 											Find
 										</div>
 									</div>
-									<input type="submit" class="hidden" id="submitButton_1">
+									<input type="submit" class="hidden" id="userSearchSubmit_1">
 									
 								</div>
+								</form>
 							</div>
 						</div>						
 
@@ -87,30 +95,31 @@
 								Text Search
 							</h3>
 							<div class="fieldsWrapper">
-								<div class="ui form">
-									<div class="field">
-										<select>
-											<option value="">Username</option>
-											<option vlaue="">E-mail</option>
-											<option vlaue="">First Name</option>
-											<option vlaue="">Last Name</option>
-										</select>
-									</div>
-									
-									<div class="field">										
-										<input type="text">
-									</div>
-									
-									<div class="right">
-										<div class="ui labeled icon blue small button" onclick="$('#submitButton_1').click();">
-											<i class="inverted search icon"></i>
-											Find
+								<form action="{{ path('users') }}">
+									<div class="ui form">
+										<div class="field">
+											<select name="field" id="userFieldName">
+												<option {% if app.request.get('field') == 'username' %}selected="selected" {% endif %}value="username">Username</option>
+												<option {% if app.request.get('field') == 'email' %}selected="selected" {% endif %}value="email">E-mail</option>
+												<option {% if app.request.get('field') == 'firstName' %}selected="selected" {% endif %}value="firstName">First Name</option>
+												<option {% if app.request.get('field') == 'lastName' %}selected="selected" {% endif %}value="lastName">Last Name</option>
+											</select>
 										</div>
+										
+										<div class="field">										
+											<input name="value" id="userFieldValue" type="text" value="{{ app.request.get('value') }}"/>
+										</div>
+										
+										<div class="right">
+											<div class="ui labeled icon blue small button" onclick="userSearch2();">
+												<i class="inverted search icon"></i>
+												Find
+											</div>
+										</div>
+										<input type="submit" class="hidden" id="userSearchSubmit_2">
+										
 									</div>
-									<input type="submit" class="hidden" id="submitButton_1">
-									
-								</div>
-	
+								</form>
 							</div>
 						</div>
 

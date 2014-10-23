@@ -24,7 +24,7 @@ $(document).ready(
 		});
 		
 		
-		$('.countries_scrollbar').perfectScrollbar({
+		$('.countries_scrollbar, .users_scrollbar').perfectScrollbar({
 			wheelSpeed: 35,			
 			minScrollbarLength: 20
 		});
@@ -34,10 +34,20 @@ $(document).ready(
 		});
 		
 		$('#search_country').change(function(){			
-			modifySearchFormByRole($(this), $('#search_country'));
+			modifySearchFormByRole($('#search_role'), $(this));
 		});
 		
+		var options = {
+			valueNames: [ 'username' ],
+			searchClass: 'counryAdminsSearch',
+			listClass: 'counryAdminsList',
+			//indexAsync: true
+		};
 
+		var contactsList = new List('contacts', options);
+		contactsList.on('searchComplete', function(){
+			$('.contacts').scrollTop(0);
+		});
 		
 	}
 );
@@ -164,6 +174,43 @@ function modifyUserFormByCountry(countryWrapper, roleWrapper, pickupWrapper){
 
 
 function modifySearchFormByRole(roleWrapper, countryWrapper){
+	var roleId = roleWrapper.val();
+	var countryId = countryWrapper.val();
+	
+	if(roleId != 5 || !countryId.length){
+		$('#search_depot').val('').html('<option value="">Depot</option>').attr('disabled','disabled');
+		return;
+	}
+		
+	//alert(roleId);
+	var data = {};	
+	data['countryId'] = countryWrapper.val();
+	data['role'] = roleWrapper.val();
+	//console.log(JSON.stringify(data));
+	//alert($('#loadDepotsRoute').val());
+	//$('#search_depot').parent().hide();	
+		
+	$.ajax({
+		url: $('#loadDepotsRoute').val(),
+		type: 'Post',		
+		data: data,
+		error: function(response){
+			console.log(response.responseText);
+			$('.er').html(response.responseText);
+			alert(response.responseText);
+		},
+		success: function(data){
+			//console.log($(data).find('#user_depot').html() );
+			//$('.er').html(data);
+			//return;
+			
+			//$('#search_depot').replaceWith( $(data).find('#user_depot') );	
+			$('#search_depot').parent().html(data).trigger('create');
+			//$('#search_depot').parent().show();
+					
+		}
+	});
+	/*
 	$('#search_depot').parent().html();
 	var roleId = roleWrapper.val();
 	var countryId = countryWrapper.val();
@@ -188,7 +235,7 @@ function modifySearchFormByRole(roleWrapper, countryWrapper){
 			$('#search_depot').parent().show();
 		}
 	});
-	
+	*/
 	
 }
 
@@ -282,6 +329,41 @@ function getUserProfile(userId){
 	});
 	*/	
 }
+
+function userSearch2(){
+	var name = $('#userFieldName').val();
+	var value = $('#userFieldValue').val();
+	if(name.length > 0 && value.length > 0){
+		//var route = $('#userRoute').val();
+		//window.location = route + '?' + name + '=' + value;
+		$('#userSearchSubmit_2').click();
+	}else{
+		alert("Please enter a value for the chosen user field above");
+		return false;
+	}
+}
+
+function userSearch1(){
+	var property = $('#userProperty').val();
+	var role = $('#search_role').val();
+	var country = $('#search_country').val();
+	if(property.length == 0 && role.length == 0 && country.length == 0){
+		alert('Please select at least one field');
+		return false;
+	}else{
+		$('#userSearchSubmit_1').click();
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -412,7 +494,6 @@ function paramCheckboxesInit(){
 	});
 	
 }
-
 
 window.onload = function(){
 	//alert(1);

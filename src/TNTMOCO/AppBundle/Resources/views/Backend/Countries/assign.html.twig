@@ -38,15 +38,18 @@
 							</div>
 							<div class="fieldsWrapper">
 								<div class="field">
-									<input type="text" value="" placeholder="Start type to find Admin...">
+									<input type="text" class="counryAdminsSearch" value="" placeholder="Start type to find Admin...">
 								</div>
 								
 								
-								<div class="users_scrollbar grayGradient" style="padding: 15px;">
+								<div class="users_scrollbar grayGradient counryAdminsList">
 									
 									{% for user in users %}										
 										{% if user.role.id == 2 %}
-											{{ user.username }}<br>
+											<div class="item rounded">
+												<div class="username" style="padding:10px 15px;">{{ user.username }}</div>
+											</div>
+											<div class="clear"></div>
 										{% endif  %}
 									{% endfor %}
 								</div>
