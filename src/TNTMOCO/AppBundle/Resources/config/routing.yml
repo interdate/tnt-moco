@@ -39,7 +39,11 @@ users_edit:
 
 users_create:
     path:     /users/create
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:create }    
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:create }   
+    
+depots:
+    path:     /depots
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Depots:index }
     
 depots:
    path:     /depots
@@ -56,4 +60,6 @@ test_files:
     
 display_files:
     path: /display/files/{fileId}
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Files:display }        
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Files:display }
+    
+    
