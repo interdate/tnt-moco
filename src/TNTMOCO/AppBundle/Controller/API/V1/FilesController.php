@@ -21,7 +21,7 @@ class FilesController extends FOSRestController{
 	 *   
 	 *   
      *   parameters={
-     *      {"name"="operationId", "dataType"="string", "required"="true", "description"="An ID of the one of possible operations (PU, DL, PP correspond to Pick Up, Delivery and Postpone accordingly)"},
+     *      {"name"="operationCode", "dataType"="string", "required"="true", "description"="A code of the one of possible operations (PU, DL, PP correspond to Pick Up, Delivery and Postpone accordingly)"},
      *      {"name"="location", "dataType"="string", "required"="true", "description"="Current location coordinates"},
      *      {"name"="filesNumber", "dataType"="string", "required"="true", "description"="Total number of files that must be uploaded"},
      *   },
@@ -39,79 +39,44 @@ class FilesController extends FOSRestController{
 		$files = $request->files;
 		$em = $this->getDoctrine()->getManager();
 		//$fileRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:File');
-		$type = $request->request->get('operationId');
+		$type = $request->request->get('operationCode');
 		$user = $this->get('security.context')->getToken()->getUser();
 		//$location = $request->request->get('location');
 		$location = 'dsa445ds456';
 		$filesUrl = array();
-		$i = 1;
+		
 		foreach ($files as $uploadedFile) {
 			if($uploadedFile instanceof UploadedFile){
-				
-				//$request->request->set('file', $request->request->get('file_' . $i));
-				
-				
 				$file = FileFactory::create($type, $user);
-				$file->setFile($uploadedFile);
-				$form = $this->createFormBuilder($file)->add('file')->getForm();				
-				$form->handleRequest($request);
+				$file->setFile($uploadedFile);				
 				
-				print_r($form->getErrorsAsString());
+				$validator = $this->get('validator');
+				$errors = $validator->validate($file);
 				
-				//print_r( get_class_methods($form));
-				die;
-				
-				if ($form->isValid()) {
-					
-					$file->setLocation($location);
-					$file->setDatetime(new \DateTime());
-					$em->persist($file);
-					$em->flush();
-					$file->preUpload();
-					$file->upload();
-					$filesUrl[] = $request->getHost() . '/display/files/' .  $file->getId();
-					echo "YES<br>";
-				}				
-				else{
-					
-					//var_dump($form->getChildren()['file']->getErrors());
-					
-					
-					$errors = array();
-					
-					
-						foreach ($form->childErrors() as $error) {
-							$errors[] = $error->getMessage();
-						}
-					
-						
-					
-					
-					var_dump($errors);
-					
-					
-					
-					
-					
-					
-					
-					
-					return array( 'response' => $form->getErrors() );
-					
-					echo count($form->getErrors() );
-					foreach ($form->getErrors() as $error){
-						echo get_class($error) . '<br>';
-						echo $error;
-					}
-					die;
+				if(count($errors) > 0){
+					$fileName = $uploadedFile->getClientOriginalName();
+					foreach ($errors as $error){						
+						$errorsMessages[$fileName][] =  $error->getMessage();
+					}					
+									
 				}
 				
-				
-				
-				
-			}
-			
-			$i++;
+				print_r($errorsMessages);
+				die;
+
+				$file->setLocation($location);
+				$file->setDatetime(new \DateTime());
+				$em->persist($file);
+				$em->flush();
+				$file->preUpload();
+				$file->upload();
+				$filesUrl[] = $request->getHost() . '/display/files/' .  $file->getId();
+				echo "YES<br>";				
+			}			
+		}
+		
+		if(count($errorsMessages) > 0){
+			return array( 'response' => $errorsMessages );
 		}
 		
 		$pdf = FileFactory::create('CN', $user);

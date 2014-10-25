@@ -14,19 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 
 class ImageFile extends File
-{	
-	/**
-	 * ImageFile file
-	 *
-	 * @var File
-	 *
-	 * @Assert\File(
-	 *     maxSize = "300k",
-	 *     mimeTypes = {"image/jpeg", "image/gif", "image/png", "image/tiff"},
-	 *     maxSizeMessage = "The maxmimum allowed file size is .300Kb.",
-	 *     mimeTypesMessage = "Only the filetypes image are allowed."
-	 * )
-	 */
+{		
 	protected $file;
 	
 	public function __construct($type, $user){
