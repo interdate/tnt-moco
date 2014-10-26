@@ -94,3 +94,8 @@ knp_snappy:
         enabled:    true
         binary:     /usr/local/bin/wkhtmltoimage
         options:    []
+        
+services:    
+    file_manager:
+        class:        TNTMOCO\AppBundle\Services\File\Manager
+        #arguments: ['@doctrine.orm.entity_manager']

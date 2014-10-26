@@ -14,34 +14,20 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 
 class ImageFile extends File
-{
-	
-	
+{	
 	/**
-	 * Image file
-	 *
-	 * @var File
-	 *
-	 * @Assert\File(
-	 *     maxSize = "5M",
-	 *     mimeTypes = {"image/jpeg", "image/gif", "image/png", "image/tiff"},
-	 *     maxSizeMessage = "The maxmimum allowed file size is 5MB.",
-	 *     mimeTypesMessage = "Only the filetypes image are allowed."
-	 * )
+	 * @var string
 	 */
-	protected $file;
+	private $batchCode;
 	
-		
-	/**
-	 * @ORM\ManyToOne(targetEntity="User", inversedBy="imageFiles")
-	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-	 **/
-	private $user;
-	
-	
-	
-	
-	
+	public function __construct($type, $user){
+		parent::__construct($type, $user);
+	}
+    
+    public function getUploadDir()
+    {	
+    	return '/docs/pickup/images/' . $this->user->getId() . '/' . $this->batchCode;
+    }   
+    
+    
 }
-
-

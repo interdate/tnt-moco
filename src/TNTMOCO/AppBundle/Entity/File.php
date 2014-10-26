@@ -58,9 +58,11 @@ abstract class File
 	protected $user;
 	
 	
-	public function __construct($type, $user){
+	protected $file;
+		
+	
+	public function __construct($type){
 		$this->type = $type;
-		$this->user = $user;
 	}
 	
 	
@@ -175,18 +177,12 @@ abstract class File
      */
     public function preUpload()
     {
-    	if (null !== $this->file) {
+    	if (null !== $this->file) {    		
+    		if(!is_dir($this->getUploadRootDir())){    						
+    			mkdir($this->getUploadRootDir(), 0777, true);
+    		}    		
     		
-    		if(!is_dir($this->getUploadRootDir())){
-    						
-    			mkdir($this->getUploadRootDir());
-    		}
-    		
-    		// do whatever you want to generate a unique name
-    		//$filename = sha1(uniqid(mt_rand(), true));
-    		//$this->ext = $filename.'.'.$this->file->guessExtension();
-    		$this->ext = $this->file->guessExtension();
-    		
+    		$this->ext = $this->file->guessExtension();    		
     	}
     }
     
@@ -202,13 +198,6 @@ abstract class File
     	}
     }
     
-    
-    /**
-     * Called after entity persistence
-     *
-     * @ORM\PostPersist()
-     * @ORM\PostUpdate()
-     */
     public function upload()
     {
     	// the file property can be empty if the field is not required
@@ -274,7 +263,7 @@ abstract class File
     	return $this->getUploadDir() . '/' . $this->id . '.' . $this->ext;
     }
     
-    protected function getUploadRootDir()
+    public function getUploadRootDir()
     {
     	// the absolute directory ext where uploaded
     	// documents should be saved

@@ -14,15 +14,42 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 
 class ImageFile extends File
-{		
-	protected $file;
-	
-	public function __construct($type, $user){
-		parent::__construct($type, $user);
+{	
+	/**
+	 * @var string
+	 */
+	private $batchCode;
+		
+	public function __construct($type){
+		parent::__construct($type);
 	}
     
     public function getUploadDir()
     {	
-    	return '/docs/pickup/images/' . $this->user->getId();
+    	return '/docs/pickup/images/' . $this->user->getId() . '/' . $this->batchCode;
+    }   
+    
+    /**
+     * Set batchCode
+     *
+     * @param string $batchCode
+     * @return ImageFile
+     */
+    public function setBatchCode($batchCode)
+    {
+        $this->batchCode = $batchCode;
+
+        return $this;
     }
+
+    /**
+     * Get batchCode
+     *
+     * @return string 
+     */
+    public function getBatchCode()
+    {
+        return $this->batchCode;
+    }
+
 }

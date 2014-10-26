@@ -29,8 +29,8 @@ class PdfFile extends File
 	 */
 	protected $file;
 
-	public function __construct($type, $user){
-		parent::__construct($type, $user);
+	public function __construct($type){
+		parent::__construct($type);
 	}
     
     public function getUploadDir()

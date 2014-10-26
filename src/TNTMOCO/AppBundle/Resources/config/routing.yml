@@ -59,7 +59,7 @@ test_files:
     defaults: { _controller: TNTMOCOAppBundle:Backend\Test:files }
     
 display_files:
-    path: /display/files/{fileId}
+    path: /files/display/{batchCode}/{fileId}
     defaults: { _controller: TNTMOCOAppBundle:Backend\Files:display }
     
     

@@ -42,7 +42,7 @@ security:
     access_control:
         - { path: ^/api/v1, roles: ROLE_COURIER }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/display, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/files/display, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }
         
                 
