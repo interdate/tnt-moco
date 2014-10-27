@@ -98,4 +98,4 @@ knp_snappy:
 services:    
     file_manager:
         class:        TNTMOCO\AppBundle\Services\File\Manager
-        #arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']

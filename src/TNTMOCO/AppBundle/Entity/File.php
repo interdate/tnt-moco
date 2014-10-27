@@ -5,7 +5,7 @@ namespace TNTMOCO\AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-
+use JMS\Serializer\Annotation\Discriminator;
 
 
 /**
@@ -15,8 +15,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=2)
  * @ORM\DiscriminatorMap({"PU" = "ImageFile", "DL" = "TextFile", "PP" = "TextFile", "CN" = "PdfFile"})
- * @ORM\HasLifecycleCallbacks  
+ * @ORM\HasLifecycleCallbacks * 
+ * @Discriminator(disabled=true)   
  */
+
 abstract class File 
 {
 	

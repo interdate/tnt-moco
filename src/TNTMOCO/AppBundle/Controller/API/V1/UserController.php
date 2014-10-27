@@ -25,23 +25,29 @@ class UserController extends FOSRestController{
 	
 	//input = "TNTMOCO\AppBundle\Entity\User",
 	
+	
 	public function getUserAction()
 	{
-		//return array('user' => $this->get('security.context')->getToken()->getUser());
-				
+		$user = $this->get('security.context')->getToken()->getUser();
 		
 		return array(
+			'status' => 'SUCCESS',
+			'statusCode' => 200,
 			'user' => array(
-				'id' => '1',
-				'username' => 'testusername',
-				'email' => 'test@test.com',
-				'countryId' => '153',
-				'countryName' => 'Israel',
-				'depotId' => '125487',
-				'depotName' => 'Some Depot Name'	
-			),
+				'id' => $user->getId(),
+				'username' => $user->getUsername(),
+				'email' => $user->getEmail(),
+				'country' => array(
+					'code' => $user->getCountry()->getCode(),
+					'name' => $user->getCountry()->getName(),
+				),			
+				'depot' => array(
+					'code' => '',
+					'name' => $user->getDepot()->getName(),
+				),
+			)
 		);
-		
+
 		
 	}	
 }

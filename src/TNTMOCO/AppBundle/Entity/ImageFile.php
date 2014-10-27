@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * ImageFile
  *
- * @ORM\Table()
+ * @ORM\Table(name="File")
  * @ORM\Entity(repositoryClass="TNTMOCO\AppBundle\Entity\ImageFileRepository")
  */
 
@@ -23,6 +23,7 @@ class ImageFile extends File
 	public function __construct($type){
 		parent::__construct($type);
 	}
+	
     
     public function getUploadDir()
     {	

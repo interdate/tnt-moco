@@ -4,5 +4,9 @@ TNTMOCO\AppBundle\Entity\User:
         password:
             exclude: true
         role:
-            exclude: true    
-        
+            exclude: true
+        salt:
+            exclude: true
+        countries:
+            exclude: true
+            
