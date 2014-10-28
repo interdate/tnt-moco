@@ -83,4 +83,19 @@ fos_rest:
         
 sensio_framework_extra:
     view:
-        annotations: false        
+        annotations: false
+        
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     /usr/local/bin/wkhtmltopdf
+        options:    []
+    image:
+        enabled:    true
+        binary:     /usr/local/bin/wkhtmltoimage
+        options:    []
+        
+services:    
+    file_manager:
+        class:        TNTMOCO\AppBundle\Services\File\Manager
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']

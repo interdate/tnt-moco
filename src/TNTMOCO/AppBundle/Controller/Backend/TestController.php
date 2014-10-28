@@ -23,7 +23,7 @@ use JMS\Serializer\Tests\Fixtures\Publisher;
 class TestController extends Controller
 {
     public function filesAction()
-    {	
+    {    	
     	return $this->render('TNTMOCOAppBundle:Backend/Test:files.html.twig');
     }    
 }

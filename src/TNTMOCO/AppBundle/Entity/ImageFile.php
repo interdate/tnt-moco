@@ -9,33 +9,48 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * ImageFile
  *
- * @ORM\Table()
+ * @ORM\Table(name="File")
  * @ORM\Entity(repositoryClass="TNTMOCO\AppBundle\Entity\ImageFileRepository")
  */
 
 class ImageFile extends File
 {	
 	/**
-	 * ImageFile file
-	 *
-	 * @var File
-	 *
-	 * @Assert\File(
-	 *     maxSize = "5M",
-	 *     mimeTypes = {"image/jpeg", "image/gif", "image/png", "image/tiff"},
-	 *     maxSizeMessage = "The maxmimum allowed file size is 5MB.",
-	 *     mimeTypesMessage = "Only the filetypes image are allowed."
-	 * )
+	 * @var string
 	 */
-	protected $file;	    
+	private $batchCode;
+		
+	public function __construct($type){
+		parent::__construct($type);
+	}
+	
     
     public function getUploadDir()
     {	
-    	$uploadDir = '/docs/pickup/images/' . $this->user->getId();
-    	if(!is_dir($uplodDir)){
-    		mkdir($uploadDir);
-    	}    		
-    		
-    	return $uploadDir;
+    	return '/docs/pickup/images/' . $this->user->getId() . '/' . $this->batchCode;
+    }   
+    
+    /**
+     * Set batchCode
+     *
+     * @param string $batchCode
+     * @return ImageFile
+     */
+    public function setBatchCode($batchCode)
+    {
+        $this->batchCode = $batchCode;
+
+        return $this;
     }
+
+    /**
+     * Get batchCode
+     *
+     * @return string 
+     */
+    public function getBatchCode()
+    {
+        return $this->batchCode;
+    }
+
 }

@@ -36,7 +36,8 @@ class PostponeController extends FOSRestController{
 	 *   input = "TNTMOCO\AppBundle\Entity\PostponeReason",
 	 *   statusCodes = {
 	 *     200 = "Returned when successful",
-	 *     401 = "Returned when bad credentials were sent"
+	 *     401 = "Returned when bad credentials were sent",
+	 *     404 = "Returned when resource was not found"
 	 *   }
 	 * )
 	 */
@@ -45,10 +46,24 @@ class PostponeController extends FOSRestController{
 		$postponeReason = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:PostponeReason')->find($id);
 		
 		if( !$postponeReason ){
-			throw new NotFoundHttpException(sprintf('The resource \'%s\' was not found.', $id));
+			//throw new NotFoundHttpException(sprintf('The resource \'%s\' was not found.', $id));
+			$statusCode = 404;
+			$responseBody = array(
+				'status' => 'ERROR',
+				'statusCode' => $statusCode,
+				'message' => sprintf('The resource \'%s\' was not found.', $id),
+			);
+				
+			$response = $this->view($responseBody, $statusCode);
+			return $this->handleView($response);
 		}
 		
-		return array('postponeReason' => $postponeReason);
+		return array(
+			'status' => 'SUCCESS',
+			'statusCode' => 200,
+			'postponeReason' => $postponeReason,
+		);
+		
 		
 	}
 }

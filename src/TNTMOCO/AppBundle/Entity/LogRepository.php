@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class LogRepository extends EntityRepository
 {
+
 	/**
 	 * 
 	 * @param string $fileName - Name of file
@@ -21,6 +22,7 @@ class LogRepository extends EntityRepository
 	 * @param integer $user_id
 	 * @param array $errors example: array(array('data'=>'string:Data', 'error'=>'string:Error message'),)
 	 */
+
 	public function saveLog($fileName, $type, $status, $user_id = null, $errors = null){
 		$typeLog = $this->getTypeLog($type);
 		$statusLog = $this->getStatusLog($status);
@@ -78,7 +80,7 @@ class LogRepository extends EntityRepository
 		return ($this->findOneBy(
 					array(	
 							'fileName' => $fileName, 
-							'type' => $typeLog->getId(), 
+							'type' => $typeLog->getId(),
 							'user'=>$user_id							
 					)
 				)) ? true : false;
@@ -92,7 +94,7 @@ class LogRepository extends EntityRepository
 		$log = $this->findOneBy(
 					array(	
 							'fileName' => $fileName, 
-							'type' => $typeLog->getId(), 
+							'type' => $typeLog->getId(),
 							'user'=>$user_id							
 					)
 				);

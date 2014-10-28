@@ -214,6 +214,11 @@ class User implements AdvancedUserInterface, \Serializable
     	return true;
     }
     
+    public function isGranted($role)
+    {
+    	return in_array($role, $this->getRoles());
+    }
+    
     
 
 

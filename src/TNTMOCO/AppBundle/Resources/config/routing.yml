@@ -48,10 +48,21 @@ depots:
     path:     /depots
     defaults: { _controller: TNTMOCOAppBundle:Backend\Depots:index }
     
+depots:
+   path:     /depots
+   defaults: { _controller: TNTMOCOAppBundle:Backend\Depots:index }
+   
 users_depots:
-    path:     /users/depots
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:depots }
+   path:     /users/depots
+   defaults: { _controller: TNTMOCOAppBundle:Backend\Users:depots }
+
     
 test_files:
     path: /test/files
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Test:files }    
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Test:files }
+    
+display_files:
+    path: /files/display/{batchCode}/{fileId}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Files:display }
+    
+    

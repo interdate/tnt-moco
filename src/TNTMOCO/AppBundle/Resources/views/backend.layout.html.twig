@@ -62,13 +62,17 @@
 					<i class="home icon"></i> Home
 				</a>
 				
+				{% if app.user.isGranted("ROLE_SUPER_ADMIN") or app.user.isGranted("ROLE_COUNTRY_ADMIN") %}
 				<a class="item" href="{{ path('users') }}">
 					<i class="user icon"></i> Users
 				</a>
+				{% endif %}
 				
+				{% if app.user.isGranted("ROLE_SUPER_ADMIN") %}
 				<a class="item" href="{{ path('countries') }}">
 					<i class="globe icon"></i> Countries
 				</a>
+				{% endif %}
 				
 				<a class="item" href="{{ path('depots') }}">
 					<i class="map marker icon"></i> Depots

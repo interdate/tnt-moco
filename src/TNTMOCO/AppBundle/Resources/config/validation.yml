@@ -26,3 +26,10 @@ TNTMOCO\AppBundle\Entity\User:
             pattern: "/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[A-Z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[a-z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[a-z])(?=\S*[A-Z])\S*$/"            
             message: "3 of 4 of the rules must be used in Password: [Lowercase Letters, Uppercase Letters, Numbers, Symbols]"
             groups: [creation, editing]
+
+TNTMOCO\AppBundle\Entity\ImageFile:
+  properties:
+      file:
+          - Image:
+              maxSize: 200k
+              maxSizeMessage: The maxmimum allowed file size is 200Kb
