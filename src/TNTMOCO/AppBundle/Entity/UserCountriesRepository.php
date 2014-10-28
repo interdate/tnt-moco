@@ -20,4 +20,118 @@ class UserCountriesRepository extends EntityRepository
 			$em->remove($userCountry);
 		}	
 	}
+	
+	public function setUserFormField($form, $admin = false)
+	{
+		if($admin){
+			$form->add(
+				'role', 'entity', array(
+				'label' => 'Role',
+				'multiple' => false,
+				'expanded' => false,
+				'class' => 'TNTMOCOAppBundle:Role',
+				'property' => 'name',
+				'query_builder' => function(EntityRepository $er) {
+					return $er->createQueryBuilder('r')
+					->where('r.id = 2');
+				},
+				'attr' => array('class' => 'hidden'),
+			));
+		}
+		else{
+			$form->add(
+				'role', 'entity', array(
+				'label' => 'Role',
+				'multiple' => false,
+				'expanded' => false,
+				'class' => 'TNTMOCOAppBundle:Role',
+				'property' => 'name',
+				'query_builder' => function(EntityRepository $er) {
+					return $er->createQueryBuilder('r')
+					->where('r.id > 2');
+				},
+			));
+		}
+		$form->add('country', 'entity', array(
+				'label' => 'Country',
+				'required' => false,
+				'multiple' => false,
+				'expanded' => false,
+				'empty_value' => 'Choose a Country',
+				'class' => 'TNTMOCOAppBundle:Country',
+				'property' => 'name',
+				'query_builder' => function(EntityRepository $er) {
+					return $er->createQueryBuilder('c')
+					->where('c.isActive = 1');
+				},
+				'attr' => array('class' => 'hidden chooseCountryId'),
+		));
+		
+		return $form;
+	}
+	
+	public function saveUser($form, $request, $user, $securityEncoder){
+		$cleanForm = $form;
+		$nameForm = ($request->get('user')['role'] == 2) ? 'adminForm' : 'userForm';
+		$created = false;
+		$originalEncodedPassword = $user->getPassword();
+		$userRepo = $this->getEntityManager()->getRepository('TNTMOCOAppBundle:User');
+		$depotRepo = $this->getEntityManager()->getRepository('TNTMOCOAppBundle:Depot');
+		$userCountriesRepo = $this->getEntityManager()->getRepository('TNTMOCOAppBundle:UserCountries');
+		$em = $this->getEntityManager();
+		
+		$form->handleRequest($request);
+		//var_dump($form->isValid());die;
+		if($form->isValid()){
+			$userRepo->setUserPassword($user, $securityEncoder, $originalEncodedPassword);
+			$userRoleSystemName = $user->getRole()->getRole();
+			
+			switch ($userRoleSystemName){
+				case 'ROLE_COUNTRY_ADMIN':
+					$user->addCountry($user->getCountry());
+					$user->setCountry(null);
+					$user->setDepot(null);
+					$userRepo->createUserCountriesCollection($user);
+						
+					if($request->get('confirm')){
+						$userRepo->unassignUsersAssignedToUserCountries($user);
+					}
+					else{
+						
+						$alreadyAssignedAdmins = $userRepo->getUsersAssignedToUserCountries($user);
+						
+						if(count($alreadyAssignedAdmins) > 0){
+							return array(
+								$nameForm => $form->createView(),
+								'created' => $created,
+								'alreadyAssignedAdmins' => $alreadyAssignedAdmins,
+								'userShouldConfirmAssigning' => true,
+							);
+						}
+					}
+					break;
+			
+				case 'ROLE_COURIER':					
+				case 'ROLE_USER':
+				case 'ROLE_CUSTOMER_SERVICE':
+					$user->setDepot(null);
+					break;
+			}
+			
+			$userCountriesRepo->removeUserCountries($user);
+			$em->persist($user);
+			$em->flush();
+			
+			$form = $cleanForm;			
+			$created = true;
+		}
+		
+		return array(
+    		$nameForm => $form->createView(),
+    		'created' => $created,
+			'user' => $user, 
+    		'userShouldConfirmAssigning' => false,
+    	);
+	}
+		
 }

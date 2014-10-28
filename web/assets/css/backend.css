@@ -471,7 +471,7 @@ label{
 .countriesAssigning .block{
 	float: left;
 	width: 32%;
-	height: 1100px;
+	min-height: 1100px;
 	border-right: 1px solid #e0e0e0;
 }
 
@@ -660,7 +660,27 @@ select.countries{
 	color: #828282;	
 }
 
+.countriesAssigning .item.active{
+	background: #6ECFF5;
+	color: #fff;
+}
 
+.countriesAssigning .item{
+	width: 78%;
+	margin: 0px auto;	
+	padding: 2px 15px;
+	cursor: pointer;
+}
 
+#usersCounryAdmins,#usersSearch{
+	margin-bottom:15px;
+}
 
+#successAssign{
+	margin-bottom: 10px;
+}
+
+.countriesAssigning .ui.red.message ul{
+	padding-left: 15px;
+}
 

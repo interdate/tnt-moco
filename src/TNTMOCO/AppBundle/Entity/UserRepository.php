@@ -145,7 +145,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		}		
 	}
 	
-	public function getSearchQuary($request, $depotsReturn = false)
+	public function getSearchQuery($request, $depotsReturn = false)
 	{
 		$em = $this->getEntityManager();
 		$countryRepo = $em->getRepository('TNTMOCOAppBundle:Country');
@@ -197,12 +197,13 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 			}
 		}
 		$whereStr = (count($where) > 0) ? ' WHERE' . implode(' AND', $whereStrArr) : '';
-		 
+		
 		if((int)$country_id > 0){
-			$whereStr = ' JOIN u.countries uc' . $whereStr;
+			$whereStr = ' LEFT JOIN u.countries uc' . $whereStr;
 		}
 		 
 		$dql   = "SELECT u FROM TNTMOCOAppBundle:User u" . $whereStr;
+		//var_dump($dql);die;
 		$query = $em->createQuery($dql);
 		 
 		if(count($where) > 0){

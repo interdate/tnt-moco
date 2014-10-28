@@ -37,8 +37,8 @@ class UsersController extends Controller
     		->getResult();
 		
     	$request = $this->getRequest();
-		$depots = $userRepo->getSearchQuary($request, true);
-		$query = $userRepo->getSearchQuary($request);
+		$depots = $userRepo->getSearchQuery($request, true);
+		$query = $userRepo->getSearchQuery($request);
     	
     	$paginator  = $this->get('knp_paginator');
     	$users = $paginator->paginate(

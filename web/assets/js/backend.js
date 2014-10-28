@@ -37,6 +37,28 @@ $(document).ready(
 			modifySearchFormByRole($('#search_role'), $(this));
 		});
 		
+		$('#countryAssign').change(function(){
+			var id = $(this).val();
+			$('.chooseCountryId').val(id);
+			$('.countriesAssigning .item').show();
+			$('.username').each(function(){
+				if($(this).attr('countryid').indexOf(id) > -1){
+					$(this).parent().hide();
+				}
+			});
+		});
+		
+		$('.username').click(function(){
+			if($(this).parent().hasClass('active')){
+				$(this).parent().removeClass('active');
+			}else{
+				if($(this).parent().parent().hasClass('counryAdminsList')){
+					$('.counryAdminsList .item.active').removeClass('active');
+				}
+				$(this).parent().addClass('active');
+			}
+		});
+		
 		var options = {
 			valueNames: [ 'username' ],
 			searchClass: 'counryAdminsSearch',
@@ -44,11 +66,23 @@ $(document).ready(
 			//indexAsync: true
 		};
 
-		var contactsList = new List('contacts', options);
+		var contactsList = new List('usersCounryAdmins', options);
 		contactsList.on('searchComplete', function(){
-			$('.contacts').scrollTop(0);
+			$('#usersCounryAdmins .users_scrollbar').scrollTop(0);
 		});
 		
+		var options = {
+			valueNames: [ 'username' ],
+			searchClass: 'usersSearch',
+			listClass: 'usersList',
+			//indexAsync: true
+		};
+
+		var contactsList = new List('usersSearch', options);
+		contactsList.on('searchComplete', function(){
+			$('.users_scrollbar').scrollTop(0);
+		});
+			
 	}
 );
 
@@ -355,7 +389,82 @@ function userSearch1(){
 	}
 }
 
+function userAssign(el,confirm){
+	var user = $(el).prev('div').attr('id');
+	//alert(user);return;
+	var countryId = $('#countryAssign').val();
+	//var confirm = false;
+	$('#successAssign').remove();
+	if(countryId == ''){
+		alert('Please, choose a country');
+		return;
+	}
+	var usersEl = el.prev('div').find('.item.active');
+	if(usersEl.size() == 0){
+		alert('Please, select a user');
+		return;
+	}
+	
+	var users = {country: countryId,users: {}};
+	usersEl.each(function(index){
+		users['users'][index] = $(this).find('.username').attr('userId');
+	});
+	if(confirm){
+		users['confirm'] = true;
+		$('#confirmAssign').hide();
+	}
+	
+	$.ajax({
+		type: 'post',
+		url: $('#usersAssignPath').val(),
+		data: $.param( users ),
+		success: function(data){
+			if($(data).find('#confirmAssign').size() > 0){
+				$('#confirmAssign').html($(data).find('#confirmAssign').html()).trigger('create').show();
+				if(user == 'usersSearch' && $(data).find('#usersNotAssign').size() > 0){
+					var usersConf = $(data).find('#usersNotAssign').val();
+					usersEl.each(function(index){
+						if(usersConf.indexOf($(this).find('.username').attr('userid')) <= -1){
+							$(this).find('.username').attr('countryid', countryId);
+							$(this).removeClass('active').hide();
+						}
+					});
+				}
+			}
+			if($(data).find('#success').size() > 0){
+				if(user != 'usersSearch'){
+					el.prev('div').find('.item').show();
+				}
+				usersEl.each(function(index){
+					var attrCountry = $(this).find('.username').attr('countryid') + ',' + countryId;
+					if(user == 'usersSearch'){
+						attrCountry = countryId;												
+					}
+					$(this).find('.username').attr('countryid', attrCountry);
+					$(this).removeClass('active').hide();
+				});
+				$('#confirmAssign').after('<div id="successAssign">' + $(data).find('#success').html() + '</div>');				
+			}
+		}
+	});
+	
+}
 
+function submitUserForm(button){
+	if(button.parent().find('.chooseCountryId').val() == '' && $('#countryAssign').val() != ''){
+		button.parent().find('.chooseCountryId').val($('#countryAssign').val());
+	}
+	if(button.parent().find('.chooseCountryId').val() == ''){
+		alert('Please, choose a country');
+		return false;
+	}
+	button.click();
+}
+
+function confirmTrue(button){
+	button.parent().append('<input type="hidden" name="confirm" value="true" />');
+	button.click();
+}
 
 
 

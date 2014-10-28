@@ -27,6 +27,9 @@ countries_assign:
     path:     /countries/assign
     defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:assign }
 
+countries_assign_users:
+    path:     /countries/assign/users
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:usersAssign }
 
 users:
     path:     /users
