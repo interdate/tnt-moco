@@ -59,29 +59,31 @@ $(document).ready(
 			}
 		});
 		
-		var options = {
-			valueNames: [ 'username' ],
-			searchClass: 'counryAdminsSearch',
-			listClass: 'counryAdminsList',
-			//indexAsync: true
-		};
-
-		var contactsList = new List('usersCounryAdmins', options);
-		contactsList.on('searchComplete', function(){
-			$('#usersCounryAdmins .users_scrollbar').scrollTop(0);
-		});
+		if($('#usersCounryAdmins').size() > 0){
+			var counryAdminsListOptions = {
+				valueNames: [ 'username' ],
+				searchClass: 'counryAdminsSearch',
+				listClass: 'counryAdminsList',
+			};
+	
+			var counryAdminsList = new List('usersCounryAdmins', counryAdminsListOptions);
+			counryAdminsList.on('searchComplete', function(){
+				$('#usersCounryAdmins .users_scrollbar').scrollTop(0);
+			});
+		}
 		
-		var options = {
-			valueNames: [ 'username' ],
-			searchClass: 'usersSearch',
-			listClass: 'usersList',
-			//indexAsync: true
-		};
-
-		var contactsList = new List('usersSearch', options);
-		contactsList.on('searchComplete', function(){
-			$('.users_scrollbar').scrollTop(0);
-		});
+		if($('#usersSearch').size() > 0){
+			var usersSearchOptions = {
+				valueNames: [ 'username' ],
+				searchClass: 'usersSearch',
+				listClass: 'usersList',
+			};
+	
+			var usersList = new List('usersSearch', usersSearchOptions);
+			usersList.on('searchComplete', function(){
+				$('#usersSearch .users_scrollbar').scrollTop(0);
+			});
+		}
 			
 	}
 );
