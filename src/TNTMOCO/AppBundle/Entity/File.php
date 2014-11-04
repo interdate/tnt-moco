@@ -53,13 +53,6 @@ abstract class File
 	protected $datetime;
 	
 	
-	/**
-	 * @ORM\ManyToOne(targetEntity="User", inversedBy="imageFiles")
-	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-	 **/
-	protected $user;
-	
-	
 	protected $file;
 		
 	

@@ -1,0 +1,279 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="keyboard icon"></i>
+				Data Entry
+			</h4>
+		</div>
+		
+		{#
+		<div class="tabMenu">
+			<div class="ui pointing secondary menu floated left">
+			    <a class="active item blue" data-tab="countriesList">
+				    <i class="add sign box icon"></i>					    
+				    Some Notifications
+				</a>
+			    <a class="item blue" data-tab="activeCountriesEditing">
+				    <i class="list folder icon"></i>
+				    Another data
+				</a>	    
+			</div>
+		</div>
+		#}	
+			
+		<div class="clear"></div>
+	
+		<div class="desktop dataEntry">	
+			
+			<div class="tabSegments">
+			
+				<div class="ui active tab segment stacked">
+					{#
+					<div class="block depotsList rounded">
+					1
+					</div>
+					<div class="block docs">
+					2
+					</div>
+					
+					<div class="clear"></div>
+					
+					<br><br>
+					#}
+					
+					<div class="ui small header">
+						<i class="globe circular icon"></i>
+						Countries
+					</div>
+					
+					<div class="ui form borBot" style="width:100%;">
+						<select id="data_entry_countries" class="countries left">					
+							<option value="">Choose a country</option>
+							
+							{% set countryId = (depot is defined) ? depot.country.id : app.request.get('countryId') %}
+								
+							{% for country in countries %}
+								{% set selected = country.id == countryId ? 'selected="selected"' : '' %}
+								{% if country.isActive %}<option value="{{ country.id }}" {{ selected }}>{{ country.name }}</option>{% endif %}
+							{% endfor %}
+						</select>
+						
+						{% if countryId|length > 0 %}
+							<div class="right refreshData">
+								<div class="ui labeled icon blue mini button" onclick="loadDataEntryDepots($('#data_entry_countries').val());">
+									<i class="inverted refresh icon"></i>
+									Refresh
+								</div>
+							</div>
+						{% endif %}
+						<div class="clear"></div>						
+						<br>
+					</div>
+					
+					
+					
+															
+					{% if depots is defined %}
+						
+						{% if depots|length > 0 %}
+					
+						<div class="ui grid">
+							<div class="left floated three wide column">
+							
+								<div class="ui small header">
+									<i class="map marker circular icon"></i>
+									Depots
+								</div>
+								
+								<div class="smallText">
+									Sort by: 
+									<a href="{{ path('data_entry_country', {'countryId': countryId}) }}" {% if orderBy == 'name' %} class="active" {% endif %}>Name</a> 
+									/ 
+									<a href="{{ path('data_entry_country', {'countryId': countryId, 'orderBy': 'docsNumber'}) }}" {% if orderBy == 'docsNumber' %} class="active" {% endif %}>Docs</a>
+								</div>
+								
+								{% set currentDepotId = depot is defined ? depot.id : 0 %}
+								{% set currentDepotFilesNumber = 0 %}
+								
+								
+								<div class="ui vertical fluid small menu depotsList">
+									
+									{% for depot in depots %}
+										{% set active = currentDepotId == depot.id ? 'active' : '' %}
+										
+										<a class="item {{ active }} blue" href="{{ path('data_entry_depot', {'depotId': depot.id}) }}?orderBy={{ orderBy }}">
+											{{ depot.name }} 
+											{% if depot.pdfFilesNumber > 0 %}<div class="ui {% if active|length > 0 %} blue {% endif %} label">{{ depot.pdfFilesNumber }}</div>{% endif %}											
+										</a>
+										{% if currentDepotId == depot.id %}
+											{% set currentDepotFilesNumber = depot.pdfFilesNumber %}
+										{% endif %} 
+																				
+									{% endfor %}
+									
+									{#
+									{% for depot in depots %}
+																											
+										{% set filesNumber = 0 %}									
+										
+										{% for user in depot.users %}
+																																
+											{% for pdfFile in user.pdfFiles %}
+												{% if ((not pdfFile.isLocked or pdfFile.openedBy == app.user) and not pdfFile.isRejected and not pdfFile.isCompleted) %} 
+													{% set filesNumber = filesNumber + 1 %}
+												{% endif %}
+											{% endfor %}
+											
+										{% endfor %}
+										
+										{% set active = currentDepotId == depot.id ? 'active' : '' %}
+										
+										<a class="item {{ active }} blue" href="{{ path('data_entry_depot', {'depotId': depot.id }) }}?orderBy={{ orderBy }}">
+											{{ depot.name }} 
+											{% if filesNumber > 0 %}<div class="ui {% if active|length > 0 %} blue {% endif %} label">{{ filesNumber }}</div>{% endif %}											
+										</a>
+										{% if currentDepotId == depot.id %}
+											{% set currentDepotFilesNumber = filesNumber %}
+										{% endif %} 
+																				
+									{% endfor %}
+									#}
+								</div>								
+								
+								<br />								
+								
+							</div>
+							
+							
+							<div class="left floated twelve wide column">						
+								
+								{% if file is defined %}
+								
+									<div class="ui small header">
+										<i class="text file circular icon"></i>
+										Documents
+									</div>	
+									
+									
+									
+									<div class="ui vertically divided grid">
+										<div class="two column row">
+											<div class="column">
+												<div class="info">											
+													User ID: <span>[ {{ file.user.id }} ]</span> <br>
+													Username:  <span>[ {{ file.user.username }} ]</span> <br>
+													Date and time: <span>[ {{ file.datetime|date }} ]</span> <br>
+													{# File ID: <span>[ {{ file.id }} ]</span> <br> #}
+												</div>											
+											</div>
+											<div class="column">
+												{% set nextFileId = (nextFile.id > 0) ? nextFile.id : 0 %}
+												<form action="{{ path('data_entry_depot', {'depotId': depot.id, 'fileId': nextFileId, 'prevFileId': file.id, 'reject': 0, 'complete': 1}) }}">
+													<div class="right">														
+														<div class="ui labeled icon blue small button" onclick="$(this).closest('form').submit();">
+															<i class="inverted checkmark icon"></i>
+															Complete
+														</div>
+														<input type="hidden" name="orderBy" value="{{ orderBy }}">
+													</div>												
+												</form>
+											</div>
+										</div>
+									</div>		
+										
+									<iframe src="http://tnt-moco.loc/assets/libs/pdfjs/web/viewer.html?file={{ file.getWebPath }}" width="100%" height="600" style="border:1px solid #bcbcbc;"></iframe>
+									
+									<br><br>									
+									<form action="{{ path('data_entry_depot', {'depotId': depot.id, 'fileId': nextFileId, 'prevFileId': file.id, 'reject': 1, 'complete': 0}) }}">
+										<div class="left">
+											<div class="ui labeled icon red small button" id="rejectDoc">
+												<i class="inverted reply mail icon"></i>
+												Reject
+											</div>
+											<input type="hidden" name="orderBy" value="{{ orderBy }}">
+										</div>
+									</form>
+									
+									{#% if nextFile.id > 0 %#}
+									{% if currentDepotFilesNumber > 1 %}																			
+										<form action="{{ path('data_entry_depot', {'depotId': depot.id, 'fileId': nextFileId, 'prevFileId': file.id, 'reject': 0, 'complete': 0}) }}">
+											<div class="right">
+												<div class="ui labeled icon black small button right" onclick="$(this).closest('form').submit();">
+													<i class="inverted right arrow icon"></i>
+													Next
+												</div>
+												<input type="hidden" name="orderBy" value="{{ orderBy }}">
+											</div>
+										</form>
+									{% endif %}
+									
+									
+									
+									
+									<div id="rejectionReasonTemplate" class="hidden">									
+										<form method="post" action="{{ path('data_entry_depot', {'depotId': depot.id, 'fileId': nextFileId, 'prevFileId': file.id, 'reject': 1, 'complete': 0}) }}">
+											<div class="rejectionReason">											
+												<select name="reasonId">
+													<option value="">Choose a reason</option>
+													<option value="1">Bad quality</option>
+													<option value="2">Missing info</option>
+												</select>
+												
+												<div class="clear"></div>
+												
+												<label>Comments:</label>
+												<textarea name="comments"></textarea>												
+												
+												<div class="left">
+													<div class="ui labeled icon red small button" onclick="if($(this).closest('form').find('select').val() == ''){ alert('Please choose a reason') } else{ $(this).closest('form').submit(); }">
+														<i class="inverted reply mail icon"></i>
+														Confirm Rejection
+													</div>
+													<input type="hidden" name="orderBy" value="{{ orderBy }}">
+												</div>												
+											</div>
+										</form>									
+									</div>
+									
+							
+								{% else %}								
+									{% if depot is defined %}
+										<div class="ui small header">
+											<i class="info circular icon"></i>
+											No operations in the selected round
+										</div>	
+									{% endif %}
+								{% endif %}
+																	
+								</div>
+							
+						</div>
+						
+						{% else %}
+							<div class="ui small header">
+								<i class="info circular icon"></i>
+								No depots found
+							</div>				
+						{% endif %}
+					
+					{% endif %}
+					
+					
+																				
+				</div>
+							
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+

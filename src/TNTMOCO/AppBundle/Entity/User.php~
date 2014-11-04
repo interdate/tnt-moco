@@ -74,6 +74,16 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\OneToMany(targetEntity="ImageFile", mappedBy="user")
      */
     private $imageFiles;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="PdfFile", mappedBy="user")
+     */
+    private $pdfFiles;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="PdfFile", mappedBy="openedBy")
+     */
+    private $openedPdfFiles;
         
     /**
      * @ORM\ManyToOne(targetEntity="Depot", inversedBy="users")
@@ -142,6 +152,8 @@ class User implements AdvancedUserInterface, \Serializable
     {    	
     	$this->salt = md5(uniqid(null, true));
     	$this->countries = new \Doctrine\Common\Collections\ArrayCollection();
+    	$this->imageFiles = new \Doctrine\Common\Collections\ArrayCollection();
+    	$this->pdfFiles = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     public function getRoles()
@@ -162,12 +174,12 @@ class User implements AdvancedUserInterface, \Serializable
     public function serialize()
     {
     	return serialize(array(
-    			$this->id,
-    			$this->username,
-    			$this->password,
-    			$this->isActive,
-    			// see section on salt below
-    			// $this->salt,
+    		$this->id,
+    		$this->username,
+    		$this->password,
+    		$this->isActive,
+    		// see section on salt below
+    		// $this->salt,
     	));
     }
     
@@ -177,12 +189,12 @@ class User implements AdvancedUserInterface, \Serializable
     public function unserialize($serialized)
     {
     	list (
-    			$this->id,
-    			$this->username,
-    			$this->password,
-    			$this->isActive,
-    			// see section on salt below
-    			// $this->salt
+    		$this->id,
+    		$this->username,
+    		$this->password,
+    		$this->isActive,
+    		// see section on salt below
+    		// $this->salt
     	) = unserialize($serialized);
     }
     
@@ -211,6 +223,11 @@ class User implements AdvancedUserInterface, \Serializable
     public function isCredentialsNonExpired()
     {
     	return true;
+    }
+    
+    public function isGranted($role)
+    {
+    	return in_array($role, $this->getRoles());
     }
     
     
@@ -570,5 +587,71 @@ class User implements AdvancedUserInterface, \Serializable
     public function getCountries()
     {
         return $this->countries;
+    }
+
+    /**
+     * Add imageFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\ImageFile $imageFiles
+     * @return User
+     */
+    public function addImageFile(\TNTMOCO\AppBundle\Entity\ImageFile $imageFiles)
+    {
+        $this->imageFiles[] = $imageFiles;
+
+        return $this;
+    }
+
+    /**
+     * Remove imageFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\ImageFile $imageFiles
+     */
+    public function removeImageFile(\TNTMOCO\AppBundle\Entity\ImageFile $imageFiles)
+    {
+        $this->imageFiles->removeElement($imageFiles);
+    }
+
+    /**
+     * Get imageFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getImageFiles()
+    {
+        return $this->imageFiles;
+    }
+
+    /**
+     * Add pdfFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\PdfFile $pdfFiles
+     * @return User
+     */
+    public function addPdfFile(\TNTMOCO\AppBundle\Entity\PdfFile $pdfFiles)
+    {
+        $this->pdfFiles[] = $pdfFiles;
+
+        return $this;
+    }
+
+    /**
+     * Remove pdfFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\PdfFile $pdfFiles
+     */
+    public function removePdfFile(\TNTMOCO\AppBundle\Entity\PdfFile $pdfFiles)
+    {
+        $this->pdfFiles->removeElement($pdfFiles);
+    }
+
+    /**
+     * Get pdfFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPdfFiles()
+    {
+        return $this->pdfFiles;
     }
 }

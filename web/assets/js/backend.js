@@ -37,6 +37,11 @@ $(document).ready(
 			modifySearchFormByRole($('#search_role'), $(this));
 		});
 		
+		$('.dataEntry .countries').change(function(){
+			loadDataEntryDepots($(this).val());			
+		});
+		
+		/*
 		var options = {
 			valueNames: [ 'username' ],
 			searchClass: 'counryAdminsSearch',
@@ -48,10 +53,74 @@ $(document).ready(
 		contactsList.on('searchComplete', function(){
 			$('.contacts').scrollTop(0);
 		});
+		*/	
 		
+		var options = {
+			object: $('#rejectDoc'),
+			template: $("#rejectionReasonTemplate"),
+			title: 'Rejection Reason',
+		};
+		
+		qtipInit(options);
 	}
 );
 
+function loadDataEntryDepots(value){
+	if(value != '')
+		window.location.href = '/dataEntry/countries/' + value;
+}
+
+
+function qtipInit(options){
+	options.object.qtip({			
+		events: {
+			show: function(){
+				/*
+				$('.qtip .unapprovedPhotoReasonForm .button').unbind('click').click(function(){
+					var photosIds = [];
+					var segments = [];
+					var value = $(item).siblings('.waitingPhotoId').val();
+					var segment = $(item).parents('.waitingPhoto');
+					var reason = $('.qtip .unapprovedPhotoReasonForm select').find(':selected').val();
+					photosIds.push(value);
+					segments.push(segment);
+					executeMultiplePhotosAction('unapprove', photosIds, segments, reason);		
+				});
+				*/
+			},		
+		},
+		content: {
+			text: options.template.html(),
+			title: {
+				text: options.title,
+				button: true
+			}
+		},
+		style: {
+			classes: 'ui-tooltip-shadow ui-tooltip-rounded qtip-bootstrap',
+			tip: {
+	            corner: true,
+	            height: 24
+	        }
+		},
+		position: {
+			my: 'bottom left', // Use the corner...
+			at: 'bottom right', // ...and opposite corner
+			width: 700, 
+			adjust: {
+				y: -250,
+				x: -150
+		    },	
+		},
+		show: {
+			event: 'click',
+			modal: {
+	            on: true		            
+	        }
+		},			
+		hide: false,
+    });
+}
 
 function performEntityMethod(clickedObj, value){		
 	
@@ -354,6 +423,8 @@ function userSearch1(){
 		$('#userSearchSubmit_1').click();
 	}
 }
+
+
 
 
 

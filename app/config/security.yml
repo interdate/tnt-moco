@@ -11,8 +11,8 @@ security:
         
     providers:        
         user_db:
-            entity: { class: TNTMOCOAppBundle:User, property: username }    
-
+            entity: { class: TNTMOCOAppBundle:User, property: username }
+           
     firewalls:
         
         api_area:
@@ -43,6 +43,7 @@ security:
         - { path: ^/api, roles: ROLE_COURIER }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/files/display, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/test/files, roles: ROLE_COURIER }
         - { path: ^/, roles: ROLE_USER }
         
                 

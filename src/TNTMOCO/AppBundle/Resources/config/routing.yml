@@ -13,8 +13,6 @@ login_check:
 logout:
     path: /logout
     
-    
-    
 countries:
     path:     /countries
     defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:index }
@@ -27,15 +25,13 @@ countries_assign:
     path:     /countries/assign
     defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:assign }
 
-
 users:
     path:     /users
     defaults: { _controller: TNTMOCOAppBundle:Backend\Users:index }
 
 users_edit:
     path:     /users/edit/{userId}
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:edit }
-   
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:edit }   
 
 users_create:
     path:     /users/create
@@ -52,7 +48,6 @@ depots:
 users_depots:
    path:     /users/depots
    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:depots }
-
     
 test_files:
     path: /test/files
@@ -61,5 +56,18 @@ test_files:
 display_files:
     path: /files/display/{batchCode}/{fileId}
     defaults: { _controller: TNTMOCOAppBundle:Backend\Files:display }
+    
+data_entry:
+    path: /dataEntry
+    defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:index }
+    
+data_entry_country:
+    path: /dataEntry/countries/{countryId}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:country }     
+
+data_entry_depot:
+    path: /dataEntry/depots/{depotId}/{fileId}/{prevFileId}/{reject}/{complete}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:depot, fileId:0, prevFileId:0, reject:false, complete:false}    
+
     
     
