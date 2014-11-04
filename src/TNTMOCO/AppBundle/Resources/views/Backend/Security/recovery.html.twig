@@ -1,0 +1,64 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+	<div class="outer">
+		<div class="middle">
+			<div id="login_wraper" class="inner">
+				<form method="post" id="login_form">
+					{% if success is defined and success == true %}
+						<div class="ui icon message blue">
+							<i class="{% if code %}save{% else %}mail outline{% endif %} icon"></i>
+							<div class="content">
+								{% if code %}
+									New password has been saved.
+								{% else %}						    
+									Link for change your password has been sent. Please check your email.
+								{% endif %}
+							</div>
+						</div>
+					{% else %}
+						{% if error or not form.vars.valid %}    
+						     <div class="error rounded" style="height:auto;padding-top: 5px;padding-bottom: 5px;">	    	
+						    	{% if code %}
+						    		{% if error %}This link have error or not active. Try again input your email.{% endif %}
+						    		{{ form_errors(form.password) }}
+						    	{% else %}						    
+									{% if error %}This email is not registered.{% endif %}
+									{{ form_errors(form.email) }}
+								{% endif %}
+						  	</div>
+						{% endif %}
+						<div class="ui form segment red stacked login">
+							<span style="color:#fff;">Recovery</span>
+							<br /><br />
+							{% if not code %}
+							  	<div class="field">
+							    	{{ form_label(form.email) }}
+									{{ form_widget(form.email) }}
+								</div>
+							{% else %}
+							    <div class="field">
+									{{ form_label(form.password) }}
+									{{ form_widget(form.password) }}
+								</div>	
+							{% endif %} 							  	
+						  	
+						  	<div class="ui labeled icon button red" onclick="$('#submitButton').click();">
+								<i class="inverted {% if code %}save{% else %}mail outline{% endif %} icon"></i>
+								{% if code %}Save{% else %}Send{% endif %}
+							</div>
+							
+							<input type="submit" class="hidden" id="submitButton">
+						</div>
+					{% endif %}
+				</form>
+			</div>
+		</div>
+	</div>
+
+{% endblock %} 
+

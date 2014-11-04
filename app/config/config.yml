@@ -61,12 +61,19 @@ doctrine:
         auto_mapping: true
 
 # Swiftmailer Configuration
+#swiftmailer:
+#    transport: "%mailer_transport%"
+#    host:      "%mailer_host%"
+#    username:  "%mailer_user%"
+#    password:  "%mailer_password%"
+#    spool:     { type: memory }
+    
 swiftmailer:
-    transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
-    spool:     { type: memory }
+    transport:  "gmail"
+    host:       ~
+    encryption: "ssl"
+    username:   "pavel@interdate-ltd.co.il"
+    password:   "pavelinter12"
     
     
 fos_rest:
@@ -98,4 +105,4 @@ knp_snappy:
 services:    
     file_manager:
         class:        TNTMOCO\AppBundle\Services\File\Manager
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']    

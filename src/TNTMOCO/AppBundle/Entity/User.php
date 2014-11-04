@@ -131,6 +131,12 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $pickup = false;
     
+    /**
+     * @var integet
+     * 
+     * @ORM\Column(name="logged_attempt", type="integer")
+     */
+    private $loggedAttempt;
     
     
     
@@ -511,6 +517,29 @@ class User implements AdvancedUserInterface, \Serializable
     public function getPickup()
     {
         return $this->pickup;
+    }
+    
+    /**
+     * Set loggedAttempt
+     *
+     * @param boolean $loggedAttempt
+     * @return User
+     */
+    public function setLoggedAttempt($loggedAttempt)
+    {
+    	$this->loggedAttempt = $loggedAttempt;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get pickup
+     *
+     * @return boolean
+     */
+    public function getLoggedAttempt()
+    {
+    	return $this->loggedAttempt;
     }
 
     /**

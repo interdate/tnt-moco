@@ -13,6 +13,10 @@ login_check:
 logout:
     path: /logout
     
+recovery:
+    path:     /recovery/{code}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Security:recovery, code:false }
+    
     
     
 countries:
@@ -38,6 +42,10 @@ users:
 users_edit:
     path:     /users/edit/{userId}
     defaults: { _controller: TNTMOCOAppBundle:Backend\Users:edit }
+    
+user_profile_edit:
+    path:     /profile/edit
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:editProfile }
    
 
 users_create:

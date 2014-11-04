@@ -27,8 +27,10 @@
 	<div id="top">
 		<div class="left first">
 			{#<img class="ui avatar image" src="{{ asset('assets/images/admin_icon.png') }}">#}
-			<div class="ui avatar image"></div>
-			{{ app.user.username }}
+			<a href="{{ path('user_profile_edit') }}" style="color:inherit;">
+				<div class="ui avatar image"></div>
+				{{ app.user.username }}
+				</a>
 			<div class="iconWrapper" id="getSideBar" onclick="window.location.href='{{ path('logout') }}'"><i class="off icon link"></i></div>
 		</div>
 		<div class="left second">
