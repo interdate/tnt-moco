@@ -146,17 +146,20 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $pickup = false;
     
-    
-    protected $container;
-    
+    /**
+     * @var integet
+     * 
+     * @ORM\Column(name="logged_attempt", type="integer")
+     */
+    private $loggedAttempt;
+            
     
     
     /**
      * Constructor
      */
-    public function __construct(ContainerInterface $container)
-    {    	
-    	$this->container = $container;
+    public function __construct()
+    {	
     	$this->salt = md5(uniqid(null, true));
     	$this->countries = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->imageFiles = new \Doctrine\Common\Collections\ArrayCollection();
@@ -166,6 +169,16 @@ class User implements AdvancedUserInterface, \Serializable
     public function getRoles()
     {
     	return array($this->role->getRole());
+    }
+    
+    public function getRoleSystemName()
+    {
+    	return $this->role->getRole();
+    }
+    
+    public function isAdmin()
+    {
+    	return ($this->role->getRole() == 'ROLE_SUPER_ADMIN' || $this->role->getRole() == 'ROLE_COUNTRY_ADMIN') ? true : false;
     }
     
     /**
@@ -530,6 +543,29 @@ class User implements AdvancedUserInterface, \Serializable
     {
         return $this->pickup;
     }
+    
+    /**
+     * Set loggedAttempt
+     *
+     * @param boolean $loggedAttempt
+     * @return User
+     */
+    public function setLoggedAttempt($loggedAttempt)
+    {
+    	$this->loggedAttempt = $loggedAttempt;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get pickup
+     *
+     * @return boolean
+     */
+    public function getLoggedAttempt()
+    {
+    	return $this->loggedAttempt;
+    }
 
     /**
      * Set country
@@ -658,34 +694,7 @@ class User implements AdvancedUserInterface, \Serializable
      * @return \Doctrine\Common\Collections\Collection 
      */
     public function getPdfFiles()
-    {        
-    	/*
-    	//$token = SecurityContext::getToken();
-    	//$user = $token->getUser();
-    	$user = $this->container->get('security.context')->getToken()->getUser();
-    	
-    	//echo get_class_methods($this->container);
-    	//die;
-    	
-    	
-    	
-    	
-    	$criteria = Criteria::create()
-	    	/*
-	    	->where(
-	    		Criteria::expr()->orX(
-	    			Criteria::expr()->eq('isLocked', '0'),
-	    			Criteria::expr()->eq('openedBy', $user)
-	    		)
-	    	)
-	    
-    		->andWhere(Criteria::expr()->eq('isRejected', '0'))
-    		->andWhere(Criteria::expr()->eq('isCompleted', 0))    	   
-	    	->orderBy(array("id" => Criteria::ASC))
-    	;
-    	
-    	return $this->pdfFiles->matching($criteria);
-    	*/
+    {	
     	return $this->pdfFiles;
     }
 

@@ -480,7 +480,7 @@ label{
 .countriesAssigning .block{
 	float: left;
 	width: 32%;
-	height: 1100px;
+	min-height: 1100px;
 	border-right: 1px solid #e0e0e0;
 }
 
@@ -669,19 +669,6 @@ select.countries{
 	color: #828282;	
 }
 
-/*
-.ui.segment.dataEntry .block{
-	float:left;	
-}
-
-.ui.segment.dataEntry .block.depotsList{
-	width: 150px;
-	height: 500px;
-	background: #f0f0f0;
-	
-}
-*/
-
 .borBot{
 	border-bottom:1px solid #e0e0e0;
 }
@@ -702,6 +689,11 @@ select.countries{
 	color: #ff6a14;
 }
 
+/*
+.dataEntry .info.rejected{
+	font-size: 14px;
+}
+*/
 .qtip {
 	max-width:800px;
 }
@@ -742,5 +734,38 @@ select.countries{
 	background: #cff2ff;
 	padding: 2px;	
 }
+
+.countriesAssigning .item.active{
+	background: #6ECFF5;
+	color: #fff;
+}
+
+.countriesAssigning .item{
+	width: 78%;
+	margin: 0px auto;	
+	padding: 2px 15px;
+	cursor: pointer;
+}
+
+#usersCounryAdmins,#usersSearch{
+	margin-bottom:15px;
+}
+
+#successAssign{
+	margin-bottom: 10px;
+}
+
+.countriesAssigning .ui.red.message ul{
+	padding-left: 15px;
+}
+
+.marL15{
+	margin-left: 20px;
+}
+
+.completedInfo{
+	margin-top: 10px;
+}
+
 
 

@@ -12,7 +12,45 @@ use Doctrine\ORM\EntityRepository;
  */
 class PdfFileRepository extends EntityRepository
 {
-	public function getFiles($user, $usersIds, $file, $limit){
+	public function getFiles($user, $usersIds, $prevFileId, $limit, $roleId)
+	{
+		$roleRepo = $this->getEntityManager()->getRepository('TNTMOCOAppBundle:Role');
+		$roleSystemName = $user->isAdmin() ? $roleRepo->find($roleId)->getRole() : $user->getRoleSystemName();
+		$isRejected = $roleSystemName == 'ROLE_USER' ? 0 : 1;
+	
+		$qb = $this->createQueryBuilder('f');
+	
+		$qb->where(
+				$qb->expr()->orX(
+						$qb->expr()->eq('f.isLocked', '0'),
+						$qb->expr()->eq('f.openedBy', $user)
+				)
+		)
+		->andWhere('f.isRejected = ' . $isRejected)
+		->andWhere('f.isCompleted = 0')
+		->andWhere('f.isDeleted = 0')
+		->orderBy('f.id')
+		->setMaxResults($limit);
+	
+		if(count($usersIds) > 0){
+			$qb->andWhere(
+					$qb->expr()->in('f.user', $usersIds)
+			);
+		}
+	
+		if(!empty($prevFileId)){
+			$qb->andWhere('f.id > :fileId')->setParameter('fileId', $prevFileId);
+		}
+	
+		return $qb->getQuery()->getResult();
+	}
+	
+	/*
+	public function getFiles($user, $usersIds, $file, $limit, $roleId)
+	{		
+		$roleRepo = $this->getEntityManager()->getRepository('TNTMOCOAppBundle:Role');
+		$roleSystemName = $user->isAdmin() ? $roleRepo->find($roleId)->getRole() : $user->getRoleSystemName();
+		$isRejected = $roleSystemName == 'ROLE_USER' ? 0 : 1;
 		
 		$qb = $this->createQueryBuilder('f');		
 		
@@ -22,7 +60,7 @@ class PdfFileRepository extends EntityRepository
 				$qb->expr()->eq('f.openedBy', $user)
 			)
 		)
-		->andWhere('f.isRejected = 0')
+		->andWhere('f.isRejected = ' . $isRejected)
 		->andWhere('f.isCompleted = 0')
 		->orderBy('f.id')
 		->setMaxResults($limit);
@@ -37,9 +75,8 @@ class PdfFileRepository extends EntityRepository
 			$qb->andWhere('f.id > :fileId')->setParameter('fileId', $file->getId()); 
 		}
 		
-		
-		
 		return $qb->getQuery()->getResult();
 	}
+	*/
 	
 }

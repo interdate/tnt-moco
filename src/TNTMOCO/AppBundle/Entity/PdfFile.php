@@ -57,6 +57,13 @@ class PdfFile extends File
 	protected $isCompleted = false;
 	
 	/**
+	 * @var boolean
+	 *
+	 * @ORM\Column(name="is_deleted", type="boolean")
+	 */
+	protected $isDeleted = false;
+	
+	/**
 	 * @ORM\ManyToOne(targetEntity="User", inversedBy="openedPdfFiles")
 	 * @ORM\JoinColumn(name="opened_by", referencedColumnName="id")
 	 **/
@@ -74,6 +81,14 @@ class PdfFile extends File
 	 * @ORM\Column(type="string", length=1024)
 	 */
 	private $comments;
+		
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="string", length=1024)
+	 */
+	private $completedInfo;
+	
 	
 	
 	public function __construct(){
@@ -152,7 +167,30 @@ class PdfFile extends File
     public function getIsCompleted()
     {
         return $this->isCompleted;
-    }    
+    }
+
+    /**
+     * Set isDeleted
+     *
+     * @param boolean $isDeleted
+     * @return PdfFile
+     */
+    public function setIsDeleted($isDeleted)
+    {
+    	$this->isDeleted = $isDeleted;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get isDeleted
+     *
+     * @return boolean
+     */
+    public function getIsDeleted()
+    {
+    	return $this->isDeleted;
+    }
     
     /**
      * Set openedBy
@@ -221,5 +259,28 @@ class PdfFile extends File
     public function getComments()
     {
         return $this->comments;
-    }   
+    }
+
+    /**
+     * Set completedInfo
+     *
+     * @param string $completedInfo
+     * @return PdfFile
+     */
+    public function setCompletedInfo($completedInfo)
+    {
+        $this->completedInfo = $completedInfo;
+
+        return $this;
+    }
+
+    /**
+     * Get completedInfo
+     *
+     * @return string 
+     */
+    public function getCompletedInfo()
+    {
+        return $this->completedInfo;
+    }    
 }

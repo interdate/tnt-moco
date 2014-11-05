@@ -16,6 +16,7 @@ use TNTMOCO\AppBundle\Entity\Country;
 
 use TNTMOCO\AppBundle\Form\Type\UserType;
 use TNTMOCO\AppBundle\Form\Type\EditUserType;
+use TNTMOCO\AppBundle\Form\Type\CurrentUserType;
 use TNTMOCO\AppBundle\Form\Type\UserPasswordType;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Tests\Fixtures\Publisher;
@@ -37,8 +38,8 @@ class UsersController extends Controller
     		->getResult();
 		
     	$request = $this->getRequest();
-		$depots = $userRepo->getSearchQuary($request, true);
-		$query = $userRepo->getSearchQuary($request);
+		$depots = $userRepo->getSearchQuery($request, true);
+		$query = $userRepo->getSearchQuery($request);
     	
     	$paginator  = $this->get('knp_paginator');
     	$users = $paginator->paginate(
@@ -75,7 +76,7 @@ class UsersController extends Controller
     
     public function handleUserAction($user, $formType){
     	
-    	
+    	$profile = ($user->getId() == $this->getUser()->getId()) ? true : false;
     	$userRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:User');
     	$roleRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Role');
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
@@ -104,7 +105,7 @@ class UsersController extends Controller
     	$params = explode('::',$request->attributes->get('_controller'));    	
     	$actionName = substr($params[1],0,-6);
     	
-    	$userForm = $this->createForm($formType, $user);
+    	$userForm = $this->createForm($formType, $user);    	
     	$userForm->handleRequest($request);
     	 
     	if(isset($post['user']['username'])){
@@ -157,9 +158,9 @@ class UsersController extends Controller
     			$em->persist($user);
     			$em->flush();
     			
-    			$user = ($actionName == 'edit') ? $user : new User();
+    			$user = ($actionName == 'edit' or $profile) ? $user : new User();
     			   			 
-    			$userForm = $this->createForm($formType, $user);
+    			$userForm = $this->createForm($formType, $user);    			
     			$choosenRole = '';
     			$created = true;
     	
@@ -211,6 +212,14 @@ class UsersController extends Controller
     		'list' => $list,
     	));
     }
+    
+    public function editProfileAction(){
+    	$user = $this->getUser();
+    	$em = $this->getDoctrine()->getManager();     	
+    	 
+    	return $this->handleUserAction($user, new CurrentUserType($em, $user));
+    }
+    
     
 }
 

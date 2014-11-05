@@ -17,11 +17,11 @@
 	<script src="{{ asset('assets/libs/jquery-ui/js/jquery-ui-1.10.4.custom.min.js') }}"></script>
 	<script src="{{ asset('assets/libs/jquery.qtip/jquery.qtip.min.js') }}"></script>	
 	<script src="{{ asset('assets/js/jquery.address.js') }}"></script>	
-	<script src="{{ asset('assets/js/list.min.js') }}"></script>
 	<script src="{{ asset('assets/js/perfect-scrollbar.min.js') }}"></script>
 	<script src="{{ asset('assets/js/perfect-scrollbar.with-mousewheel.min.js') }}"></script>
 	
 	<script src="{{ asset('assets/js/backend.js') }}"></script>
+	<script src="{{ asset('assets/js/list.min.js') }}"></script>	
 {% endblock %}
 
 
@@ -32,8 +32,10 @@
 	<div id="top">
 		<div class="left first">
 			{#<img class="ui avatar image" src="{{ asset('assets/images/admin_icon.png') }}">#}
-			<div class="ui avatar image"></div>
-			{{ app.user.username }}
+			<a href="{{ path('user_profile_edit') }}" style="color:inherit;">
+				<div class="ui avatar image"></div>
+				{{ app.user.username }}
+				</a>
 			<div class="iconWrapper" id="getSideBar" onclick="window.location.href='{{ path('logout') }}'"><i class="off icon link"></i></div>
 		</div>
 		<div class="left second">
@@ -85,10 +87,6 @@
 				
 				<a class="item" href="{{ path('data_entry') }}">
 					<i class="keyboard icon"></i> Data Entry
-				</a>
-				
-				<a class="item" href="{{ path('data_entry') }}">
-					<i class="pencil icon"></i> Customer Service
 				</a>
 				
 				<a class="item">
