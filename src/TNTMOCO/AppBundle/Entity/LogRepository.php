@@ -17,7 +17,7 @@ class LogRepository extends EntityRepository
 	/**
 	 * 
 	 * @param string $fileName - Name of file
-	 * @param string $type - Type of file(DL - delivery, PP - postponed, PU - pickup, PDF - single pdf file, DP - file with depots)
+	 * @param string $type - Type of file(DL - delivery, PP - postponed, PU - pickup, CN - pdf file, DP - file with depots)
 	 * @param string $status - Message about status file
 	 * @param integer $user_id
 	 * @param array $errors example: array(array('data'=>'string:Data', 'error'=>'string:Error message'),)
