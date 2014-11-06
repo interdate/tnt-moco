@@ -1,0 +1,132 @@
+{% extends "TNTMOCOAppBundle::backend.layout.html.twig" %}
+
+
+
+
+{% block content %}
+
+
+	<div id="content_wrapper">
+		<div class="headerWrapper">
+			<h4>
+				<i class="ordered list icon"></i>
+				Reports
+			</h4>
+		</div>
+		
+		<div class="desktop" id="reports">
+			<div class="tabSegments">			
+				<div class="ui active tab segment stacked">					
+					<div class="search">
+					
+						<input type="hidden" id="loadDepotsRoute" value="{{ path('users_depots') }}">
+						<input type="hidden" id="userRoute" value="{{ path('users') }}"/>
+												
+							<h3 class="ui header">
+								<i class="search circular icon"></i>
+								Search By Filters
+							</h3>
+						
+							<div class="fieldsWrapper">	
+								<form action="{{ path('reports') }}">							
+								<div class="ui form">
+									
+									<div class="ui three fields">
+										{% if countries|length > 0 %}
+											<div class="field">
+												<select name="country" id="search_country"{% if countries|length == 1 %} style="display:none;"{% endif %}>
+													<option value="">Country</option>
+													{% for country in countries %}
+														<option {% if app.request.get('country') == country.id %}selected="selected" {% endif %}value="{{ country.id }}">{{ country.name }}</option>
+													{% endfor %}
+												</select>
+											</div>										
+										{% endif %}
+										<div class="field">
+											<select name="depot" id="search_depot"{% if not app.request.get('country') %} disabled="disabled"{% endif %}>
+												<option value="">Depot</option>	
+												{% if depots is defined and depots|length %}
+													{% for depot in depots %}
+														<option {% if app.request.get('depot') == depot.id %}selected="selected" {% endif %}value="{{ depot.id }}">{{ depot.name }}</option>
+													{% endfor %}
+												{% endif %}										
+											</select>
+										</div>
+										<div class="field">
+											<input type="text" name="date" id="datepicker" placeholder="Date" value="{{ app.request.get('date') }}">
+										</div>
+									</div>
+									<div class="right">
+										<div class="ui labeled icon blue small button" onclick="$('#reportsSearchSubmit').click();">
+											<i class="inverted search icon"></i>
+											Find
+										</div>
+									</div>
+									<input type="submit" class="hidden" id="reportsSearchSubmit">
+									
+								</div>
+								</form>
+							</div>
+
+						<div class="clear"></div>
+					</div>
+				
+				</div>
+				
+				
+				<div class="ui active tab segment stacked">
+					<div class="ui form" id="reportUserSearch">
+					
+						<h3 class="ui header">
+							<i class="ordered list circular icon"></i>
+							Results
+						</h3>
+					
+						<div class="field" style="width:300px;">
+							<input type="text" class="reportUserSearch" value="" placeholder="Start type to find user...">
+						</div>
+						<table class="ui basic table small usersTable">
+							<thead>
+								<tr>									
+									<th>Username</th>
+									<th>Docs Number</th>
+									<th>Rejected Docs Number</th>
+									<th>Unreadable Docs Number</th>																																
+								</tr>
+							</thead>
+							
+							<tbody class="reportUserList">					
+							{% for user in users %}
+								{% if user.pdfFiles|length > 0 %}
+									{% set rejected = 0 %}
+									{% set unreadable = 0 %}
+									{% for log in user.logs %}
+										{% if log.type.code == 'CN' and log.status.name == 'rejected' %}
+											{% set rejected = rejected + 1 %}
+										{% endif %}
+										{% if log.type.code == 'CN' and log.status.name == 'deleted' %}
+											{% set unreadable = unreadable + 1 %}
+										{% endif %}
+									{% endfor %}					
+									<tr>									
+										<td class="userReport">{{ user.username }}</td>
+										<td>{{ user.pdfFiles|length }}</td>
+										<td>{{ rejected }}</td>
+										<td>{{ unreadable }}</td>
+									</tr>
+								{% endif %}
+							{% endfor %}			
+							</tbody>
+						</table>
+						<input type="hidden" class="entityName" value="User">
+						
+					</div>
+											
+				</div>							
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %} 
+

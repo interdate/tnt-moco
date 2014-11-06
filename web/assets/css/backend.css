@@ -659,7 +659,7 @@ select.countries{
 	width: 32%;
 }
 
-.search .block select{
+.search .block select, #reports .search select{
 	width:260px;
 	max-width:260px;
 }
@@ -772,5 +772,7 @@ select.countries{
 	margin-top: 10px;
 }
 
-
+#content_wrapper #reports.desktop{
+	padding-top: 85px;
+}
 

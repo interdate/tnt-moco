@@ -3,10 +3,15 @@
 namespace TNTMOCO\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Criteria;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+
+use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 
 /**
  * User
@@ -141,15 +146,27 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $pickup = false;
     
+    /**
+     * @var integet
+     * 
+     * @ORM\Column(name="logged_attempt", type="integer")
+     */
+    private $loggedAttempt;
     
+    /**
+     * @ORM\OneToMany(targetEntity="Log", mappedBy="user")
+     */
+    private $logs;
     
+    private $oldPassword;
+
     
     
     /**
      * Constructor
      */
     public function __construct()
-    {    	
+    {	
     	$this->salt = md5(uniqid(null, true));
     	$this->countries = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->imageFiles = new \Doctrine\Common\Collections\ArrayCollection();
@@ -159,6 +176,16 @@ class User implements AdvancedUserInterface, \Serializable
     public function getRoles()
     {
     	return array($this->role->getRole());
+    }
+    
+    public function getRoleSystemName()
+    {
+    	return $this->role->getRole();
+    }
+    
+    public function isAdmin()
+    {
+    	return ($this->role->getRole() == 'ROLE_SUPER_ADMIN' || $this->role->getRole() == 'ROLE_COUNTRY_ADMIN') ? true : false;
     }
     
     /**
@@ -523,6 +550,29 @@ class User implements AdvancedUserInterface, \Serializable
     {
         return $this->pickup;
     }
+    
+    /**
+     * Set loggedAttempt
+     *
+     * @param boolean $loggedAttempt
+     * @return User
+     */
+    public function setLoggedAttempt($loggedAttempt)
+    {
+    	$this->loggedAttempt = $loggedAttempt;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get pickup
+     *
+     * @return boolean
+     */
+    public function getLoggedAttempt()
+    {
+    	return $this->loggedAttempt;
+    }
 
     /**
      * Set country
@@ -621,6 +671,29 @@ class User implements AdvancedUserInterface, \Serializable
     {
         return $this->imageFiles;
     }
+    
+    /**
+     * Set oldPassword
+     *
+     * @param string $oldPassword
+     * @return User
+     */
+    public function setOldPassword($oldPassword)
+    {
+    	$this->oldPassword = $oldPassword;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get oldPassword
+     *
+     * @return string
+     */
+    public function getOldPassword()
+    {
+    	return $this->oldPassword;
+	}
 
     /**
      * Add pdfFiles
@@ -651,7 +724,40 @@ class User implements AdvancedUserInterface, \Serializable
      * @return \Doctrine\Common\Collections\Collection 
      */
     public function getPdfFiles()
+    {	
+    	return $this->pdfFiles;
+    }
+
+    /**
+     * Add openedPdfFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\PdfFile $openedPdfFiles
+     * @return User
+     */
+    public function addOpenedPdfFile(\TNTMOCO\AppBundle\Entity\PdfFile $openedPdfFiles)
     {
-        return $this->pdfFiles;
+        $this->openedPdfFiles[] = $openedPdfFiles;
+
+        return $this;
+    }
+
+    /**
+     * Remove openedPdfFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\PdfFile $openedPdfFiles
+     */
+    public function removeOpenedPdfFile(\TNTMOCO\AppBundle\Entity\PdfFile $openedPdfFiles)
+    {
+        $this->openedPdfFiles->removeElement($openedPdfFiles);
+    }
+
+    /**
+     * Get openedPdfFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOpenedPdfFiles()
+    {
+        return $this->openedPdfFiles;
     }
 }

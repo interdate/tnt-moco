@@ -86,3 +86,7 @@ data_entry_depot:
     path: /dataEntry/depots/{depotId}
     defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:depot, fileId:0, prevFileId:0, reject:false, complete:false}
     
+reports:
+    path:     /reports
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Reports:index }
+    
