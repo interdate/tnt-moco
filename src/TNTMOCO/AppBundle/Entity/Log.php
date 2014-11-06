@@ -24,7 +24,7 @@ class Log
     /**
      * @var string
      *
-     * @ORM\Column(name="fileName", type="string", length=255)
+     * @ORM\Column(name="file_name", type="string", length=255)
      */
     private $fileName;
     

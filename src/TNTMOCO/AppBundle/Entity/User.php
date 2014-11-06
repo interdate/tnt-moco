@@ -3,10 +3,15 @@
 namespace TNTMOCO\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Criteria;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+
+use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 
 /**
  * User
@@ -74,6 +79,16 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\OneToMany(targetEntity="ImageFile", mappedBy="user")
      */
     private $imageFiles;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="PdfFile", mappedBy="user")
+     */
+    private $pdfFiles;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="PdfFile", mappedBy="openedBy")
+     */
+    private $openedPdfFiles;
         
     /**
      * @ORM\ManyToOne(targetEntity="Depot", inversedBy="users")
@@ -139,21 +154,33 @@ class User implements AdvancedUserInterface, \Serializable
     private $loggedAttempt;
     
     private $oldPassword;
+
     
     
     /**
      * Constructor
      */
     public function __construct()
-    {    	
+    {	
     	$this->salt = md5(uniqid(null, true));
     	$this->countries = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->imageFiles = new \Doctrine\Common\Collections\ArrayCollection();
+    	$this->pdfFiles = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     public function getRoles()
     {
     	return array($this->role->getRole());
+    }
+    
+    public function getRoleSystemName()
+    {
+    	return $this->role->getRole();
+    }
+    
+    public function isAdmin()
+    {
+    	return ($this->role->getRole() == 'ROLE_SUPER_ADMIN' || $this->role->getRole() == 'ROLE_COUNTRY_ADMIN') ? true : false;
     }
     
     /**
@@ -661,5 +688,71 @@ class User implements AdvancedUserInterface, \Serializable
     public function getOldPassword()
     {
     	return $this->oldPassword;
+	}
+
+    /**
+     * Add pdfFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\PdfFile $pdfFiles
+     * @return User
+     */
+    public function addPdfFile(\TNTMOCO\AppBundle\Entity\PdfFile $pdfFiles)
+    {
+        $this->pdfFiles[] = $pdfFiles;
+
+        return $this;
+    }
+
+    /**
+     * Remove pdfFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\PdfFile $pdfFiles
+     */
+    public function removePdfFile(\TNTMOCO\AppBundle\Entity\PdfFile $pdfFiles)
+    {
+        $this->pdfFiles->removeElement($pdfFiles);
+    }
+
+    /**
+     * Get pdfFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPdfFiles()
+    {	
+    	return $this->pdfFiles;
+    }
+
+    /**
+     * Add openedPdfFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\PdfFile $openedPdfFiles
+     * @return User
+     */
+    public function addOpenedPdfFile(\TNTMOCO\AppBundle\Entity\PdfFile $openedPdfFiles)
+    {
+        $this->openedPdfFiles[] = $openedPdfFiles;
+
+        return $this;
+    }
+
+    /**
+     * Remove openedPdfFiles
+     *
+     * @param \TNTMOCO\AppBundle\Entity\PdfFile $openedPdfFiles
+     */
+    public function removeOpenedPdfFile(\TNTMOCO\AppBundle\Entity\PdfFile $openedPdfFiles)
+    {
+        $this->openedPdfFiles->removeElement($openedPdfFiles);
+    }
+
+    /**
+     * Get openedPdfFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOpenedPdfFiles()
+    {
+        return $this->openedPdfFiles;
     }
 }

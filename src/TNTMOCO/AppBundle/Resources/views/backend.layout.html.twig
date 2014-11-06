@@ -4,17 +4,22 @@
 
 {% block stylesheets %}
 	<link rel="stylesheet" href="{{ asset('assets/libs/semantic/packaged/css/semantic.css') }}" />
-	<link rel="stylesheet" href="{{ asset('assets/css/perfect-scrollbar.min.css') }}" />
+	<link rel="stylesheet" href="{{ asset('assets/libs/jquery.qtip/jquery.qtip.min.css') }}" />
+	<link rel="stylesheet" href="{{ asset('assets/libs/jquery-ui/css/cupertino/jquery-ui-1.10.4.custom.min.css') }}" />
+	<link rel="stylesheet" href="{{ asset('assets/css/perfect-scrollbar.min.css') }}" />	
 	<link rel="stylesheet" href="{{ asset('assets/css/backend.css') }}" />
 {% endblock %}
 
 
 {% block js %}	
 	<script src="{{ asset('assets/js/jquery.js') }}"></script>        
-	<script src="{{ asset('assets/libs/semantic/packaged/javascript/semantic.js') }}"></script>	
+	<script src="{{ asset('assets/libs/semantic/packaged/javascript/semantic.js') }}"></script>
+	<script src="{{ asset('assets/libs/jquery-ui/js/jquery-ui-1.10.4.custom.min.js') }}"></script>
+	<script src="{{ asset('assets/libs/jquery.qtip/jquery.qtip.min.js') }}"></script>	
 	<script src="{{ asset('assets/js/jquery.address.js') }}"></script>	
 	<script src="{{ asset('assets/js/perfect-scrollbar.min.js') }}"></script>
 	<script src="{{ asset('assets/js/perfect-scrollbar.with-mousewheel.min.js') }}"></script>
+	
 	<script src="{{ asset('assets/js/backend.js') }}"></script>
 	<script src="{{ asset('assets/js/list.min.js') }}"></script>	
 {% endblock %}
@@ -80,8 +85,8 @@
 					<i class="map marker icon"></i> Depots
 				</a>
 				
-				<a class="item">
-					<i class="keyboard icon"></i> Data Entries
+				<a class="item" href="{{ path('data_entry') }}">
+					<i class="keyboard icon"></i> Data Entry
 				</a>
 				
 				<a class="item">

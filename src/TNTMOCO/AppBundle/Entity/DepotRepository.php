@@ -2,8 +2,10 @@
 
 namespace TNTMOCO\AppBundle\Entity;
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
-//use TNTMOCO\AppBundle\Entity\Depot;
+
+
 /**
  * DepotRepository
  *
@@ -85,5 +87,58 @@ class DepotRepository extends EntityRepository
 		}
 		
 		return $root . '/bundles/tntmocoapp/depots/';
+	}
+	
+	public function getOrderedDepots($country, $orderBy, $currentUser, $roleId)
+	{		
+		if($orderBy == 'name'){			
+			$depots =  $this->findBy(
+	    		array('country' => $country),
+	    		array('name' => 'ASC')
+	    	);
+			
+			foreach ($depots as $depot){
+				$this->setDepotPdfFilesNumber($depot, $currentUser, $roleId);
+			}			
+			
+			return $depots;
+		}
+		elseif($orderBy == 'docsNumber'){
+			$depots = $this->findByCountry($country);
+			foreach ($depots as $depot){
+				$this->setDepotPdfFilesNumber($depot, $currentUser, $roleId);
+				$depotsArr[$depot->getId()] = $depot->getPdfFilesNumber();				
+			}
+			
+			asort($depotsArr);
+			$depots = array();
+			
+			foreach ($depotsArr as $depotId => $pdfFilesNumber){
+				$depot = $this->find($depotId);
+				$depot->setPdfFilesNumber($pdfFilesNumber);
+				$depots[] = $depot;			 				
+			}
+			return $depots;
+			
+		}
+		
+	}
+	
+	public function setDepotPdfFilesNumber($depot, $currentUser, $roleId)
+	{
+		$pdfFilesNumber = 0;
+		$roleRepo = $this->getEntityManager()->getRepository('TNTMOCOAppBundle:Role');
+		$roleSystemName = $currentUser->isAdmin() ? $roleRepo->find($roleId)->getRole() : $currentUser->getRoleSystemName();
+		$isRejected = $roleSystemName == 'ROLE_USER' ? false : true;
+		
+		foreach ($depot->getUsers() as $user){
+			foreach ($user->getPdfFiles() as $file){
+				if( (!$file->getIsLocked() || $file->getOpenedBy() == $currentUser) && $file->getIsRejected() == $isRejected  && !$file->getIsCompleted() && !$file->getIsDeleted()){
+					$pdfFilesNumber++;
+				}
+			}
+		}		
+		
+		$depot->setPdfFilesNumber($pdfFilesNumber);		
 	}
 }

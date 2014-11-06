@@ -23,7 +23,6 @@ $(document).ready(
 			modifyUserFormByRole($(this), $('#user_pickup'));
 		});
 		
-		
 		$('.countries_scrollbar, .users_scrollbar').perfectScrollbar({
 			wheelSpeed: 35,			
 			minScrollbarLength: 20
@@ -36,7 +35,11 @@ $(document).ready(
 		$('#search_country').change(function(){			
 			modifySearchFormByRole($('#search_role'), $(this));
 		});
-		
+
+		$('#data_entry_countries,  #data_entry_roles').change(function(){
+			loadDataEntryDepots();			
+		});
+
 		$('#countryAssign').change(function(){
 			var id = $(this).val();
 			$('.chooseCountryId').val(id);
@@ -48,27 +51,36 @@ $(document).ready(
 			});
 		});
 		
+		
+		var options = {
+			object: $('#rejectDoc'),
+			template: $("#rejectionReasonTemplate"),
+			title: 'Rejection Reason',
+		};
+
+		qtipInit(options);
+
 		$('.username').click(function(){
 			if($(this).parent().hasClass('active')){
 				$(this).parent().removeClass('active');
 			}else{
-				if($(this).parent().parent().hasClass('counryAdminsList')){
-					$('.counryAdminsList .item.active').removeClass('active');
+				if($(this).parent().parent().hasClass('countryAdminsList')){
+					$('.countryAdminsList .item.active').removeClass('active');
 				}
 				$(this).parent().addClass('active');
 			}
 		});
 		
-		if($('#usersCounryAdmins').size() > 0){
-			var counryAdminsListOptions = {
+		if($('#usersCountryAdmins').size() > 0){
+			var countryAdminsListOptions = {
 				valueNames: [ 'username' ],
-				searchClass: 'counryAdminsSearch',
-				listClass: 'counryAdminsList',
+				searchClass: 'countryAdminsSearch',
+				listClass: 'countryAdminsList',
 			};
 	
-			var counryAdminsList = new List('usersCounryAdmins', counryAdminsListOptions);
-			counryAdminsList.on('searchComplete', function(){
-				$('#usersCounryAdmins .users_scrollbar').scrollTop(0);
+			var countryAdminsList = new List('usersCountryAdmins', countryAdminsListOptions);
+			countryAdminsList.on('searchComplete', function(){
+				$('#usersCountryAdmins .users_scrollbar').scrollTop(0);
 			});
 		}
 		
@@ -84,10 +96,79 @@ $(document).ready(
 				$('#usersSearch .users_scrollbar').scrollTop(0);
 			});
 		}
-			
+
 	}
 );
 
+function loadDataEntryDepots(){	
+	countryId = $('#data_entry_countries').val();
+	var url = '/dataEntry/countries/' + countryId;
+	
+	if(countryId == '')
+		return;
+	
+	if($('#data_entry_roles').size() > 0){
+		roleId = $('#data_entry_roles').val();
+		if(roleId == '')
+			return;
+				
+		url = url + '/' + roleId;
+	}
+	
+	window.location.href = url;		
+}
+
+
+function qtipInit(options){
+	options.object.qtip({			
+		events: {
+			show: function(){
+				/*
+				$('.qtip .unapprovedPhotoReasonForm .button').unbind('click').click(function(){
+					var photosIds = [];
+					var segments = [];
+					var value = $(item).siblings('.waitingPhotoId').val();
+					var segment = $(item).parents('.waitingPhoto');
+					var reason = $('.qtip .unapprovedPhotoReasonForm select').find(':selected').val();
+					photosIds.push(value);
+					segments.push(segment);
+					executeMultiplePhotosAction('unapprove', photosIds, segments, reason);		
+				});
+				*/
+			},		
+		},
+		content: {
+			text: options.template.html(),
+			title: {
+				text: options.title,
+				button: true
+			}
+		},
+		style: {
+			classes: 'ui-tooltip-shadow ui-tooltip-rounded qtip-bootstrap',
+			tip: {
+	            corner: true,
+	            height: 24
+	        }
+		},
+		position: {
+			my: 'bottom left', // Use the corner...
+			at: 'bottom right', // ...and opposite corner
+			width: 700, 
+			adjust: {
+				y: -250,
+				x: -150
+		    },	
+		},
+		show: {
+			event: 'click',
+			modal: {
+	            on: true		            
+	        }
+		},			
+		hide: false,
+    });
+}
 
 function performEntityMethod(clickedObj, value){		
 	
@@ -480,6 +561,8 @@ function passwordGeneration(){
 		}
 	});
 }
+
+
 
 
 

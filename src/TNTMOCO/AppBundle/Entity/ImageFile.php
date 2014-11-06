@@ -19,9 +19,17 @@ class ImageFile extends File
 	 * @var string
 	 */
 	private $batchCode;
-		
-	public function __construct($type){
-		parent::__construct($type);
+	
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="User", inversedBy="imageFiles")
+	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+	 **/
+	protected $user;
+			
+	
+	public function __construct(){
+		parent::__construct('PU');
 	}
 	
     

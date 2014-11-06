@@ -21,8 +21,6 @@ password_generation:
     path:     /password/generation
     defaults: { _controller: TNTMOCOAppBundle:Backend\Security:passwordGeneration }
     
-    
-    
 countries:
     path:     /countries
     defaults: { _controller: TNTMOCOAppBundle:Backend\Countries:index }
@@ -51,7 +49,6 @@ user_profile_edit:
     path:     /profile/edit
     defaults: { _controller: TNTMOCOAppBundle:Backend\Users:editProfile }
    
-
 users_create:
     path:     /users/create
     defaults: { _controller: TNTMOCOAppBundle:Backend\Users:create }   
@@ -67,7 +64,6 @@ depots:
 users_depots:
    path:     /users/depots
    defaults: { _controller: TNTMOCOAppBundle:Backend\Users:depots }
-
     
 test_files:
     path: /test/files
@@ -77,4 +73,16 @@ display_files:
     path: /files/display/{batchCode}/{fileId}
     defaults: { _controller: TNTMOCOAppBundle:Backend\Files:display }
     
+data_entry:
+    path: /dataEntry
+    defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:index }
+    
+data_entry_country:
+    path: /dataEntry/countries/{countryId}/{roleId}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:country, roleId:0 }     
+
+data_entry_depot:
+    #path: /dataEntry/depots/{depotId}/{fileId}/{prevFileId}/{reject}/{complete}
+    path: /dataEntry/depots/{depotId}
+    defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:depot, fileId:0, prevFileId:0, reject:false, complete:false}
     

@@ -39,6 +39,11 @@ class Depot
      * @ORM\OneToMany(targetEntity="User", mappedBy="depot")     
      */
     private $users;
+    
+    /**
+     * @var integer     
+     */
+    private $pdfFilesNumber = 0;
 
 
     /**
@@ -140,5 +145,14 @@ class Depot
     public function getUsers()
     {
         return $this->users;
+    }
+    
+    public function setPdfFilesNumber($pdfFilesNumber){
+    	$this->pdfFilesNumber = $pdfFilesNumber;
+    }
+    
+    public function getPdfFilesNumber(){    	
+    	
+    	return $this->pdfFilesNumber;
     }
 }

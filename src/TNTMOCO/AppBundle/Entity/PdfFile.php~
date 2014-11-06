@@ -259,28 +259,5 @@ class PdfFile extends File
     public function getComments()
     {
         return $this->comments;
-    }
-
-    /**
-     * Set completedInfo
-     *
-     * @param string $completedInfo
-     * @return PdfFile
-     */
-    public function setCompletedInfo($completedInfo)
-    {
-        $this->completedInfo = $completedInfo;
-
-        return $this;
-    }
-
-    /**
-     * Get completedInfo
-     *
-     * @return string 
-     */
-    public function getCompletedInfo()
-    {
-        return $this->completedInfo;
     }    
 }

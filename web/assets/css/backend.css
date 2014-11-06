@@ -29,7 +29,7 @@ a{
 	float:right;
 }
 
-select{
+select, textarea{
 	-moz-border-radius:6px;
     -webkit-border-radius:6px;
     -khtml-border-radius:6px;
@@ -42,6 +42,11 @@ select{
     font-size: 16px;
     
     -webkit-appearance:none; /* remove the strong OSX influence from Webkit */    
+}
+
+textarea{
+	font-size: 15px;
+	width: 96%;
 }
 
 .rounded{
@@ -241,6 +246,10 @@ body{
 	
 	padding: 141px 25px 25px 25px;	
 	box-sizing: border-box;
+}
+
+#content_wrapper .desktop.dataEntry{
+	padding-top: 85px;
 }
 
 #menu_wrapper .menu{
@@ -660,6 +669,72 @@ select.countries{
 	color: #828282;	
 }
 
+.borBot{
+	border-bottom:1px solid #e0e0e0;
+}
+
+
+.dataEntry .depotsList .ui.label{
+	font-size: 0.7em;
+}
+
+
+.dataEntry .info{
+	color: #666;
+	font-size: 13px;
+}
+
+
+.dataEntry .info span{
+	color: #ff6a14;
+}
+
+/*
+.dataEntry .info.rejected{
+	font-size: 14px;
+}
+*/
+.qtip {
+	max-width:800px;
+}
+
+.rejectionReason{
+	width: 700px;
+	height: 250px;	
+}
+
+.rejectionReason label{
+	margin-top: 10px;
+	font-size: 16px;
+	color: #6B6B6B;
+}
+
+.rejectionReason textarea{
+	height: 80px;
+	margin-bottom: 15px;
+}
+
+.dataEntry .refreshData{
+	margin: 12px 65px 0px 0px;
+}
+
+
+.smallText{
+	font-size: 11px;	
+}
+
+
+.smallText a{
+	color:#6ECFF5;	
+}
+
+.smallText .active{
+	font-weight: bold;
+	color: #00bbff;
+	background: #cff2ff;
+	padding: 2px;	
+}
+
 .countriesAssigning .item.active{
 	background: #6ECFF5;
 	color: #fff;
@@ -688,3 +763,14 @@ select.countries{
 	float:right;
 	color:#fff;
 }
+
+.marL15{
+	margin-left: 20px;
+}
+
+.completedInfo{
+	margin-top: 10px;
+}
+
+
+
