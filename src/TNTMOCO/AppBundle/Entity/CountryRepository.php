@@ -12,4 +12,22 @@ use Doctrine\ORM\EntityRepository;
  */
 class CountryRepository extends EntityRepository
 {
+	public function findByUser($user)
+	{
+		$countries = array();
+		if($user->getRole()->getId() > 1){
+			if(is_object($user->getCountry())){
+				$countries[] = $user->getCountry();
+			}else{
+				if(count($user->getCountries()) > 0){					
+					foreach($user->getCountries() as $userCountry){
+						$countries[] = $userCountry->getCountry();
+					}
+				}
+			}			
+		}else{
+			$countries = $this->findByIsActive(true);
+		}
+		return $countries;
+	}
 }

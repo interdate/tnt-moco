@@ -27,7 +27,12 @@ class RecoveryType extends AbstractType{
 	
     public function buildForm(FormBuilderInterface $builder, array $options){
     	if($this->user){
-    		$builder->add('password', 'text', array('label' => 'New Password', 'data' => '', ));
+    		$builder->add('password', 'repeated', array(
+    			'type' => 'password',
+    			'invalid_message' => 'The password fields must match.',
+    			'first_options'  => array('label' => 'New Password', 'data' => ''),
+    			'second_options' => array('label' => 'Repeat New Password', 'data' => '')
+    		));
     	}else{
 	    	$builder->add('email', 'text', array(
 				'label' => 'Email',

@@ -10,7 +10,7 @@
 		<div class="headerWrapper">
 			<h4>
 				<i class="user icon"></i>
-				{% if app.request.get('userId') %}
+				{% if actionName != 'editProfile' %}
 					Users
 				{% else %}
 					My Profile
@@ -18,16 +18,16 @@
 			</h4>
 		</div>
 		
-		{% if app.request.get('userId') %}
+		{% if actionName != 'editProfile' %}
 			{% set activeTab = actionName == 'create' ? 2 : 0 %}
 					
 			{{ include ('TNTMOCOAppBundle:Backend/Users:mainMenu.html.twig', {'activeTab': activeTab}) }}	
 		{% endif %}
 		
-		<div class="desktop"{% if not app.request.get('userId') %} style="padding-top: 89px;"{% endif %}>
+		<div class="desktop"{% if actionName == 'editProfile' %} style="padding-top: 89px;"{% endif %}>
 			<div class="tabSegments">	
 				<div class="ui active tab segment stacked userProfile">
-				
+					
 					{% if error %}
 						<div class="ui icon message red">
 							<i class="remove sign icon"></i>
@@ -35,6 +35,7 @@
 								<strong>THERE ARE SOME ERRORS:</strong><br>
 								{{ form_errors(userForm.username) }}
 								{{ form_errors(userForm.password)|raw }}
+								{{ form_errors(userForm.oldPassword) }}
 								{{ form_errors(userForm.email) }}
 							</div>
 						</div>
@@ -48,8 +49,8 @@
 							</div>
 						</div>
 					{% endif %}
-					
-					{% if app.request.get('userId') != '' %}
+
+					{% if actionName != 'editProfile' %}
 						{% set actionAttr = (actionName == 'create') ? path('users_create') : path('users_edit', {'userId': app.request.get('userId') }) %}
 					{% else %}
 						{% set actionAttr = '' %}
@@ -99,6 +100,7 @@
 					{% endif %}
 					
 					<form action="{{ actionAttr }}" method="post">
+						<input type="hidden" id="passwordGenerationPath" value="{{ path('password_generation') }}"/>
 						
 						<div class="ui form">
 												
@@ -113,11 +115,24 @@
 									{{ form_widget(userForm.username) }}
 								</div>
 								
+								{% if actionName == 'editProfile' %}
+									<div class="field">
+										{{ form_label(userForm.oldPassword) }}
+										{{ form_widget(userForm.oldPassword) }}
+									</div>
+								{% endif %}
+								
 								<div class="field">
 									{{ form_label(userForm.password) }} {{ actionName == 'create' ? '<span>*</span>' : '' }}
 									{{ form_widget(userForm.password) }}
 								</div>
-								{% if app.request.get('userId') %}
+																
+								<div class="ui labeled icon blue mini button" onclick="passwordGeneration();" style="float:right;">
+									<i class="inverted key icon"></i>
+									Generate password
+								</div>
+								
+								{% if actionName != 'editProfile' %}
 									<div class="field">
 										{{ form_label(userForm.role) }} <span>*</span>
 										<div class="clear"></div>
@@ -154,7 +169,7 @@
 								
 								<div class="clear"></div>
 								
-								{% if app.request.get('userId') %}
+								{% if actionName != 'editProfile' %}
 									{% if actionName == 'edit' %}									
 										{% if editedUser.role.id is defined and editedUser.role.id != 5 %}
 											{% set hidden = 'hidden' %}

@@ -138,7 +138,7 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $loggedAttempt;
     
-    
+    private $oldPassword;
     
     
     /**
@@ -638,5 +638,28 @@ class User implements AdvancedUserInterface, \Serializable
     public function getImageFiles()
     {
         return $this->imageFiles;
+    }
+    
+    /**
+     * Set oldPassword
+     *
+     * @param string $oldPassword
+     * @return User
+     */
+    public function setOldPassword($oldPassword)
+    {
+    	$this->oldPassword = $oldPassword;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get oldPassword
+     *
+     * @return string
+     */
+    public function getOldPassword()
+    {
+    	return $this->oldPassword;
     }
 }

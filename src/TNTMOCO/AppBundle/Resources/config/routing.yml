@@ -13,9 +13,13 @@ login_check:
 logout:
     path: /logout
     
-recovery:
+password_recovery:
     path:     /recovery/{code}
-    defaults: { _controller: TNTMOCOAppBundle:Backend\Security:recovery, code:false }
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Security:passwordRecovery, code:false }
+    
+password_generation:
+    path:     /password/generation
+    defaults: { _controller: TNTMOCOAppBundle:Backend\Security:passwordGeneration }
     
     
     

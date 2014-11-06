@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Form\FormError;
 
 use TNTMOCO\AppBundle\Entity\User;
 use TNTMOCO\AppBundle\Entity\UserCountries;
@@ -28,18 +29,23 @@ class UsersController extends Controller
     	$userRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:User');
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
     	$roleRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Role');
+    	$currentUser = $this->getUser();
     	//$users = $userRepo->findAll();
     	
-    	$countries = $countryRepo->findByIsActive(true);
+    	//$countries = $countryRepo->findByIsActive(true);
+    	$countries = $countryRepo->findByUser($currentUser);
     	$roles = $roleRepo->createQueryBuilder('r')
-		    ->where('r.id > 1')
+		    ->where('r.id > ' . $currentUser->getRole()->getId())
 		    ->orderBy('r.id', 'ASC')
 		    ->getQuery()
     		->getResult();
 		
     	$request = $this->getRequest();
-		$depots = $userRepo->getSearchQuery($request, true);
-		$query = $userRepo->getSearchQuery($request);
+    	if(count($countries) == 1){
+    		$request->request->set('country', $countries[0]->getId());
+    	}
+		$depots = $userRepo->getSearchQuery($request, $currentUser, true);
+		$query = $userRepo->getSearchQuery($request, $currentUser);
     	
     	$paginator  = $this->get('knp_paginator');
     	$users = $paginator->paginate(
@@ -112,6 +118,8 @@ class UsersController extends Controller
     		    		   		
     		if($userForm->isValid()){
     			
+    			$checkOldPassword = ($profile) ? $userRepo->checkUserOldPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword) : true;
+    			
     			$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword);
     			$userRoleSystemName = $user->getRole()->getRole();
     			
@@ -153,7 +161,8 @@ class UsersController extends Controller
     					$user->setDepot(null);
     					break;
     			}
-
+				
+    			
     			$userCountriesRepo->removeUserCountries($user);    			
     			$em->persist($user);
     			$em->flush();
@@ -162,7 +171,13 @@ class UsersController extends Controller
     			   			 
     			$userForm = $this->createForm($formType, $user);    			
     			$choosenRole = '';
-    			$created = true;
+    			if($checkOldPassword){
+    				$created = true;
+    			}else
+    			{
+    				$userForm->get('oldPassword')->addError(new FormError('Old Password is not correct'));
+    				$error = true;
+    			}
     	
     		}
     		else{

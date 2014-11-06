@@ -10,6 +10,7 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use TNTMOCO\AppBundle\Form\Type\RecoveryType;
+use \Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
 //use TNTMOCO\AppBundle\Entity\User;
 
 
@@ -31,8 +32,8 @@ class SecurityController extends Controller{
         return $this->render('TNTMOCOAppBundle:Backend/Security:index.html.twig', $result);              
     }
     
-    public function recoveryAction($code = false){
-    	//var_dump(mail("pavel@interdate-ltd.co.il","Success","Great, Localhost Mail works"));die;
+    public function passwordRecoveryAction($code = false)
+    {
     	if($this->getUser()){
     		return $this->redirect($this->generateUrl('home'));
     	}
@@ -58,7 +59,7 @@ class SecurityController extends Controller{
     		if($form->isValid()){
     			$success = true;    			
     			if($code){
-    				$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword);
+    				$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword, false);
     				$em = $this->getDoctrine()->getManager();
     				$em->persist($user);
     				$em->flush();
@@ -82,84 +83,29 @@ class SecurityController extends Controller{
     			}
     		}
     	}
-    	return $this->render('TNTMOCOAppBundle:Backend/Security:recovery.html.twig', array(
+    	return $this->render('TNTMOCOAppBundle:Backend/Security:passwordRecovery.html.twig', array(
     		'form' => $form->createView(),
     		'success' => $success,
     		'error' => $error,
     		'code' => ($code) ? true : false,
     	));
     }
-    /*
-     public function passwordRecoveryAction(){
-     $success = false;
-     $request = $this->get('request');
     
-     $form = $this->createFormBuilder()
-     ->add('email', 'text', array(
-     'label' => 'Email',
-     'constraints' => array(
-     new Constraints\NotBlank(),
-     new Constraints\Email(array(
-     'message' => 'The email "{{ value }}" is not a valid email.',
-     'checkMX' => true
-     ))
-     )
-     ))
-     ->getForm();
-    
-     if($request->isMethod('POST')){
-     $form->submit($request);
-     if($form->isValid()){
-     $success = true;
-     $formRequect = $request->get('form');
-     $email = $formRequect['email'];
-     $doctrine = $this->getDoctrine();
-     $user = $doctrine->getRepository('D4DAppBundle:Users')->findOneByUseremail($email);
-     if($user){
-     $em = $doctrine->getManager();
-     $factory = $this->get('security.encoder_factory');
-     $encoder = $factory->getEncoder($user);
-     $pass = substr(sha1(uniqid(mt_rand(), true)), 0 , 7);
-     $password = $encoder->encodePassword($pass, $user->getSalt());
-     $user->setUserpass($password);
-     	
-     $em->persist($user);
-     $em->flush();
-     $this->sendMailAction($user, $pass, array('password'));
-     }else{
-     $success = 'error';
-     }
-     }
-     }
-     return $this->render('D4DAppBundle:Frontend/User:recoveryPassword.twig.html', array(
-     'form' => $form->createView(),
-     'success' => $success
-     ));
-     }
-    
-     public function sendMailAction($user, $pass = '', $templates = array()){
-     	if(is_string($templates)) $templates = array($templates);
-     	$templatesRepo = $this->getDoctrine()->getRepository('D4DAppBundle:LangDyncpages');
-    
-     	$code = md5($user->getUseremail() . $user->getUsernic() . $user->getUserId());
-    
-     	$hostName = $this->getRequest()->getHost();
-    
-     	$constantsValues = $templatesRepo->getConstantsValues(array('pass' => $pass, 'code' => $code, 'hostName' => $hostName, 'user' => $user));
-    
-     	if(count($templates)>0){
-     		foreach($templates as $name){
-     			$template = $templatesRepo->findOneByPagename($name);
-     			$body = str_replace($constantsValues['find'], $constantsValues['values'], $template->getPagebody());
-    
-     			$message = \Swift_Message::newInstance()
-     				->setSubject($template->getPagetitle() . ' ' . $hostName)
-     				->setFrom($template->getPagename() . '@' . $hostName)
-     				->setTo($user->getUseremail())
-     				->setBody($body);
-     			$this->get('mailer')->send($message);
-     		}
-     	}
-     }
-     */
+    public function passwordGenerationAction()
+    {
+    	$generator = new ComputerPasswordGenerator();
+    	$generator->setOptions(ComputerPasswordGenerator::OPTION_NUMBERS | ComputerPasswordGenerator::OPTION_UPPER_CASE | ComputerPasswordGenerator::OPTION_LOWER_CASE);
+    	$generator->setLength(8);    	
+    	
+    	while($password = $generator->generatePassword()){
+    		//
+    		if(preg_match('/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[A-Z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[a-z])(?=\S*[\d])|\S*(?=\S*[[:punct:]])(?=\S*[a-z])(?=\S*[A-Z])\S*$/', $password, $matches)){    			
+    			break;
+    		}
+    	}
+    	//var_dump($password);die;
+    	return $this->render('TNTMOCOAppBundle:Backend/Security:passwordGeneration.html.twig', array(
+    			'password' => $password    			
+    	));
+    }
 }

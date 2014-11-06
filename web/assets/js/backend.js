@@ -468,6 +468,19 @@ function confirmTrue(button){
 	button.click();
 }
 
+function passwordGeneration(){
+	$.ajax({
+		type: 'post',
+		url: $('#passwordGenerationPath').val(),
+		success: function(data){
+			if($(data).find('#password').size() > 0){
+				var pas = $(data).find('#password').text();
+				$('#user_password').val(pas);
+			}
+		}
+	});
+}
+
 
 
 

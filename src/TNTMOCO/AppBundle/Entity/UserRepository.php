@@ -119,17 +119,39 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		}
 	}
 	
-	public function setUserPassword($user, $factory, $encodedPassword)
+	public function setUserPassword($user, $factory, $encodedPassword, $userIsLogged = true)
 	{
 		$password = $user->getPassword();
 		$encoder = $factory->getEncoder($user);		
 		
 		if(!empty($password)){ 
 			$encodedPassword = $encoder->encodePassword($password, $user->getSalt());
-			$user->setIsNonLocked(true);
+			if($userIsLogged){
+				$user->setIsNonLocked(true);
+			}
 		}	
 		
 		$user->setPassword($encodedPassword);
+	}
+	
+	public function checkUserOldPassword($user, $factory, $encodedPassword)
+	{
+		$password = $user->getPassword();
+		$oldPassword = $user->getOldPassword();
+		$encoder = $factory->getEncoder($user);
+		
+		if(!empty($password) and !empty($oldPassword)){
+			$encodedOldPassword = $encoder->encodePassword($oldPassword, $user->getSalt());
+			if($encodedOldPassword != $encodedPassword){
+				$user->setPassword('');
+				return false;
+			}			
+		}
+		if(!empty($password) and empty($oldPassword)){
+			$user->setPassword('');
+			return false;
+		}
+		return true;
 	}
 	
 	public function createUserCountriesCollection($user)
@@ -145,12 +167,12 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		}		
 	}
 	
-	public function getSearchQuery($request, $depotsReturn = false)
+	public function getSearchQuery($request, $currentUser, $depotsReturn = false)
 	{
 		$em = $this->getEntityManager();
 		$countryRepo = $em->getRepository('TNTMOCOAppBundle:Country');
 		$depotRepo = $em->getRepository('TNTMOCOAppBundle:Depot');
-		
+		$currentRole = $currentUser->getRole()->getId();
 		
 		$property = $request->get('property');
 		$role = $request->get('role');
@@ -162,6 +184,15 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		 
 		$where = array();
 		
+		if($currentRole > 1){
+			$countries = $countryRepo->findByUser($currentUser);
+			if(count($countries) > 1){
+				foreach ($countries as $country){
+					$country_ids[] = $country->getId();
+				}
+				$where[] = array('country',$country_ids);
+			}
+		}
 		if($depotsReturn){
 			$depots = array();
 			if($role == 5 and (int)$country_id > 0){
@@ -175,6 +206,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		}
 		if((int)$role > 0){
 			$where[] = array('role',$role);
+		}else{
+			$where[] = array('role', $currentRole);
 		}
 		if((int)$country_id > 0){
 			$where[] = array('country',$country_id);
@@ -188,17 +221,28 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		if(count($where) > 0){
 			foreach ($where as $row){
 				if($row[0] == 'country'){
-					$whereStrArr[] = ' (u.' . $row[0] . ' = :' . $row[0] . ' OR uc.' . $row[0] . ' = :countries)';
+					if(is_array($row[1])){
+						foreach($row[1] as $key => $val){
+							$countryWhere[] = 'u.' . $row[0] . ' = :' . $row[0] . $key . ' OR uc.' . $row[0] . ' = :countries' . $key;
+						}
+						$whereStrArr[] = ' (' . implode(' OR ', $countryWhere) . ')';
+					}else{
+						$whereStrArr[] = ' (u.' . $row[0] . ' = :' . $row[0] . ' OR uc.' . $row[0] . ' = :countries)';
+					}
 				}elseif((int)$row[1] == 0){
 					$whereStrArr[] = ' u.' . $row[0] . ' LIKE :' . $row[0];
+				}elseif($row[0] == 'role' and $row[1] == $currentRole){
+					$whereStrArr[] = ' u.' . $row[0] . ' > :' . $row[0];
 				}else{
 					$whereStrArr[] = ' u.' . $row[0] . ' = :' . $row[0];
 				}
 			}
 		}
+		//$whereStrArr[] = ' u.role != :super';
+		
 		$whereStr = (count($where) > 0) ? ' WHERE' . implode(' AND', $whereStrArr) : '';
 		
-		if((int)$country_id > 0){
+		if((int)$country_id > 0 or isset($country_ids)){
 			$whereStr = ' LEFT JOIN u.countries uc' . $whereStr;
 		}
 		 
@@ -208,12 +252,20 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		 
 		if(count($where) > 0){
 			foreach ($where as $row){
-				$query->setParameter($row[0], $row[1]);
-				if($row[0] == 'country'){
-					$query->setParameter('countries', $row[1]);
+				if($row[0] == 'country' and is_array($row[1])){
+					foreach($row[1] as $key => $val){
+						$query->setParameter($row[0] . $key, $val);
+						$query->setParameter('countries' . $key, $val);
+					}
+				}else{
+					$query->setParameter($row[0], $row[1]);
+					if($row[0] == 'country'){
+						$query->setParameter('countries', $row[1]);
+					}
 				}
 			}
 		}
+		//$query->setParameter('super', 1);
 		return $query;
 	}
 	

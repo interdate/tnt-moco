@@ -684,3 +684,7 @@ select.countries{
 	padding-left: 15px;
 }
 
+.passwordRecovery{
+	float:right;
+	color:#fff;
+}

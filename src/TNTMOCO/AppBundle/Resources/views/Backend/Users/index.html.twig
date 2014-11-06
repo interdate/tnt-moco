@@ -57,14 +57,16 @@
 									</div>
 									
 									<div class="ui two fields">
-										<div class="field">
-											<select name="country" id="search_country">
-												<option value="">Country</option>
-												{% for country in countries %}
-													<option {% if app.request.get('country') == country.id %}selected="selected" {% endif %}value="{{ country.id }}">{{ country.name }}</option>
-												{% endfor %}
-											</select>
-										</div>
+										{% if countries|length > 0 %}
+											<div class="field">
+												<select name="country" id="search_country"{% if countries|length == 1 %} style="display:none;"{% endif %}>
+													<option value="">Country</option>
+													{% for country in countries %}
+														<option {% if app.request.get('country') == country.id %}selected="selected" {% endif %}value="{{ country.id }}">{{ country.name }}</option>
+													{% endfor %}
+												</select>
+											</div>										
+										{% endif %}
 										<div class="field">
 											<select name="depot" id="search_depot"{% if app.request.get('role') != 5 %} disabled="disabled"{% endif %}>
 												<option value="">Depot</option>	
