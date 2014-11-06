@@ -153,6 +153,11 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $loggedAttempt;
     
+    /**
+     * @ORM\OneToMany(targetEntity="Log", mappedBy="user")
+     */
+    private $logs;
+    
     private $oldPassword;
 
     
@@ -166,6 +171,7 @@ class User implements AdvancedUserInterface, \Serializable
     	$this->countries = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->imageFiles = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->pdfFiles = new \Doctrine\Common\Collections\ArrayCollection();
+    	$this->logs = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     public function getRoles()
@@ -754,5 +760,38 @@ class User implements AdvancedUserInterface, \Serializable
     public function getOpenedPdfFiles()
     {
         return $this->openedPdfFiles;
+    }
+
+    /**
+     * Add logs
+     *
+     * @param \TNTMOCO\AppBundle\Entity\Log $logs
+     * @return User
+     */
+    public function addLog(\TNTMOCO\AppBundle\Entity\Log $logs)
+    {
+        $this->logs[] = $logs;
+
+        return $this;
+    }
+
+    /**
+     * Remove logs
+     *
+     * @param \TNTMOCO\AppBundle\Entity\Log $logs
+     */
+    public function removeLog(\TNTMOCO\AppBundle\Entity\Log $logs)
+    {
+        $this->logs->removeElement($logs);
+    }
+
+    /**
+     * Get logs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLogs()
+    {
+        return $this->logs;
     }
 }

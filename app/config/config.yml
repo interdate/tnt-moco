@@ -95,11 +95,11 @@ sensio_framework_extra:
 knp_snappy:
     pdf:
         enabled:    true
-        binary:     /usr/local/bin/wkhtmltopdf
+        binary:     C:\wkhtmltopdf\bin\wkhtmltopdf
         options:    []
     image:
         enabled:    true
-        binary:     /usr/local/bin/wkhtmltoimage
+        binary:     C:\wkhtmltopdf\bin\wkhtmltoimage
         options:    []
         
 services:    

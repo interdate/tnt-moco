@@ -181,7 +181,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		 
 		$field = $request->get('field');
 		$value = $request->get('value');
-		 
+		$date = $request->get('date');
+		
 		$where = array();
 		
 		if($currentRole > 1){
@@ -193,6 +194,11 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 				$where[] = array('country',$country_ids);
 			}
 		}
+		
+		if($currentRole > 2 or ($currentRole == 2 and (int)$country_id > 0 and !in_array($country_id, $country_ids))){
+			return $em->createQuery('SELECT u FROM TNTMOCOAppBundle:User u WHERE u.id = :id')->setParameter('id', 0);
+		}
+		
 		if($depotsReturn){
 			$depots = array();
 			if($role == 5 and (int)$country_id > 0){
@@ -241,12 +247,17 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		//$whereStrArr[] = ' u.role != :super';
 		
 		$whereStr = (count($where) > 0) ? ' WHERE' . implode(' AND', $whereStrArr) : '';
-		
+		$join = '';
 		if((int)$country_id > 0 or isset($country_ids)){
-			$whereStr = ' LEFT JOIN u.countries uc' . $whereStr;
+			$join = ' LEFT JOIN u.countries uc';
+		}
+		
+		if($date != null){
+			$join .= ' LEFT JOIN u.pdfFiles pf';
+			$whereStr .= ' AND pf.datetime > :date1 AND pf.datetime < :date2';
 		}
 		 
-		$dql   = "SELECT u FROM TNTMOCOAppBundle:User u" . $whereStr;
+		$dql   = "SELECT u FROM TNTMOCOAppBundle:User u" . $join . $whereStr;
 		//var_dump($dql);die;
 		$query = $em->createQuery($dql);
 		 
@@ -264,6 +275,11 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 					}
 				}
 			}
+		}
+		if($date != null){
+			$date = date('Y-m-d', strtotime($date));
+			$query->setParameter('date1', $date);
+			$query->setParameter('date2', date('Y-m-d', strtotime("+1 day", strtotime($date))));
 		}
 		//$query->setParameter('super', 1);
 		return $query;

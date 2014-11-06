@@ -96,6 +96,21 @@ $(document).ready(
 				$('#usersSearch .users_scrollbar').scrollTop(0);
 			});
 		}
+		
+		if($('#reportUserSearch').size() > 0){
+			var reportUserOptions = {
+				valueNames: [ 'userReport' ],
+				searchClass: 'reportUserSearch',
+				listClass: 'reportUserList',
+			};
+	
+			var usersList = new List('reportUserSearch', reportUserOptions);
+			//usersList.on('searchComplete', function(){
+			//	$('#usersSearch .users_scrollbar').scrollTop(0);
+			//});
+		}
+		
+		$( "#datepicker" ).datepicker();
 
 	}
 );
@@ -294,6 +309,9 @@ function modifySearchFormByRole(roleWrapper, countryWrapper){
 	var roleId = roleWrapper.val();
 	var countryId = countryWrapper.val();
 	
+	if(roleWrapper.size() == 0){
+		roleId = 5;
+	}
 	if(roleId != 5 || !countryId.length){
 		$('#search_depot').val('').html('<option value="">Depot</option>').attr('disabled','disabled');
 		return;
@@ -317,14 +335,7 @@ function modifySearchFormByRole(roleWrapper, countryWrapper){
 			alert(response.responseText);
 		},
 		success: function(data){
-			//console.log($(data).find('#user_depot').html() );
-			//$('.er').html(data);
-			//return;
-			
-			//$('#search_depot').replaceWith( $(data).find('#user_depot') );	
-			$('#search_depot').parent().html(data).trigger('create');
-			//$('#search_depot').parent().show();
-					
+			$('#search_depot').parent().html(data).trigger('create');		
 		}
 	});
 	/*

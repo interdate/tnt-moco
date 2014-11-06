@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
- * TextFile
+ * PdfFile
  *
  * @ORM\Table(name="File")
  * @ORM\Entity(repositoryClass="TNTMOCO\AppBundle\Entity\PdfFileRepository")
