@@ -58,7 +58,8 @@ class DataEntryController extends Controller
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
     	$depotRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Depot');
     	$fileRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:PdfFile');
-    	$reasonRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:RejectionReason');    	
+    	$reasonRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:RejectionReason');
+    	$logRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Log');    	
     	$countries = $countryRepo->findByIsActive(true);
     	$depot = $depotRepo->find($depotId);
     	 
@@ -73,8 +74,6 @@ class DataEntryController extends Controller
     		'depot' => $depot,
     		'orderBy' => $orderBy,
     	);
-    	
-    	
     	
     	$files = $fileRepo->getFiles($currentUser, $usersIds, $prevFileId, 1, $roleId);
     
@@ -93,6 +92,8 @@ class DataEntryController extends Controller
 	    			$prevFile->setRejectionReason($reason);
     			}    			
     			$prevFile->setComments($comments);
+    			
+    			$logRepo->saveLog($prevFile->getId(), 'CN', 'rejected', $prevFile->getUser()->getId());
     		}
     		else{
     			$completedInfo = $request->request->get('completedInfo', null);
@@ -106,9 +107,11 @@ class DataEntryController extends Controller
     
     		if( ($complete || $delete) && is_file($prevFile->getAbsolutePath())){
     			unlink($prevFile->getAbsolutePath());
+    			if($delete){
+    				$logRepo->saveLog($prevFile->getId(), 'CN', 'deleted', $prevFile->getUser()->getId());
+    			}
     		}
-    	}
-    	
+    	}    	
     	
     	if($prevFileId > 0 && empty($files[0])){
     		$prevFileId = 0;
