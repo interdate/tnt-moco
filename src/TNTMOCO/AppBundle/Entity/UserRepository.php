@@ -195,7 +195,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 			}
 		}
 		
-		if($currentRole > 2 or ($currentRole == 2 and (int)$country_id > 0 and !in_array($country_id, $country_ids))){
+		if($currentRole > 2 or ($currentRole == 2 and (int)$country_id > 0 and ((isset($country_ids) and !in_array($country_id, $country_ids)) or (count($countries) > 1 and $country_id != $countries[0]->getId())))){
 			return $em->createQuery('SELECT u FROM TNTMOCOAppBundle:User u WHERE u.id = :id')->setParameter('id', 0);
 		}
 		

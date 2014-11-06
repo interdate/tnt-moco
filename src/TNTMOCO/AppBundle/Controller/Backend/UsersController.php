@@ -67,7 +67,7 @@ class UsersController extends Controller
     	$user = new User();
     	$em = $this->getDoctrine()->getManager();
     	
-    	return $this->handleUserAction($user, new UserType($em, $user));
+    	return $this->handleUserAction($user, new UserType($em, $user, $this->getUser()));
     }
     
     public function editAction($userId)
@@ -76,7 +76,7 @@ class UsersController extends Controller
     	$em = $this->getDoctrine()->getManager();
     	$user = $userRepo->find($userId);    	
     	
-    	return $this->handleUserAction($user, new EditUserType($em, $user));
+    	return $this->handleUserAction($user, new EditUserType($em, $user, $this->getUser()));
     }
     
     
@@ -121,7 +121,7 @@ class UsersController extends Controller
     			$checkOldPassword = ($profile) ? $userRepo->checkUserOldPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword) : true;
     			
     			$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword);
-    			$userRoleSystemName = $user->getRole()->getRole();
+    			$userRoleSystemName = $user->getRoleSystemName();
     			
     			switch ($userRoleSystemName){
     				case 'ROLE_COUNTRY_ADMIN':    					
@@ -190,10 +190,7 @@ class UsersController extends Controller
     			$role = $roleRepo->find($choosenRole);	
     			$user->setRole($role);
     		}    		
-    	}    
-
-    	
-    	   	
+    	}  	
     	
     	return $this->render('TNTMOCOAppBundle:Backend/Users:profile.html.twig', array(
     		'actionName' => $actionName,

@@ -21,9 +21,10 @@ class UserType extends AbstractType{
 	protected $em;
 	protected $user;
 
-	public function __construct($em, $user){
+	public function __construct($em, $user, $currentUser){
 		$this->em = $em;
 		$this->user = $user;
+		$this->currentUser = $currentUser;
 	}
 	
     public function buildForm(FormBuilderInterface $builder, array $options){
@@ -39,7 +40,7 @@ class UserType extends AbstractType{
     		'property' => 'name',
     		'query_builder' => function(EntityRepository $er) {
     			return $er->createQueryBuilder('r')
-    			->where('r.id > ' . $user->getRole()->getId());
+    			->where('r.id > ' . $this->currentUser->getRole()->getId());
     		},
     	));
     	
@@ -48,21 +49,19 @@ class UserType extends AbstractType{
     	$builder->add('email', 'text', array('label' => 'E-mail'));
     	$builder->add('phone', 'text', array('label' => 'Phone'));
     	
-    	
     	$builder->add('country', 'entity', array(
     		'label' => 'Country',
     		'required' => false,
     		'multiple' => false,
     		'expanded' => false,
     		'empty_value' => 'Choose a Country',
-    		'class' => 'TNTMOCOAppBundle:Country',    		
-    		'property' => 'name',    			
+    		'class' => 'TNTMOCOAppBundle:Country',
+    		'property' => 'name',
     		'query_builder' => function(EntityRepository $er) {
-    			return $er->createQueryBuilder('c')    			
+    			return $er->createQueryBuilder('c')
     			->where('c.isActive = 1');
-    		},    		
+    		},
     	));
-    	
     	
     	$builder->add('countries', 'entity', array(
     		'label' => 'Countries',
@@ -75,7 +74,36 @@ class UserType extends AbstractType{
     			return $er->createQueryBuilder('c')
     			->where('c.isActive = 1');
     		},
-    	));  	
+    	));
+    	
+    	
+    	
+    	if($this->currentUser->getRoleSystemName() == 'ROLE_COUNTRY_ADMIN'){
+    		    		
+    		$countries = $this->em->getRepository('TNTMOCOAppBundle:Country')->findByUser($this->currentUser);
+	    	if(count($countries) == 1){
+	    		$this->currentUser->setCountry($countries[0]);
+	    	}
+	    	elseif(count($countries) > 1){
+	    		$builder->add('country', 'entity', array(
+	    			'label' => 'Country',
+	    			'required' => false,
+	    			'multiple' => false,
+	    			'expanded' => false,
+	    			'empty_value' => 'Choose a Country',
+	    			'class' => 'TNTMOCOAppBundle:Country',
+	    			'property' => 'name',
+	    			'query_builder' => function(EntityRepository $er) {
+	    				return $er->createQueryBuilder('c')
+	    				->where('c.isActive = 0');
+	    			},
+	    			'choices' => $countries,
+	    		));	    		
+	    	}
+    	}
+    	
+
+    	//$this->modifyFormByRole($builder, $builder->getForm()->get('role'));
     	
 
     	$builder->add('pickup', 'checkbox', array(
