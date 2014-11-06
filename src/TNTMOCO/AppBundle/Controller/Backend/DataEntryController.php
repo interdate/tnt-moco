@@ -10,30 +10,34 @@ use TNTMOCO\AppBundle\Entity\PdfFile;
 class DataEntryController extends Controller
 {
     public function indexAction()
-    {    	
-    	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
-    	$countries = $countryRepo->findByIsActive(true);
-    	$data = array('countries' => $countries);
+    {	
+    	$data = array();
     	$data = $this->tryDefineRoles($data);
+    	$data = $this->defineCountries($data);
+    	
+    	if(!isset($data['roles'])){
+    		return $this->redirect($this->generateUrl('data_entry_country', array('countryId' => $this->getUser()->getCountry()->getId())));
+    	}
+    	
     	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:index.html.twig', $data);
     }
     
     public function countryAction($countryId, $roleId)
     {
     	$request = $this->getRequest();
-    	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
     	$depotRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Depot');
-    	$countries = $countryRepo->findByIsActive(true);
+    	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
+    	//$countries = $countryRepo->findByIsActive(true);
     	$country = $countryRepo->find($countryId);
     	$orderBy = $request->query->get('orderBy', 'name');
-    	$depots = $depotRepo->getOrderedDepots($country, $orderBy, $this->getUser(), $roleId);    	
+    	$depots = $depotRepo->getOrderedDepots($country, $orderBy, $this->getUser(), $roleId);
     	
-    	$data = array(
-    		'countries' => $countries,
+    	$data = array(    		
     		'depots' => $depots,
     		'orderBy' => $orderBy,
-    	);    	
-    	
+    	);
+
+		$data = $this->defineCountries($data);    	
     	$data = $this->tryDefineRoles($data);
     	    	    	 
     	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:index.html.twig', $data);
@@ -60,7 +64,7 @@ class DataEntryController extends Controller
     	$fileRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:PdfFile');
     	$reasonRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:RejectionReason');
     	$logRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Log');    	
-    	$countries = $countryRepo->findByIsActive(true);
+    	//$countries = $countryRepo->findByIsActive(true);    	
     	$depot = $depotRepo->find($depotId);
     	 
     	$usersIds = array();
@@ -69,8 +73,7 @@ class DataEntryController extends Controller
     		$usersIds[] = $user->getId();
     	}
     	 
-    	$data = array(
-    		'countries' => $countries,
+    	$data = array(    		
     		'depot' => $depot,
     		'orderBy' => $orderBy,
     	);
@@ -133,9 +136,41 @@ class DataEntryController extends Controller
     	 
     	$data['depots'] = $depotRepo->getOrderedDepots($depot->getCountry(), $orderBy, $currentUser, $roleId);
     	 
+    	$data = $this->defineCountries($data);
     	$data = $this->tryDefineRoles($data);
     
     	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:index.html.twig', $data);
+    }
+    
+    public function tryDefineRoles($data)
+    {
+    	if($this->getUser()->isAdmin()){
+    		$qb = $this->getDoctrine()
+    		->getRepository('TNTMOCOAppBundle:Role')
+    		->createQueryBuilder('r');
+    			
+    		$qb->where(
+    			$qb->expr()->in('r.id', array(3,4))
+    		);
+    		 
+    		$data['roles'] = $qb->getQuery()->getResult();
+    	}
+    	return $data;
+    }
+    
+    public function defineCountries($data)
+    {
+    	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
+    	$countries = $countryRepo->findByUser($this->getUser());
+    	
+    	if(count($countries) == 1){
+    		$this->getUser()->setCountry($countries[0]);
+    	}
+    	else{
+    		$data['countries'] = $countries;
+    	}
+    	
+    	return $data;
     }
     
     
@@ -234,21 +269,7 @@ class DataEntryController extends Controller
     }
     */
     
-    public function tryDefineRoles($data)
-    {
-    	if($this->getUser()->isAdmin()){	
-    		$qb = $this->getDoctrine()
-    			->getRepository('TNTMOCOAppBundle:Role')
-    			->createQueryBuilder('r');
-    		    	
-    		$qb->where(
-    			$qb->expr()->in('r.id', array(3,4))
-    		);
-    		    		 
-    		$data['roles'] = $qb->getQuery()->getResult();
-    	}    	
-    	return $data;
-    }
+    
 }
 
 

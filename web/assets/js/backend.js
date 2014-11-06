@@ -36,7 +36,7 @@ $(document).ready(
 			modifySearchFormByRole($('#search_role'), $(this));
 		});
 
-		$('#data_entry_countries,  #data_entry_roles').change(function(){
+		$('#data_entry_country,  #data_entry_role').change(function(){
 			loadDataEntryDepots();			
 		});
 
@@ -101,18 +101,18 @@ $(document).ready(
 );
 
 function loadDataEntryDepots(){	
-	countryId = $('#data_entry_countries').val();
+	countryId = $('#data_entry_country').val();
 	var url = '/dataEntry/countries/' + countryId;
 	
 	if(countryId == '')
 		return;
 	
-	if($('#data_entry_roles').size() > 0){
-		roleId = $('#data_entry_roles').val();
+	if($('#data_entry_role').size() > 0){
+		roleId = $('#data_entry_role').val();
 		if(roleId == '')
 			return;
 				
-		url = url + '/' + roleId;
+		url = url + '/' + roleId; 
 	}
 	
 	window.location.href = url;		

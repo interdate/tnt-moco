@@ -45,7 +45,7 @@ security:
         - { path: ^/recovery, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/files/display, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/test/files, roles: ROLE_COURIER }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/, roles: [ROLE_USER, ROLE_CUSTOMER_SERVICE] }
         
                 
         

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a1acff4c3452bca9af94e146bb5e9d01",
+    "hash": "f5bb7412775b7b3ef9a2581d8e031c6b",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2735,9 +2735,7 @@
             "time": "2014-09-22 14:56:14"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "nelmio/api-doc-bundle": 20,
@@ -2748,7 +2746,5 @@
     "platform": {
         "php": ">=5.3.3"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }
