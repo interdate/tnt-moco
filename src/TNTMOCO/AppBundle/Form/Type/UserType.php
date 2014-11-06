@@ -39,7 +39,7 @@ class UserType extends AbstractType{
     		'property' => 'name',
     		'query_builder' => function(EntityRepository $er) {
     			return $er->createQueryBuilder('r')
-    			->where('r.id > 1');
+    			->where('r.id > ' . $user->getRole()->getId());
     		},
     	));
     	
