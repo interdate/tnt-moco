@@ -5,7 +5,7 @@
 							<div class="content">	
 								{% if alreadyAssignedAdmins.admins %}					    
 									<strong>WARNING! THIS USER HAS NOT BEEN ASSIGNED YET</strong> <br>																
-									There are <strong>country admins</strong> already assigned to chosen country: <br>
+									There are <strong>country admin</strong> already assigned to chosen country: <br>
 									{% for admin in alreadyAssignedAdmins.admins %}								
 										User <strong>{{ admin.username }}</strong> assigned to [{{ admin.countries|join(', ') }}]<br>									
 									{% endfor %}
@@ -27,7 +27,7 @@
 								{% if alreadyAssignedAdmins.users %}					    
 									<strong>WARNING! ONLY THESE USERS HAVE NOT BEEN ASSIGNED YET</strong> <br>	
 									<!-- need added text -->															
-									There are <strong>users</strong> already assigned to another country: <br>
+									There are <strong>users</strong> already assigned to another countries: <br>
 									{% set usersId = '' %}
 									{% for user in alreadyAssignedAdmins.users %}
 										{% if usersId != '' %}																		
