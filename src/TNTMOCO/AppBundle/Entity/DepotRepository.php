@@ -24,7 +24,7 @@ class DepotRepository extends EntityRepository
 			$file = $uploadedFile['file'];
 			if($file)
 			{
-				$message['success'][] = 'File upload success';
+				//$message['success'][] = 'File upload success';
 				/*$name = $file->getClientOriginalName();
 				 $file->move($this->getDepotsPath($_SERVER['DOCUMENT_ROOT']), 'upload_' . $name);
 				 chmod($this->getDepotsPath($_SERVER['DOCUMENT_ROOT']) . 'upload_' . $name, 0777);*/
@@ -63,16 +63,16 @@ class DepotRepository extends EntityRepository
 							$depot->setName($workSheet->getCellByColumnAndRow(1, $row)->getValue());
 							$em->persist($depot);
 							$em->flush();
-							$message['success'][] = 'Deports upload success';
+							$message['success'][0] = 'The depots have been uploaded successfully';
 						}
 					}
 				}
 				if(count($data) > 0)
 				{
-					$message['error'] = array('message'=>'File have error Data:', 'data'=>array());//$data
+					$message['error'] = array('message'=>'The file has a data error', 'data'=>array());//$data
 				}
 				
-				$logRepo->saveLog($file->getClientOriginalName(), 'DP', 'Upload process succeeded', $userId, $data);
+				$logRepo->saveLog($file->getClientOriginalName(), 'DP', 'The depots have been uploaded successfully', $userId, $data);
 			}
 		}
 		

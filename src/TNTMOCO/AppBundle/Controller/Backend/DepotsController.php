@@ -24,8 +24,7 @@ class DepotsController extends Controller
 				$message = $depotsRepo->saveDepots($request->files,$this->get('phpexcel'),$this->getUser()->getId());				
 			}
 		}
-		//$logRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Log');
-		//$logRepo->saveLog('test.pdf','PDF','Upload process succeeded');
+		
 		return $this->render('TNTMOCOAppBundle:Backend/Depots:index.html.twig', array('form' => $form->createView(), 'message' => $message));
 	}
 	

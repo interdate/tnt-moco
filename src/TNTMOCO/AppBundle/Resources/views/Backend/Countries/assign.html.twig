@@ -40,12 +40,12 @@
 							<i class="warning icon"></i>
 							<div class="content">						    
 								<strong>WARNING! THIS USER HAS NOT BEEN CREATED YET</strong> <br>																
-								There are <strong>country admins</strong> already assigned to some of choosen countries: <br>
+								There are <strong>country admins</strong> already assigned to chosen country: <br>
 								
 								{% for admin in alreadyAssignedAdmins %}								
 									User <strong>{{ admin.username }}</strong> assigned to [{{ admin.countries|join(', ') }}]<br>									
 								{% endfor %}								
-								Please confirm your action if you want choosen countries will be assigned to new user.
+								Please confirm your action if you want chosen country to be assigned to new user.
 								
 								
 								<br>
