@@ -78,7 +78,15 @@ class DataEntryController extends Controller
     		'orderBy' => $orderBy,
     	);
     	
+    	/*
+    	print_r($usersIds);
+    	die;
+    	*/
+    	
+    	
     	$files = $fileRepo->getFiles($currentUser, $usersIds, $prevFileId, 1, $roleId);
+    	//echo $files[0]->getId();
+    	//die;
     
     	if(!empty($prevFileId)){
     		$prevFile = $fileRepo->find($prevFileId);
@@ -171,6 +179,51 @@ class DataEntryController extends Controller
     	}
     	
     	return $data;
+    }
+    
+    public function totalNumberAction(){
+    	$currentUser = $this->getUser();
+    	$roleSystemName = $currentUser->getRoleSystemName();
+    	$depotRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Depot');
+    	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');    	
+    	$totalNumber = 0;
+    	$depots = array();
+    	
+    	
+    	if($roleSystemName == 'ROLE_SUPER_ADMIN'){
+    		$depots = $depotRepo->findAll();    		
+    	}
+    	else{
+    		$countries = $countryRepo->findByUser($this->getUser());
+    		foreach ($countries as $country){
+    			foreach ($country->getDepots() as $depot){
+    				$depots[] = $depot;
+    			}
+    		}
+    	}
+    	
+    	$isRejected = false;
+    	
+    	foreach ($depots as $depot){
+    		//$depotRepo->setDepotPdfFilesNumber($depot, $currentUser, $currentUser->getRole()->getId());
+    		//echo $depot->getPdfFilesNumber() . '<br>';
+    		$pdfFilesNumber = 0;
+    		
+    		foreach ($depot->getUsers() as $user){
+    			foreach ($user->getPdfFiles() as $file){
+    				if( (!$file->getIsLocked() || $file->getOpenedBy() == $currentUser) && $file->getIsRejected() == $isRejected  && !$file->getIsCompleted() && !$file->getIsDeleted()){
+    					$pdfFilesNumber++;
+    				}
+    			}
+    		}
+    		
+    		$totalNumber += $pdfFilesNumber;
+    	}    	
+    	
+    	    	
+    	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:totalNumber.html.twig', array(
+    		'totalNumber' => $totalNumber,
+    	));
     }
     
     

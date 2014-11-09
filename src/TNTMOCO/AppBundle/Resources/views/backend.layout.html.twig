@@ -57,7 +57,7 @@
 	
 		<div id="menu_wrapper">
 		
-			<div class="ui vertical small menu inverted">
+			<div class="ui vertical small menu inverted mainMenu">
 				{#
 				<div class="header item">
 					<i class="tasks icon"></i>
@@ -65,11 +65,13 @@
 				</div>
 				#}
 				
+				{#
 				<a class="item" href="{{ path('home') }}">
 					<i class="home icon"></i> Home
 				</a>
+				#}
 				
-				{% if app.user.isGranted("ROLE_SUPER_ADMIN") or app.user.isGranted("ROLE_COUNTRY_ADMIN") %}
+				{% if app.user.isAdmin %}
 				<a class="item" href="{{ path('users') }}">
 					<i class="user icon"></i> Users
 				</a>
@@ -81,21 +83,28 @@
 				</a>
 				{% endif %}
 				
+				{% if app.user.isGranted("ROLE_SUPER_ADMIN") %}
 				<a class="item" href="{{ path('depots') }}">
 					<i class="map marker icon"></i> Depots
 				</a>
-				
+				{% endif %}
+								
 				<a class="item" href="{{ path('data_entry') }}">
 					<i class="keyboard icon"></i> Data Entry
+					{{ render(controller('TNTMOCOAppBundle:Backend/DataEntry:totalNumber')) }}
 				</a>
 				
+				{% if app.user.isAdmin %}
 				<a class="item" href="{{ path('reports') }}">
 					<i class="ordered list icon"></i> Reports
 				</a>
+				{% endif %}
 				
+				{#
 				<a class="item">
 					<i class="file outline icon"></i> Status File
 				</a>
+				#}
 				
 				
 				{#
