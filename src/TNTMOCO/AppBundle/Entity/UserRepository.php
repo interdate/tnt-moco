@@ -285,4 +285,24 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 		return $query;
 	}
 	
+	public function isFiledExists($field, $value, $user_id)
+	{
+		$method = 'findBy'. ucfirst($field);
+		$users = $this->$method($value);
+		if(count($users) > 1 or (count($users) == 1 and $users[0]->getId() !== $user_id)){
+			return true;
+		}
+		return false;
+	}
+	
+	public function sendMail($from, $to, $subject, $body, $mailer)
+	{
+		$message = \Swift_Message::newInstance()
+		->setSubject($subject)
+		->setFrom($from)
+		->setTo($to)
+		->setBody($body);
+		$mailer->send($message);
+	}
+	
 }

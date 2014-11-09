@@ -18,6 +18,7 @@ class DepotsController extends Controller
 		$request = $this->getRequest();
 		if ($request->isMethod('POST')) {
 			$form->handleRequest($request);	
+			//var_dump($request->files->all()['depots']['file']->getMimeType());die;
 			if($form->isValid()){
 				$doctrine = $this->getDoctrine();
 				$depotsRepo = $doctrine->getRepository('TNTMOCOAppBundle:Depot');				

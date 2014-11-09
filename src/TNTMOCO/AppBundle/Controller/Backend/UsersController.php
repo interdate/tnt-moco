@@ -117,11 +117,15 @@ class UsersController extends Controller
     	if(isset($post['user']['username'])){
     		    		   		
     		if($userForm->isValid()){
+    			if($user->getPassword() != ''){
+    				$hostName = $request->getHost();
+    				$body = ($actionName == 'create' ? 'Create user' : 'Change password') . '!\n\nYour password has been saved.\nUsername: ' . $user->getUsername() . '\nPassword: ' . $user->getPassword();
+    			}
     			
     			$checkOldPassword = ($profile) ? $userRepo->checkUserOldPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword) : true;
     			
-    			$isExistUsername = $userRepo->findOneByUsername($user->getUsername());
-    			$isExistEmail = $userRepo->findOneByEmail($user->getEmail());
+    			$isExistUsername = $userRepo->isFiledExists('username', $user->getUsername(), $user->getId());
+    			$isExistEmail = $userRepo->isFiledExists('email', $user->getUsername(), $user->getId());
     			
     			$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword);
     			$userRoleSystemName = $user->getRoleSystemName();
@@ -165,20 +169,23 @@ class UsersController extends Controller
     					break;
     			}
 				
-    			if(($isExistUsername and $isExistUsername->getId() !== $user->getId()) or ($isExistEmail and $isExistEmail->getId() !== $user->getId()) or !$checkOldPassword){
+    			if($isExistUsername or $isExistEmail or !$checkOldPassword){
     				if(!$checkOldPassword){
     					$userForm->get('oldPassword')->addError(new FormError('Old Password is not correct'));
     					$error = true;
     				}
-    				if($isExistUsername and $isExistUsername->getId() !== $user->getId()){
+    				if($isExistUsername){
     					$userForm->get('username')->addError(new FormError('Username is already exists'));
     					$error = true;
     				}
-    				if($isExistEmail and $isExistEmail->getId() !== $user->getId()){
+    				if($isExistEmail){
     					$userForm->get('email')->addError(new FormError('Email is already exists'));
     					$error = true;
     				}
     			}else{
+    				if(isset($body)){
+    					$userRepo->sendMail('admin@' . $hostName, $user->getEmail(), ($actionName == 'create' ? 'Create user' : 'Change password') . ' on ' . $hostName, $body, $this->get('mailer'));
+    				}
 	    			$userCountriesRepo->removeUserCountries($user);    			
 	    			$em->persist($user);
 	    			$em->flush();
