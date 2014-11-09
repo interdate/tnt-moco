@@ -113,7 +113,7 @@ class UsersController extends Controller
     	
     	$userForm = $this->createForm($formType, $user);    	
     	$userForm->handleRequest($request);
-    	 
+    	    	 
     	if(isset($post['user']['username'])){
     		    		   		
     		if($userForm->isValid()){

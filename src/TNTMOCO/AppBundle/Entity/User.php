@@ -151,7 +151,7 @@ class User implements AdvancedUserInterface, \Serializable
      * 
      * @ORM\Column(name="logged_attempt", type="integer")
      */
-    private $loggedAttempt;
+    private $loggedAttempt = 0;
     
     /**
      * @ORM\OneToMany(targetEntity="Log", mappedBy="user")

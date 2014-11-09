@@ -253,7 +253,8 @@ function modifyUserFormByRole(roleWrapper, pickupWrapper){
 			$('.er').html(response.responseText);
 			//alert(response.responseText);
 		},
-		success: function(data){	
+		success: function(data){
+			console.log(data);
 			$('#user_countries_container').replaceWith( $(data).find('#user_countries_container') );				
 			$('#user_countries_container').find('select').change(function(){
 				modifyUserFormByCountry($(this), roleWrapper, $('#user_pickup'));
@@ -282,7 +283,7 @@ function modifyUserFormByCountry(countryWrapper, roleWrapper, pickupWrapper){
 	console.log(JSON.stringify(data));
 	
 	$('#user_depot').parent().hide();	
-		
+	
 	$.ajax({
 		url: countryWrapper.closest('form').attr('action'),
 		type: 'Post',		
