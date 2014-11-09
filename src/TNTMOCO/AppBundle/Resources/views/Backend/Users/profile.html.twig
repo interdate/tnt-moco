@@ -35,7 +35,7 @@
 								<strong>THERE ARE SOME ERRORS:</strong><br>
 								{{ form_errors(userForm.username) }}
 								{{ form_errors(userForm.password)|raw }}
-								{{ form_errors(userForm.oldPassword) }}
+								{#{ form_errors(userForm.oldPassword) }#}
 								{{ form_errors(userForm.email) }}
 							</div>
 						</div>
@@ -194,14 +194,14 @@
 										<div class="field">
 										
 											{% if actionName == 'create'  %}
-												{% set roleCountryAdmin = ( not choosenRole|length or choosenRole == 2 ) ? true : false %}
+												{% set choosenRoleIsCountryAdmin = ( not choosenRole|length or choosenRole == 2 ) and app.user.role.id == 1 ? true : false %}
 												{% set countries = userForm.countries %}
 											{% else %}
-												{% set roleCountryAdmin = ( editedUser.role.id is defined and editedUser.role.id == 2 ) ? true : false %}											
+												{% set choosenRoleIsCountryAdmin = ( editedUser.role.id is defined and editedUser.role.id == 2 ) and app.user.role.id == 1 ? true : false %}											
 											{% endif %}
 										
 											
-											{% if roleCountryAdmin %}
+											{% if choosenRoleIsCountryAdmin %}
 												{{ form_label(userForm.countries) }}
 												<div class="clear"></div>
 									
@@ -257,9 +257,11 @@
 												
 												
 											{% else %}
+																							
 												{{ form_label(userForm.country) }}
 												<div class="clear"></div>
 												{{ form_widget(userForm.country) }}
+													
 											{% endif %}
 										
 										</div>
@@ -267,6 +269,7 @@
 									</div>
 									
 									<div class="clear"></div>
+									
 									
 									
 									<div class="field {{ hidden }}">

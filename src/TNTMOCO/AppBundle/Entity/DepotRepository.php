@@ -4,6 +4,7 @@ namespace TNTMOCO\AppBundle\Entity;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
+use TNTMOCO\AppBundle\Entity\UserCountries;
 
 
 /**
@@ -90,7 +91,27 @@ class DepotRepository extends EntityRepository
 	}
 	
 	public function getOrderedDepots($country, $orderBy, $currentUser, $roleId)
-	{		
+	{	
+		
+		if($country != $currentUser->getCountry()){
+			if(!$currentUser->isAdmin()){
+				return null;
+			}
+			
+			$roleSystemName = $currentUser->getRoleSystemName();
+			if($roleSystemName == 'ROLE_COUNTRY_ADMIN'){
+				
+				foreach ($currentUser->getCountries() as $userCountry ){
+					$userCountries[] = $userCountry->getCountry();
+				}
+
+				if(!in_array($country,  $userCountries)){
+					return null;
+				}				
+			}
+		}
+		
+		
 		if($orderBy == 'name'){			
 			$depots =  $this->findBy(
 	    		array('country' => $country),
@@ -121,6 +142,8 @@ class DepotRepository extends EntityRepository
 			return $depots;
 			
 		}
+		
+		return $depots;
 		
 	}
 	
