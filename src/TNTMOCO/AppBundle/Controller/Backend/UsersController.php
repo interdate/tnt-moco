@@ -120,6 +120,9 @@ class UsersController extends Controller
     			
     			$checkOldPassword = ($profile) ? $userRepo->checkUserOldPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword) : true;
     			
+    			$isExistUsername = $userRepo->findOneByUsername($user->getUsername());
+    			$isExistEmail = $userRepo->findOneByEmail($user->getEmail());
+    			
     			$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword);
     			$userRoleSystemName = $user->getRoleSystemName();
     			
@@ -162,21 +165,29 @@ class UsersController extends Controller
     					break;
     			}
 				
-    			
-    			$userCountriesRepo->removeUserCountries($user);    			
-    			$em->persist($user);
-    			$em->flush();
-    			
-    			$user = ($actionName == 'edit' or $profile) ? $user : new User();
-    			   			 
-    			$userForm = $this->createForm($formType, $user);    			
-    			$choosenRole = '';
-    			if($checkOldPassword){
-    				$created = true;
-    			}else
-    			{
-    				$userForm->get('oldPassword')->addError(new FormError('Old Password is not correct'));
-    				$error = true;
+    			if(($isExistUsername and $isExistUsername->getId() !== $user->getId()) or ($isExistEmail and $isExistEmail->getId() !== $user->getId()) or !$checkOldPassword){
+    				if(!$checkOldPassword){
+    					$userForm->get('oldPassword')->addError(new FormError('Old Password is not correct'));
+    					$error = true;
+    				}
+    				if($isExistUsername and $isExistUsername->getId() !== $user->getId()){
+    					$userForm->get('username')->addError(new FormError('Username is already exists'));
+    					$error = true;
+    				}
+    				if($isExistEmail and $isExistEmail->getId() !== $user->getId()){
+    					$userForm->get('email')->addError(new FormError('Email is already exists'));
+    					$error = true;
+    				}
+    			}else{
+	    			$userCountriesRepo->removeUserCountries($user);    			
+	    			$em->persist($user);
+	    			$em->flush();
+	    			
+	    			$user = ($actionName == 'edit' or $profile) ? $user : new User();
+	    			   			 
+	    			$userForm = $this->createForm($formType, $user);    			
+	    			$choosenRole = '';
+	    			$created = true;	    			
     			}
     	
     		}

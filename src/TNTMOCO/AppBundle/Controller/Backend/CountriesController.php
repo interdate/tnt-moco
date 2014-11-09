@@ -33,10 +33,10 @@ class CountriesController extends Controller
     	$user = new User();
     	$request = $this->getRequest();
     	$em = $this->getDoctrine()->getManager();    	
-    	$userForm = $this->createForm(new UserType($em, $user), $user);
+    	$userForm = $this->createForm(new UserType($em, $user, $this->getUser()), $user);
     	$userForm = $userCountriesRepo->setUserFormField($userForm);
     	
-    	$adminForm = $this->createForm(new UserType($em, $user), $user);
+    	$adminForm = $this->createForm(new UserType($em, $user, $this->getUser()), $user);
     	$adminForm = $userCountriesRepo->setUserFormField($adminForm, true);
     	
     	$request = $this->getRequest();    	
