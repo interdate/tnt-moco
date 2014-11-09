@@ -561,14 +561,18 @@ function confirmTrue(button){
 	button.click();
 }
 
-function passwordGeneration(){
+function passwordGeneration(el){
 	$.ajax({
 		type: 'post',
 		url: $('#passwordGenerationPath').val(),
 		success: function(data){
 			if($(data).find('#password').size() > 0){
 				var pas = $(data).find('#password').text();
-				$('#user_password').val(pas);
+				if(el == null){
+					$('#user_password').val(pas);
+				}else{
+					el.parent().find('#user_password').val(pas);
+				}
 			}
 		}
 	});

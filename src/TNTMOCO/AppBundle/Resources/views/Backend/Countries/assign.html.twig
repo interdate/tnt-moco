@@ -79,6 +79,7 @@
 							</select>
 						</div>
 						<input type="hidden" id="usersAssignPath" value="{{ path('countries_assign_users') }}"/> 
+						<input type="hidden" id="passwordGenerationPath" value="{{ path('password_generation') }}"/>
 					</div>
 					<div class="block">
 						<div class="ui form">
@@ -143,6 +144,11 @@
 										{{ form_widget(adminForm.password) }}		
 									</div>
 									
+									<div class="ui labeled icon blue mini button" onclick="passwordGeneration($(this));" style="float:right;margin-bottom:10px;">
+										<i class="inverted key icon"></i>
+										Generate password
+									</div>
+								
 									{{ form_widget(adminForm.role) }}							
 									
 									<div class="field">
@@ -239,6 +245,11 @@
 									<div class="field">
 										{{ form_label(userForm.password) }} <span>*</span>
 										{{ form_widget(userForm.password) }}						
+									</div>
+									
+									<div class="ui labeled icon blue mini button" onclick="passwordGeneration($(this));" style="float:right;margin-bottom:10px;">
+										<i class="inverted key icon"></i>
+										Generate password
 									</div>
 									
 									<div class="field">
