@@ -25,7 +25,6 @@ class DepotRepository extends EntityRepository
 			$file = $uploadedFile['file'];
 			if($file)
 			{
-				//var_dump($file->getMimeType());die;
 				//$message['success'][] = 'File upload success';
 				/*$name = $file->getClientOriginalName();
 				 $file->move($this->getDepotsPath($_SERVER['DOCUMENT_ROOT']), 'upload_' . $name);
@@ -127,7 +126,8 @@ class DepotRepository extends EntityRepository
 	    	);
 			
 			foreach ($depots as $depot){
-				$this->setDepotPdfFilesNumber($depot, $currentUser, $roleId);
+				$pdfFilesNumber = $this->calculateDepotPdfFilesNumber($depot, $currentUser, $roleId);
+				$depot->setPdfFilesNumber($pdfFilesNumber);
 			}			
 			
 			return $depots;
@@ -135,7 +135,8 @@ class DepotRepository extends EntityRepository
 		elseif($orderBy == 'docsNumber'){
 			$depots = $this->findByCountry($country);
 			foreach ($depots as $depot){
-				$this->setDepotPdfFilesNumber($depot, $currentUser, $roleId);
+				$pdfFilesNumber = $this->calculateDepotPdfFilesNumber($depot, $currentUser, $roleId);
+				$depot->setPdfFilesNumber($pdfFilesNumber);
 				$depotsArr[$depot->getId()] = $depot->getPdfFilesNumber();				
 			}
 			
@@ -155,7 +156,7 @@ class DepotRepository extends EntityRepository
 		
 	}
 	
-	public function setDepotPdfFilesNumber($depot, $currentUser, $roleId)
+	public function calculateDepotPdfFilesNumber($depot, $currentUser, $roleId)
 	{
 		$pdfFilesNumber = 0;
 		$roleRepo = $this->getEntityManager()->getRepository('TNTMOCOAppBundle:Role');
@@ -170,6 +171,6 @@ class DepotRepository extends EntityRepository
 			}
 		}		
 		
-		$depot->setPdfFilesNumber($pdfFilesNumber);		
+		return $pdfFilesNumber;		
 	}
 }

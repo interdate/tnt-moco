@@ -17,11 +17,14 @@ $(document).ready(
 		
 		
 		$('#user_role').change(function(){
-			//alert(1);   
-			//loadUserData($(this), $('#user_countries_wrapper'));
-			
 			modifyUserFormByRole($(this), $('#user_pickup'));
 		});
+		
+		if($('#user_countries_container').size()){
+			$('#user_countries_container').find('select').change(function(){
+				modifyUserFormByCountry($(this), $('#user_role'), $('#user_pickup'));
+			});
+		}
 		
 		$('.countries_scrollbar, .users_scrollbar').perfectScrollbar({
 			wheelSpeed: 35,			
@@ -249,12 +252,12 @@ function modifyUserFormByRole(roleWrapper, pickupWrapper){
 		type: 'Post',		
 		data: data,
 		error: function(response){
-			//console.log(response.responseText);
-			$('.er').html(response.responseText);
+			console.log(response.responseText);
+			//$('.er').html(response.responseText);
 			//alert(response.responseText);
 		},
 		success: function(data){
-			console.log(data);
+			//console.log(data);
 			$('#user_countries_container').replaceWith( $(data).find('#user_countries_container') );				
 			$('#user_countries_container').find('select').change(function(){
 				modifyUserFormByCountry($(this), roleWrapper, $('#user_pickup'));
@@ -290,11 +293,11 @@ function modifyUserFormByCountry(countryWrapper, roleWrapper, pickupWrapper){
 		data: data,
 		error: function(response){
 			console.log(response.responseText);
-			$('.er').html(response.responseText);
-			alert(response.responseText);
+			//$('.er').html(response.responseText);
+			//alert(response.responseText);
 		},
 		success: function(data){
-			console.log($(data).find('#user_depot').html() );
+			//console.log($(data).find('#user_depot').html() );
 			//$('.er').html(data);
 			//return;
 			

@@ -92,6 +92,21 @@ class UserType extends AbstractType{
     	if($this->currentUser->getRoleSystemName() == 'ROLE_COUNTRY_ADMIN'){
     		    		
     		$countries = $this->em->getRepository('TNTMOCOAppBundle:Country')->findByUser($this->currentUser);
+    		$builder->add('country', 'entity', array(
+    			'label' => 'Country',
+    			'required' => false,
+    			'multiple' => false,
+    			'expanded' => false,
+    			'empty_value' => 'Choose a Country',
+    			'class' => 'TNTMOCOAppBundle:Country',
+    			'property' => 'name',
+    			'query_builder' => function(EntityRepository $er) {
+    				return $er->createQueryBuilder('c')
+    				->where('c.isActive = 0');
+    			},
+    			'choices' => $countries,
+    		));
+	    	/*
 	    	if(count($countries) == 1){
 	    		
 	    		$country = $countries[0];
@@ -119,6 +134,7 @@ class UserType extends AbstractType{
 	    			'choices' => $countries,
 	    		));	    		
 	    	}
+	    	*/
     	}    	
 		
     	
@@ -205,6 +221,21 @@ class UserType extends AbstractType{
     		if($this->currentUser->getRoleSystemName() == 'ROLE_COUNTRY_ADMIN'){
     		
     			$countries = $this->em->getRepository('TNTMOCOAppBundle:Country')->findByUser($this->currentUser);
+    			$form->add('country', 'entity', array(
+    				'label' => 'Country',
+    				'required' => false,
+    				'multiple' => false,
+    				'expanded' => false,
+    				'empty_value' => 'Choose a Country',
+    				'class' => 'TNTMOCOAppBundle:Country',
+    				'property' => 'name',
+    				'query_builder' => function(EntityRepository $er) {
+    					return $er->createQueryBuilder('c')
+    					->where('c.isActive = 0');
+    				},
+    				'choices' => $countries,
+    			));
+    			/*
     			if(count($countries) == 1){
     				$country = $countries[0];
     				$this->currentUser->setCountry($country);
@@ -214,6 +245,7 @@ class UserType extends AbstractType{
     				));
     				
     				$this->modifyFormByCountry($form, $country);
+    				    				
     			}
     			elseif(count($countries) > 1){
     				$form->add('country', 'entity', array(
@@ -231,6 +263,7 @@ class UserType extends AbstractType{
     					'choices' => $countries,
     				));
     			}
+    			*/
     		}
     		else{
     			
@@ -270,17 +303,7 @@ class UserType extends AbstractType{
     	/*
     	if($country)
     		echo $country->getName();
-    	
-    	
-    	echo "DPOT:" . $this->user->getDepot();
-    	die;
-    	*/
-    	
-    	//echo count($depots);
-    	
-    	//foreach ($depots as $depot)
-    		//echo $depot;
-    	//die;
+    	*/    	
     	
     	$form->add('depot', 'entity', array(
     		'class' => 'TNTMOCOAppBundle:Depot',
@@ -292,7 +315,7 @@ class UserType extends AbstractType{
     	
     }    
     
-    /*
+    
     public function postSubmit(FormInterface $form) {
     	 
     	$form->add('depot', 'entity', array(
@@ -302,7 +325,7 @@ class UserType extends AbstractType{
     		'data' => $this->user->getDepot(),
     	));
     }
-    */
+    
     
 }
 

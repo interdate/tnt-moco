@@ -57,7 +57,7 @@
 	
 		<div id="menu_wrapper">
 		
-			<div class="ui vertical small menu inverted">
+			<div class="ui vertical small menu inverted mainMenu">
 				{#
 				<div class="header item">
 					<i class="tasks icon"></i>
@@ -65,37 +65,68 @@
 				</div>
 				#}
 				
+				{#
 				<a class="item" href="{{ path('home') }}">
 					<i class="home icon"></i> Home
 				</a>
+				#}
 				
-				{% if app.user.isGranted("ROLE_SUPER_ADMIN") or app.user.isGranted("ROLE_COUNTRY_ADMIN") %}
-				<a class="item" href="{{ path('users') }}">
-					<i class="user icon"></i> Users
-				</a>
+				{% if app.user.isAdmin %}
+					<a class="item" href="{{ path('users') }}">
+						<i class="user icon"></i> Users
+					</a>
 				{% endif %}
 				
 				{% if app.user.isGranted("ROLE_SUPER_ADMIN") %}
-				<a class="item" href="{{ path('countries') }}">
-					<i class="globe icon"></i> Countries
-				</a>
+					<a class="item" href="{{ path('countries') }}">
+						<i class="globe icon"></i> Countries
+					</a>
 				{% endif %}
 				
-				<a class="item" href="{{ path('depots') }}">
-					<i class="map marker icon"></i> Depots
-				</a>
+				{% if app.user.isGranted("ROLE_SUPER_ADMIN") %}
+					<a class="item" href="{{ path('depots') }}">
+						<i class="map marker icon"></i> Depots
+					</a>
+				{% endif %}
+								
+				{% if app.user.isAdmin %}
+					<a class="item" href="{{ path('data_entry', {'roleId': 3}) }}">
+						<i class="keyboard icon"></i> Data Entry
+						{{ render(controller('TNTMOCOAppBundle:Backend/DataEntry:totalNumber', {'roleId': 3})) }}    
+					</a>				
+					<a class="item" href="{{ path('data_entry', {'roleId': 4}) }}">
+						<i class="pencil icon"></i> Customer Service
+						{{ render(controller('TNTMOCOAppBundle:Backend/DataEntry:totalNumber', {'roleId': 4})) }}
+					</a>
+				{% else %}
 				
-				<a class="item" href="{{ path('data_entry') }}">
-					<i class="keyboard icon"></i> Data Entry
-				</a>
+					{% if app.user.isGranted("ROLE_USER") %}
+					<a class="item" href="{{ path('data_entry', {'roleId': 3}) }}">
+						<i class="keyboard icon"></i> Data Entry
+						{{ render(controller('TNTMOCOAppBundle:Backend/DataEntry:totalNumber', {'roleId': 3})) }}    
+					</a>
+					{% endif %}
+						
+					{% if app.user.isGranted("ROLE_CUSTOMER_SERVICE") %}
+					<a class="item" href="{{ path('data_entry', {'roleId': 4}) }}">
+						<i class="pencil icon"></i> Customer Service
+						{{ render(controller('TNTMOCOAppBundle:Backend/DataEntry:totalNumber', {'roleId': 4})) }}
+					</a>
+					{% endif %}
+					
+				{% endif %}
 				
-				<a class="item" href="{{ path('reports') }}">
-					<i class="ordered list icon"></i> Reports
-				</a>
+				{% if app.user.isAdmin %}
+					<a class="item" href="{{ path('reports') }}">
+						<i class="ordered list icon"></i> Reports
+					</a>
+				{% endif %}
 				
+				{#
 				<a class="item">
 					<i class="file outline icon"></i> Status File
 				</a>
+				#}
 				
 				
 				{#

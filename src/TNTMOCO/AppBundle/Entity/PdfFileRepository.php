@@ -14,6 +14,11 @@ class PdfFileRepository extends EntityRepository
 {
 	public function getFiles($user, $usersIds, $prevFileId, $limit, $roleId)
 	{
+		
+		if(count($usersIds) == 0){
+			return array();
+		}
+		
 		$roleRepo = $this->getEntityManager()->getRepository('TNTMOCOAppBundle:Role');
 		$roleSystemName = $user->isAdmin() ? $roleRepo->find($roleId)->getRole() : $user->getRoleSystemName();
 		$isRejected = $roleSystemName == 'ROLE_USER' ? 0 : 1;
@@ -21,10 +26,10 @@ class PdfFileRepository extends EntityRepository
 		$qb = $this->createQueryBuilder('f');
 	
 		$qb->where(
-				$qb->expr()->orX(
-						$qb->expr()->eq('f.isLocked', '0'),
-						$qb->expr()->eq('f.openedBy', $user)
-				)
+			$qb->expr()->orX(
+				$qb->expr()->eq('f.isLocked', '0'),
+				$qb->expr()->eq('f.openedBy', $user)
+			)
 		)
 		->andWhere('f.isRejected = ' . $isRejected)
 		->andWhere('f.isCompleted = 0')
@@ -32,11 +37,11 @@ class PdfFileRepository extends EntityRepository
 		->orderBy('f.id')
 		->setMaxResults($limit);
 	
-		if(count($usersIds) > 0){
-			$qb->andWhere(
-					$qb->expr()->in('f.user', $usersIds)
-			);
-		}
+		//if(count($usersIds) > 0){
+		$qb->andWhere(
+			$qb->expr()->in('f.user', $usersIds)
+		);
+		//}
 	
 		if(!empty($prevFileId)){
 			$qb->andWhere('f.id > :fileId')->setParameter('fileId', $prevFileId);

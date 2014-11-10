@@ -115,15 +115,17 @@ class UsersController extends Controller
     	$userForm->handleRequest($request);
     	    	 
     	if(isset($post['user']['username'])){
+    		
+    		
     		    		   		
     		if($userForm->isValid()){
     			if($user->getPassword() != ''){
     				$hostName = $request->getHost();
-    				$body = ($actionName == 'create' ? 'Create user' : 'Change password') . "!\r\n\r\nYour password has been saved.\r\n\r\nUsername: " . $user->getUsername() . "\r\nPassword: " . $user->getPassword();
+    				$body = "Username: " . $user->getUsername() . "\r\nPassword: " . $user->getPassword();
     			}
     			
     			$checkOldPassword = ($profile) ? $userRepo->checkUserOldPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword) : true;
-    			
+
     			$isExistUsername = $userRepo->isFiledExists('username', $user->getUsername(), $user->getId());
     			$isExistEmail = $userRepo->isFiledExists('email', $user->getEmail(), $user->getId());
     			
@@ -168,22 +170,23 @@ class UsersController extends Controller
     					$user->setDepot(null);
     					break;
     			}
-				
+
     			if($isExistUsername or $isExistEmail or !$checkOldPassword){
     				if(!$checkOldPassword){
     					$userForm->get('oldPassword')->addError(new FormError('Old Password is not correct'));
     				}
     				if($isExistUsername){
-    					$userForm->get('username')->addError(new FormError('Username is already exists'));
+    					$userForm->get('username')->addError(new FormError('Username already exists'));
     				}
     				if($isExistEmail){
-    					$userForm->get('email')->addError(new FormError('Email is already exists'));
+    					$userForm->get('email')->addError(new FormError('Email already exists'));
     				}
     				$error = true;
     			}else{
     				if(isset($body)){
-    					$userRepo->sendMail('admin@' . $hostName, $user->getEmail(), ($actionName == 'create' ? 'Create user' : 'Change password') . ' on ' . $hostName, $body, $this->get('mailer'));
+    					$userRepo->sendMail('robot@' . $hostName, $user->getEmail(), 'My account on ' . $hostName, $body, $this->get('mailer'));
     				}
+
 	    			$userCountriesRepo->removeUserCountries($user);    			
 	    			$em->persist($user);
 	    			$em->flush();

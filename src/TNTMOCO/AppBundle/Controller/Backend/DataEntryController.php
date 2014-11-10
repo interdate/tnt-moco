@@ -12,13 +12,13 @@ class DataEntryController extends Controller
     public function indexAction()
     {	
     	$data = array();
-    	$data = $this->tryDefineRoles($data);
-    	$data = $this->defineCountries($data);
-    	
-    	if(!isset($data['roles'])){
+    	//$data = $this->tryDefineRoles($data);
+    	    	
+    	if(!$this->getUser()->isAdmin()){
     		return $this->redirect($this->generateUrl('data_entry_country', array('countryId' => $this->getUser()->getCountry()->getId())));
     	}
     	
+    	$data = $this->defineCountries($data);    	
     	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:index.html.twig', $data);
     }
     
@@ -38,7 +38,7 @@ class DataEntryController extends Controller
     	);
 
 		$data = $this->defineCountries($data);    	
-    	$data = $this->tryDefineRoles($data);
+    	//$data = $this->tryDefineRoles($data);
     	    	    	 
     	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:index.html.twig', $data);
     }
@@ -79,7 +79,7 @@ class DataEntryController extends Controller
     	);
     	
     	$files = $fileRepo->getFiles($currentUser, $usersIds, $prevFileId, 1, $roleId);
-    
+    	
     	if(!empty($prevFileId)){
     		$prevFile = $fileRepo->find($prevFileId);
     		$prevFile->setIsCompleted($complete);
@@ -131,33 +131,16 @@ class DataEntryController extends Controller
     		$data['file'] = $file;
     	}
     	
-    	
     	$data['roleSystemName'] = $currentUser->isAdmin() ? $roleRepo->find($roleId)->getRole() : $currentUser->getRoleSystemName();
     	 
     	$data['depots'] = $depotRepo->getOrderedDepots($depot->getCountry(), $orderBy, $currentUser, $roleId);
     	 
     	$data = $this->defineCountries($data);
-    	$data = $this->tryDefineRoles($data);
     
     	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:index.html.twig', $data);
     }
     
-    public function tryDefineRoles($data)
-    {
-    	if($this->getUser()->isAdmin()){
-    		$qb = $this->getDoctrine()
-    		->getRepository('TNTMOCOAppBundle:Role')
-    		->createQueryBuilder('r');
-    			
-    		$qb->where(
-    			$qb->expr()->in('r.id', array(3,4))
-    		);
-    		 
-    		$data['roles'] = $qb->getQuery()->getResult();
-    	}
-    	return $data;
-    }
-    
+        
     public function defineCountries($data)
     {
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
@@ -172,6 +155,56 @@ class DataEntryController extends Controller
     	
     	return $data;
     }
+    
+    public function totalNumberAction($roleId){
+    	$currentUser = $this->getUser();
+    	$roleSystemName = $currentUser->getRoleSystemName();
+    	$depotRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Depot');    	
+    	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
+    	$roleRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Role');
+    	$totalNumber = 0;
+    	$depots = array();
+    	    	
+    	if($roleSystemName == 'ROLE_SUPER_ADMIN'){
+    		$depots = $depotRepo->findAll();    		
+    	}
+    	else{
+    		$countries = $countryRepo->findByUser($this->getUser());
+    		foreach ($countries as $country){
+    			foreach ($country->getDepots() as $depot){
+    				$depots[] = $depot;
+    			}
+    		}
+    	}
+    	
+    	foreach ($depots as $depot){
+    		$pdfFilesNumber = $depotRepo->calculateDepotPdfFilesNumber($depot, $currentUser, $roleId);
+    		$totalNumber += $pdfFilesNumber;
+    	}    	
+    	
+    	    	
+    	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:totalNumber.html.twig', array(
+    		'totalNumber' => $totalNumber,
+    	));
+    }
+    
+    /*
+     public function tryDefineRoles($data)
+     {
+    if($this->getUser()->isAdmin()){
+    $qb = $this->getDoctrine()
+    ->getRepository('TNTMOCOAppBundle:Role')
+    ->createQueryBuilder('r');
+     
+    $qb->where(
+    		$qb->expr()->in('r.id', array(3,4))
+    );
+     
+    $data['roles'] = $qb->getQuery()->getResult();
+    }
+    return $data;
+    }
+   
     
     
     /*

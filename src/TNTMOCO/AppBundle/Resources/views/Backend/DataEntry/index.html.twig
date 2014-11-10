@@ -4,29 +4,31 @@
 
 
 {% block content %}
-
+	
+	{% set roleId = app.request.get('roleId')|length ? app.request.get('roleId') : 0 %}
+	
 	<div id="content_wrapper">
 		<div class="headerWrapper">
-			<h4>
-				<i class="keyboard icon"></i>
-				Data Entry
+			<h4>				
+				{% if app.user.isAdmin %}
+					{% if roleId == 3 %}
+						<i class="keyboard icon"></i>
+						Data Entry						
+					{% else %}
+						<i class="pencil icon"></i>
+						Customer Service
+					{% endif %}
+				{% else %}
+					{% if app.user.role.id == 3 %}
+						<i class="keyboard icon"></i>
+						Data Entry
+					{% else %}
+						<i class="pencil icon"></i>
+						Customer Service
+					{% endif %}
+				{% endif %} 
 			</h4>
 		</div>
-		
-		{#
-		<div class="tabMenu">
-			<div class="ui pointing secondary menu floated left">
-			    <a class="active item blue" data-tab="countriesList">
-				    <i class="add sign box icon"></i>					    
-				    Some Notifications
-				</a>
-			    <a class="item blue" data-tab="activeCountriesEditing">
-				    <i class="list folder icon"></i>
-				    Another data
-				</a>	    
-			</div>
-		</div>
-		#}	
 			
 		<div class="clear"></div>
 	
@@ -39,24 +41,25 @@
 					<input type="hidden" id="currentUserRole" value="{{ app.user.getRoleSystemName }}">
 					
 					{% set countryId = (depot is defined) ? depot.country.id : app.request.get('countryId') %}
-					{% set roleId = app.request.get('roleId')|length ? app.request.get('roleId') : 0 %}
+					
 					
 					{% if not app.user.country is null  %}
 							<input type="hidden" id="data_entry_country" value="{{ app.user.country.id }}">
 					{% endif %}
 					
-					{% if roles is defined %}
+					{% if countries is defined %}
 						<div class="ui form borBot" style="width:100%;">
-							{% if countries is defined %}
-								<select id="data_entry_country" class="countries left">					
-									<option value="">Choose a country</option>									
-									{% for country in countries %}
-										{% set selected = country.id == countryId ? 'selected="selected"' : '' %}
-										{% if country.isActive %}<option value="{{ country.id }}" {{ selected }}>{{ country.name }}</option>{% endif %}
-									{% endfor %}
-								</select>
-							{% endif %}
 							
+							<select id="data_entry_country" class="countries left">					
+								<option value="">Choose a country</option>									
+								{% for country in countries %}
+									{% set selected = country.id == countryId ? 'selected="selected"' : '' %}
+									{% if country.isActive %}<option value="{{ country.id }}" {{ selected }}>{{ country.name }}</option>{% endif %}
+								{% endfor %}
+							</select>
+							
+							
+							{#
 							<select id="data_entry_role" class="left marL15">					
 								<option value="">Choose a role</option>	
 								{% for role in roles %}
@@ -64,8 +67,11 @@
 									<option value="{{ role.id }}" {{ selected }}>{{ role.name }}</option>
 								{% endfor %}
 							</select>
+							#}
 							
-							{% if countries is defined and countryId|length > 0 %}
+							<input type="hidden" id="data_entry_role" value="{{ roleId }}">
+							
+							{% if countryId|length > 0 %}
 								<div class="right refreshData">
 									<div class="ui labeled icon blue mini button" onclick="loadDataEntryDepots();">
 										<i class="inverted refresh icon"></i>
@@ -351,7 +357,7 @@
 						{% else %}
 							<div class="ui small header">
 								<i class="info letter circular icon"></i>
-								No depots found
+								No depot found
 							</div>				
 						{% endif %}
 					

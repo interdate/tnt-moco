@@ -674,7 +674,7 @@ select.countries{
 }
 
 
-.dataEntry .depotsList .ui.label{
+.dataEntry .depotsList .ui.label, .mainMenu .ui.label{
 	font-size: 0.7em;
 }
 

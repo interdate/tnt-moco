@@ -72,8 +72,8 @@ swiftmailer:
     transport:  "gmail"
     host:       ~
     encryption: "ssl"
-    username:   "pavel@interdate-ltd.co.il"
-    password:   "pavelinter12"
+    username:   "contact@interdate-ltd.co.il"
+    password:   "inter555"
     
     
 fos_rest:

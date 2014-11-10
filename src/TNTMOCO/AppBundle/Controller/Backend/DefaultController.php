@@ -38,9 +38,18 @@ class DefaultController extends Controller
     	}
     	die;
     	*/
-
     	
-    	return $this->render('TNTMOCOAppBundle:Backend/Default:index.html.twig');
+    	$currentUser = $this->getUser();
+    	$roleSystemName = $currentUser->getRoleSystemName();
+    	 
+    	 
+    	if($currentUser->isAdmin()){
+    		//return $this->render('TNTMOCOAppBundle:Backend/Users:index.html.twig');
+    		return $this->redirect($this->generateUrl('users'));
+    	}
+    	
+    	return $this->redirect($this->generateUrl('data_entry'));    	
+    	
     }
 }
 
