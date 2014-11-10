@@ -35,44 +35,51 @@ class DepotRepository extends EntityRepository
 				$highestColumnIndex = $workSheet->getHighestColumn();
 				$data = array();	
 				$em = $this->_em;
+				$numberDepots = 0;
+				$numberSuccessDepots = 0;
 				for ($row = 1; $row <= $highestRow; ++$row)
 				{
-					$country = $countryRepo->findOneByCode($workSheet->getCellByColumnAndRow(0, $row)->getValue());
-					if(!$country)
-					{
-						$data[] = array(
-							'code' => $workSheet->getCellByColumnAndRow(0, $row)->getValue(),
-							'value' => $workSheet->getCellByColumnAndRow(1, $row)->getValue(),
-							'data' => $workSheet->getCellByColumnAndRow(0, $row)->getValue().'<|-|>'.$workSheet->getCellByColumnAndRow(1, $row)->getValue(),
-							'error' => "don't exist country code in database"
-								
-						);
-					}else
-					{
-						if($this->findby(array('country'=>$country->getId(), 'name'=>$workSheet->getCellByColumnAndRow(1, $row)->getValue())))
+					if($workSheet->getCellByColumnAndRow(0, $row)->getValue() != '' or $workSheet->getCellByColumnAndRow(1, $row)->getValue() != ''){
+						$numberDepots++;
+						$country = $countryRepo->findOneByCode($workSheet->getCellByColumnAndRow(0, $row)->getValue());
+						if(!$country)
 						{
 							$data[] = array(
 								'code' => $workSheet->getCellByColumnAndRow(0, $row)->getValue(),
 								'value' => $workSheet->getCellByColumnAndRow(1, $row)->getValue(),
 								'data' => $workSheet->getCellByColumnAndRow(0, $row)->getValue().'<|-|>'.$workSheet->getCellByColumnAndRow(1, $row)->getValue(),
-								'error' => "depot exist in database"
+								'error' => "Country code is not exists in database"
+									
 							);
 						}else
 						{
-							$depot = new Depot();
-							$depot->setCountry($country);
-							$depot->setName($workSheet->getCellByColumnAndRow(1, $row)->getValue());
-							$em->persist($depot);
-							$em->flush();
-							$message['success'][0] = 'The depots have been uploaded successfully';
+							if($this->findby(array('country'=>$country->getId(), 'name'=>$workSheet->getCellByColumnAndRow(1, $row)->getValue())))
+							{
+								$data[] = array(
+									'code' => $workSheet->getCellByColumnAndRow(0, $row)->getValue(),
+									'value' => $workSheet->getCellByColumnAndRow(1, $row)->getValue(),
+									'data' => $workSheet->getCellByColumnAndRow(0, $row)->getValue().'<|-|>'.$workSheet->getCellByColumnAndRow(1, $row)->getValue(),
+									'error' => "Depot is exists in database"
+								);
+							}else
+							{
+								$numberSuccessDepots++;
+								$depot = new Depot();
+								$depot->setCountry($country);
+								$depot->setName($workSheet->getCellByColumnAndRow(1, $row)->getValue());
+								$em->persist($depot);
+								$em->flush();
+								//$message['success'][0] = 'The depots have been uploaded successfully';
+							}
 						}
 					}
 				}
 				if(count($data) > 0)
 				{
-					$message['error'] = array('message'=>'The file has a data error', 'data'=>array());//$data
+					//$message['error'] = array('message'=>'The file has a data error', 'data'=>array());//$data
 				}
 				
+				$message['success'][0] = "There are " . $numberDepots .' depots in the file. ' . $numberSuccessDepots . ' depots have been uploaded';
 				$logRepo->saveLog($file->getClientOriginalName(), 'DP', 'The depots have been uploaded successfully', $userId, $data);
 			}
 		}

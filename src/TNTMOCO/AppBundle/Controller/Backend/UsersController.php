@@ -119,11 +119,15 @@ class UsersController extends Controller
     		
     		    		   		
     		if($userForm->isValid()){
+    			if($user->getPassword() != ''){
+    				$hostName = $request->getHost();
+    				$body = "Username: " . $user->getUsername() . "\r\nPassword: " . $user->getPassword();
+    			}
     			
     			$checkOldPassword = ($profile) ? $userRepo->checkUserOldPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword) : true;
-    			
-    			$isExistUsername = $userRepo->findOneByUsername($user->getUsername());
-    			$isExistEmail = $userRepo->findOneByEmail($user->getEmail());
+
+    			$isExistUsername = $userRepo->isFiledExists('username', $user->getUsername(), $user->getId());
+    			$isExistEmail = $userRepo->isFiledExists('email', $user->getEmail(), $user->getId());
     			
     			$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword);
     			$userRoleSystemName = $user->getRoleSystemName();
@@ -166,21 +170,23 @@ class UsersController extends Controller
     					$user->setDepot(null);
     					break;
     			}
-				
-    			if(($isExistUsername and $isExistUsername->getId() !== $user->getId()) or ($isExistEmail and $isExistEmail->getId() !== $user->getId()) or !$checkOldPassword){
+
+    			if($isExistUsername or $isExistEmail or !$checkOldPassword){
     				if(!$checkOldPassword){
     					$userForm->get('oldPassword')->addError(new FormError('Old Password is not correct'));
-    					$error = true;
     				}
-    				if($isExistUsername and $isExistUsername->getId() !== $user->getId()){
-    					$userForm->get('username')->addError(new FormError('Username is already exists'));
-    					$error = true;
+    				if($isExistUsername){
+    					$userForm->get('username')->addError(new FormError('Username already exists'));
     				}
-    				if($isExistEmail and $isExistEmail->getId() !== $user->getId()){
-    					$userForm->get('email')->addError(new FormError('Email is already exists'));
-    					$error = true;
+    				if($isExistEmail){
+    					$userForm->get('email')->addError(new FormError('Email already exists'));
     				}
+    				$error = true;
     			}else{
+    				if(isset($body)){
+    					$userRepo->sendMail('robot@' . $hostName, $user->getEmail(), 'My account on ' . $hostName, $body, $this->get('mailer'));
+    				}
+
 	    			$userCountriesRepo->removeUserCountries($user);    			
 	    			$em->persist($user);
 	    			$em->flush();
@@ -238,14 +244,13 @@ class UsersController extends Controller
     	));
     }
     
-    public function editProfileAction(){
-    	$user = $this->getUser();
-    	$em = $this->getDoctrine()->getManager();     	
-    	 
-    	return $this->handleUserAction($user, new CurrentUserType($em, $user));
-    }
-    
-    
+	public function editProfileAction(){
+		$user = $this->getUser();
+		$em = $this->getDoctrine()->getManager();     	
+		 
+		return $this->handleUserAction($user, new CurrentUserType($em, $user));
+	}
+	
 }
 
 

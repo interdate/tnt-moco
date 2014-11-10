@@ -16,37 +16,21 @@
 		
 		{{ include ('TNTMOCOAppBundle:Backend/Depots:mainMenu.html.twig', {'activeTab': 1}) }}
 		
-		<div class="desktop">
-			{% if message is defined and message.success|length %}
-				{% for mesSuc in message.success %}
-					<div class="ui green message">
-						{{ mesSuc }}
-					</div>
-				{% endfor %}
-		{#
-			{% elseif message is defined %}
-				<div class="ui red message">
-					Don't upload deports!
-				</div>
-		#}
-			{% endif %}
-			{% if message is defined and message.error != '' %}
-				<div class="ui red message">
-					<p>{{ message.error.message }}</p>
-					{#
-					{% if message.error.data|length %}
-						<ul>
-							{% for arrErr in message.error.data %}
-								<li>CountryCode: "{{ arrErr.code }}". DepotName: "{{ arrErr.value }}" - {{ arrErr.error}}</li>
-							{% endfor %}
-						</ul>
-					{% endif %}
-					#}
-				</div>
-			{% endif %}		
-			<div class="tabSegments" style="max-width:400px">	
+		<div class="desktop">		
+			<div class="tabSegments">	
 				
 				<div class="ui active tab segment stacked depots">
+				
+					{% if message is defined and message.success|length %}
+						<div class="ui icon message blue"> 
+							<i class="save icon"></i>
+							<div class="content">
+								{% for mesSuc in message.success %}
+									{{ mesSuc }}
+								{% endfor %}
+							</div>
+						</div>		
+					{% endif %}
 					
 					<form name="depots" method="post" action="{{ path('depots') }}" enctype="multipart/form-data">
 					

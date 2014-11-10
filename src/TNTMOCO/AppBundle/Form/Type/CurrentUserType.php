@@ -18,7 +18,7 @@ use TNTMOCO\AppBundle\Entity\Country;
 class CurrentUserType extends EditUserType{
 	
 	public function __construct($em, $user){
-		parent::__construct($em, $user);		
+		parent::__construct($em, $user, $user);		
 	}
 	
     public function buildForm(FormBuilderInterface $builder, array $options){

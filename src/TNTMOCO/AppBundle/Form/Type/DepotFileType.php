@@ -20,8 +20,8 @@ class DepotFileType extends AbstractType{
     		'constraints' => array(
     			new Constraints\File(array(
     				'maxSize' => '2048k',
-    				'mimeTypes' => array('application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
-    				'mimeTypesMessage' => 'Please upload a valid file (.xls,.xlsx)'
+    				'mimeTypes' => array('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel','application/zip','text/plain'),
+    				'mimeTypesMessage' => 'Please upload a valid file (.xls,.xlsx,.csv)'
     			))
     		)
     	));

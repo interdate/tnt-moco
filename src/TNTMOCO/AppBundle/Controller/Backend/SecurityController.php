@@ -57,8 +57,11 @@ class SecurityController extends Controller{
     	if($request->isMethod('POST')){
     		$form->handleRequest($request);
     		if($form->isValid()){
-    			$success = true;    			
+    			$success = true;
+    			$hostName = $this->getRequest()->getHost();
     			if($code){
+    				$body = "Recovery password!\r\n\r\nYour password has been changed.\r\nUsername: " . $user->getUsername() . "\r\nPassword: " . $user->getPassword();
+    				$userRepo->sendMail('recovery@' . $hostName, $user->getEmail(), 'Recovery password on ' . $hostName, $body, $this->get('mailer'));
     				$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword, false);
     				$em = $this->getDoctrine()->getManager();
     				$em->persist($user);
@@ -67,16 +70,10 @@ class SecurityController extends Controller{
     				$formRequect = $request->get('recovery');
     				$email = $formRequect['email'];
 	    			$user = $userRepo->findOneByEmail($email);
-	    			$hostName = $this->getRequest()->getHost();
 	    			if($user){
 	    				$codeSent = md5($user->getEmail() . $user->getId()) . '_0_' . $user->getId();
-	    				$body = 'Recovery password!\n\nFor change your password go to this link: http://' . $hostName . '/recovery/' . $codeSent;
-	    				$message = \Swift_Message::newInstance()
-		    				->setSubject('Recovery password on ' . $hostName)
-		    				->setFrom('recovery@' . $hostName)
-		    				->setTo($user->getEmail())
-		    				->setBody($body);
-	    				$this->get('mailer')->send($message);
+	    				$body = "Recovery password!\r\n\r\nFor change your password go to this link: http://" . $hostName . "/recovery/" . $codeSent;
+	    				$userRepo->sendMail('recovery@' . $hostName, $user->getEmail(), 'Recovery password on ' . $hostName, $body, $this->get('mailer'));  				
 	    			}else{
 	    				$error = true;
 	    			}
