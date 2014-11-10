@@ -1,6 +1,6 @@
 
 home:
-    path:     /home
+    path:     /
     defaults: { _controller: TNTMOCOAppBundle:Backend\Default:index }
 
 login:
