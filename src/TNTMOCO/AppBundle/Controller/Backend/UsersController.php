@@ -125,7 +125,7 @@ class UsersController extends Controller
     			$checkOldPassword = ($profile) ? $userRepo->checkUserOldPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword) : true;
     			
     			$isExistUsername = $userRepo->isFiledExists('username', $user->getUsername(), $user->getId());
-    			$isExistEmail = $userRepo->isFiledExists('email', $user->getUsername(), $user->getId());
+    			$isExistEmail = $userRepo->isFiledExists('email', $user->getEmail(), $user->getId());
     			
     			$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword);
     			$userRoleSystemName = $user->getRoleSystemName();
