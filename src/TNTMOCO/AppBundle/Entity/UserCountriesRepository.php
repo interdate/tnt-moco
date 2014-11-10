@@ -3,6 +3,7 @@
 namespace TNTMOCO\AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\FormError;
 
 /**
  * UserCountriesRepository
@@ -82,48 +83,57 @@ class UserCountriesRepository extends EntityRepository
 		
 		$form->handleRequest($request);
 		//var_dump($form->isValid());die;
-		if($form->isValid()){
-			$userRepo->setUserPassword($user, $securityEncoder, $originalEncodedPassword);
-			$userRoleSystemName = $user->getRole()->getRole();
-			
-			switch ($userRoleSystemName){
-				case 'ROLE_COUNTRY_ADMIN':
-					$user->addCountry($user->getCountry());
-					$user->setCountry(null);
-					$user->setDepot(null);
-					$userRepo->createUserCountriesCollection($user);
-						
-					if($request->get('confirm')){
-						$userRepo->unassignUsersAssignedToUserCountries($user);
-					}
-					else{
-						
-						$alreadyAssignedAdmins = $userRepo->getUsersAssignedToUserCountries($user);
-						
-						if(count($alreadyAssignedAdmins) > 0){
-							return array(
-								$nameForm => $form->createView(),
-								'created' => $created,
-								'alreadyAssignedAdmins' => $alreadyAssignedAdmins,
-								'userShouldConfirmAssigning' => true,
-							);
+		if($form->isValid()){			
+			$isExistUsername = $userRepo->findOneByUsername($user->getUsername());
+			$isExistEmail = $userRepo->findOneByEmail($user->getEmail());
+			if(($isExistUsername and $isExistUsername->getId() !== $user->getId()) or ($isExistEmail and $isExistEmail->getId() !== $user->getId())){
+				if($isExistUsername and $isExistUsername->getId() !== $user->getId()){
+					$form->get('username')->addError(new FormError('Username is already exists'));
+				}
+				if($isExistEmail and $isExistEmail->getId() !== $user->getId()){
+					$form->get('email')->addError(new FormError('Email is already exists'));
+				}
+			}else{
+				$userRepo->setUserPassword($user, $securityEncoder, $originalEncodedPassword);
+				$userRoleSystemName = $user->getRole()->getRole();
+				switch ($userRoleSystemName){
+					case 'ROLE_COUNTRY_ADMIN':
+						$user->addCountry($user->getCountry());
+						$user->setCountry(null);
+						$user->setDepot(null);
+						$userRepo->createUserCountriesCollection($user);
+							
+						if($request->get('confirm')){
+							$userRepo->unassignUsersAssignedToUserCountries($user);
 						}
-					}
-					break;
-			
-				case 'ROLE_COURIER':					
-				case 'ROLE_USER':
-				case 'ROLE_CUSTOMER_SERVICE':
-					$user->setDepot(null);
-					break;
+						else{
+							
+							$alreadyAssignedAdmins = $userRepo->getUsersAssignedToUserCountries($user);
+							
+							if(count($alreadyAssignedAdmins) > 0){
+								return array(
+									$nameForm => $form->createView(),
+									'created' => $created,
+									'alreadyAssignedAdmins' => $alreadyAssignedAdmins,
+									'userShouldConfirmAssigning' => true,
+								);
+							}
+						}
+						break;
+				
+					case 'ROLE_COURIER':					
+					case 'ROLE_USER':
+					case 'ROLE_CUSTOMER_SERVICE':
+						$user->setDepot(null);
+						break;
+				}			
+				$userCountriesRepo->removeUserCountries($user);
+				$em->persist($user);
+				$em->flush();
+				
+				$form = $cleanForm;			
+				$created = true;
 			}
-			
-			$userCountriesRepo->removeUserCountries($user);
-			$em->persist($user);
-			$em->flush();
-			
-			$form = $cleanForm;			
-			$created = true;
 		}
 		
 		return array(

@@ -35,7 +35,9 @@
 								<strong>THERE ARE SOME ERRORS:</strong><br>
 								{{ form_errors(userForm.username) }}
 								{{ form_errors(userForm.password)|raw }}
-								{#{ form_errors(userForm.oldPassword) }#}
+								{% if actionName == 'editProfile' %}
+									{{ form_errors(userForm.oldPassword) }}
+								{% endif %}
 								{{ form_errors(userForm.email) }}
 							</div>
 						</div>
@@ -127,7 +129,7 @@
 									{{ form_widget(userForm.password) }}
 								</div>
 																
-								<div class="ui labeled icon blue mini button" onclick="passwordGeneration();" style="float:right;">
+								<div class="ui labeled icon blue mini button" onclick="passwordGeneration(null);" style="float:right;">
 									<i class="inverted key icon"></i>
 									Generate password
 								</div>

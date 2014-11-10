@@ -303,17 +303,7 @@ class UserType extends AbstractType{
     	/*
     	if($country)
     		echo $country->getName();
-    	
-    	
-    	echo "DPOT:" . $this->user->getDepot();
-    	die;
-    	*/
-    	
-    	//echo count($depots);
-    	
-    	//foreach ($depots as $depot)
-    		//echo $depot;
-    	//die;
+    	*/    	
     	
     	$form->add('depot', 'entity', array(
     		'class' => 'TNTMOCOAppBundle:Depot',
@@ -325,7 +315,7 @@ class UserType extends AbstractType{
     	
     }    
     
-    /*
+    
     public function postSubmit(FormInterface $form) {
     	 
     	$form->add('depot', 'entity', array(
@@ -335,7 +325,7 @@ class UserType extends AbstractType{
     		'data' => $this->user->getDepot(),
     	));
     }
-    */
+    
     
 }
 

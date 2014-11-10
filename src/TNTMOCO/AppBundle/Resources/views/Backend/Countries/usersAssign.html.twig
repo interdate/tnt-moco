@@ -5,11 +5,11 @@
 							<div class="content">	
 								{% if alreadyAssignedAdmins.admins %}					    
 									<strong>WARNING! THIS USER HAS NOT BEEN ASSIGNED YET</strong> <br>																
-									There are <strong>country admins</strong> already assigned to chosen country: <br>
+									There are <strong>country admin</strong> already assigned to chosen country: <br>
 									{% for admin in alreadyAssignedAdmins.admins %}								
 										User <strong>{{ admin.username }}</strong> assigned to [{{ admin.countries|join(', ') }}]<br>									
 									{% endfor %}
-									Please confirm your action if you want choosen countries will be assigned to new user.
+									Please confirm your action if you want chosen country to be assigned to this user.
 									
 									
 									<br>
@@ -25,9 +25,9 @@
 								{% endif %}
 								
 								{% if alreadyAssignedAdmins.users %}					    
-									<strong>WARNING! THESE USERS HAVE NOT BEEN ASSIGNED YET</strong> <br>	
+									<strong>WARNING! ONLY THESE USERS HAVE NOT BEEN ASSIGNED YET</strong> <br>	
 									<!-- need added text -->															
-									There are <strong>country admins</strong> already assigned to chosen country: <br>
+									There are <strong>users</strong> already assigned to another countries: <br>
 									{% set usersId = '' %}
 									{% for user in alreadyAssignedAdmins.users %}
 										{% if usersId != '' %}																		
@@ -37,7 +37,7 @@
 										{% endif %}
 										User <strong>{{ user.username }}</strong> assigned to [{{ user.country.name }}]<br>									
 									{% endfor %}
-									Please confirm your action if you want choosen countries will be assigned to new user.									
+									Please confirm your action if you want chosen country to be assigned to these users.									
 									<input type="hidden" id="usersNotAssign" value="{{ usersId }}"/>
 									<br>
 									<div class="ui labeled icon blue small button confirm" onclick="userAssign($('#usersAssign'), true);">

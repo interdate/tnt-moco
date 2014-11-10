@@ -33,6 +33,7 @@
 			{% if message is defined and message.error != '' %}
 				<div class="ui red message">
 					<p>{{ message.error.message }}</p>
+					{#
 					{% if message.error.data|length %}
 						<ul>
 							{% for arrErr in message.error.data %}
@@ -40,6 +41,7 @@
 							{% endfor %}
 						</ul>
 					{% endif %}
+					#}
 				</div>
 			{% endif %}		
 			<div class="tabSegments" style="max-width:400px">	

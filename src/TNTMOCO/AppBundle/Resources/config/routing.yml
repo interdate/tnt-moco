@@ -81,8 +81,7 @@ data_entry_country:
     path: /dataEntry/countries/{countryId}/{roleId}
     defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:country, roleId:0 }     
 
-data_entry_depot:
-    #path: /dataEntry/depots/{depotId}/{fileId}/{prevFileId}/{reject}/{complete}
+data_entry_depot:    
     path: /dataEntry/depots/{depotId}
     defaults: { _controller: TNTMOCOAppBundle:Backend\DataEntry:depot, fileId:0, prevFileId:0, reject:false, complete:false}
     

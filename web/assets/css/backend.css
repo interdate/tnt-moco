@@ -747,7 +747,7 @@ select.countries{
 	cursor: pointer;
 }
 
-#usersCounryAdmins,#usersSearch{
+#usersCountryAdmins,#usersSearch{
 	margin-bottom:15px;
 }
 
