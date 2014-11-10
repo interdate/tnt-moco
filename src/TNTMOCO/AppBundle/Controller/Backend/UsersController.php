@@ -119,7 +119,7 @@ class UsersController extends Controller
     		if($userForm->isValid()){
     			if($user->getPassword() != ''){
     				$hostName = $request->getHost();
-    				$body = ($actionName == 'create' ? 'Create user' : 'Change password') . '!\n\nYour password has been saved.\nUsername: ' . $user->getUsername() . '\nPassword: ' . $user->getPassword();
+    				$body = ($actionName == 'create' ? 'Create user' : 'Change password') . "!\r\n\r\nYour password has been saved.\r\n\r\nUsername: " . $user->getUsername() . "\r\nPassword: " . $user->getPassword();
     			}
     			
     			$checkOldPassword = ($profile) ? $userRepo->checkUserOldPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword) : true;
@@ -172,16 +172,14 @@ class UsersController extends Controller
     			if($isExistUsername or $isExistEmail or !$checkOldPassword){
     				if(!$checkOldPassword){
     					$userForm->get('oldPassword')->addError(new FormError('Old Password is not correct'));
-    					$error = true;
     				}
     				if($isExistUsername){
     					$userForm->get('username')->addError(new FormError('Username is already exists'));
-    					$error = true;
     				}
     				if($isExistEmail){
     					$userForm->get('email')->addError(new FormError('Email is already exists'));
-    					$error = true;
     				}
+    				$error = true;
     			}else{
     				if(isset($body)){
     					$userRepo->sendMail('admin@' . $hostName, $user->getEmail(), ($actionName == 'create' ? 'Create user' : 'Change password') . ' on ' . $hostName, $body, $this->get('mailer'));
@@ -243,14 +241,13 @@ class UsersController extends Controller
     	));
     }
     
-    public function editProfileAction(){
-    	$user = $this->getUser();
-    	$em = $this->getDoctrine()->getManager();     	
-    	 
-    	return $this->handleUserAction($user, new CurrentUserType($em, $user));
-    }
-    
-    
+	public function editProfileAction(){
+		$user = $this->getUser();
+		$em = $this->getDoctrine()->getManager();     	
+		 
+		return $this->handleUserAction($user, new CurrentUserType($em, $user));
+	}
+	
 }
 
 

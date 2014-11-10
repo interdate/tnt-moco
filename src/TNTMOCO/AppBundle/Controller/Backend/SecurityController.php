@@ -60,7 +60,7 @@ class SecurityController extends Controller{
     			$success = true;
     			$hostName = $this->getRequest()->getHost();
     			if($code){
-    				$body = 'Recovery password!\n\nYour password has been changed.\nUsername: ' . $user->getUsername() . '\nPassword: ' . $user->getPassword();
+    				$body = "Recovery password!\r\n\r\nYour password has been changed.\r\nUsername: " . $user->getUsername() . "\r\nPassword: " . $user->getPassword();
     				$userRepo->sendMail('recovery@' . $hostName, $user->getEmail(), 'Recovery password on ' . $hostName, $body, $this->get('mailer'));
     				$userRepo->setUserPassword($user, $this->get('security.encoder_factory'), $originalEncodedPassword, false);
     				$em = $this->getDoctrine()->getManager();
@@ -72,7 +72,7 @@ class SecurityController extends Controller{
 	    			$user = $userRepo->findOneByEmail($email);
 	    			if($user){
 	    				$codeSent = md5($user->getEmail() . $user->getId()) . '_0_' . $user->getId();
-	    				$body = 'Recovery password!\n\nFor change your password go to this link: http://' . $hostName . '/recovery/' . $codeSent;
+	    				$body = "Recovery password!\r\n\r\nFor change your password go to this link: http://" . $hostName . "/recovery/" . $codeSent;
 	    				$userRepo->sendMail('recovery@' . $hostName, $user->getEmail(), 'Recovery password on ' . $hostName, $body, $this->get('mailer'));  				
 	    			}else{
 	    				$error = true;
