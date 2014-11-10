@@ -24,8 +24,12 @@ class DeliveryController extends FOSRestController{
 	 * )
 	 */
 	public function getStatusesAction()
-	{
-		return array('deliveryStatusList' => $this->getDoctrine()->getRepository('TNTMOCOAppBundle:DeliveryStatus')->findAll());
+	{		
+		return array(
+			'status' => 'SUCCESS',
+			'statusCode' => 200,
+			'deliveryStatusList' => $this->getDoctrine()->getRepository('TNTMOCOAppBundle:DeliveryStatus')->findAll(),
+		);
 	}
 
 	
@@ -33,7 +37,7 @@ class DeliveryController extends FOSRestController{
 	 * @ApiDoc(
 	 *   resource = true,
 	 *   description = "Get specific delivery status",
-	 *   input = "TNTMOCO\AppBundle\Entity\DeliveryStatus",
+	 *   output = "TNTMOCO\AppBundle\Entity\DeliveryStatus",
 	 *   statusCodes = {
 	 *     200 = "Returned when successful",
 	 *     401 = "Returned when bad credentials were sent",

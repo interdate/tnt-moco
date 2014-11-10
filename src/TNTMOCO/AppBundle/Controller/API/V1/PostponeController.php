@@ -24,8 +24,12 @@ class PostponeController extends FOSRestController{
 	 * )
 	 */
 	public function getReasonsAction()
-	{
-		return array('postponeReasonList' => $this->getDoctrine()->getRepository('TNTMOCOAppBundle:PostponeReason')->findAll());
+	{	
+		return array(
+			'status' => 'SUCCESS',
+			'statusCode' => 200,
+			'postponeReasonList' => $this->getDoctrine()->getRepository('TNTMOCOAppBundle:PostponeReason')->findAll(),
+		);
 	}
 
 	
@@ -33,7 +37,7 @@ class PostponeController extends FOSRestController{
 	 * @ApiDoc(
 	 *   resource = true,
 	 *   description = "Get specific postpone reason",
-	 *   input = "TNTMOCO\AppBundle\Entity\PostponeReason",
+	 *   output = "TNTMOCO\AppBundle\Entity\PostponeReason",
 	 *   statusCodes = {
 	 *     200 = "Returned when successful",
 	 *     401 = "Returned when bad credentials were sent",

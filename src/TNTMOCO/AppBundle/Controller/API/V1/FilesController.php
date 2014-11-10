@@ -23,7 +23,7 @@ class FilesController extends FOSRestController{
      *      {"name"="operationCode", "dataType"="string", "required"=true, "description"="A code of the one of possible operations (PU, DL, PP correspond to Pick Up, Delivery and Postpone accordingly)"},
      *      {"name"="location", "dataType"="string", "required"=true, "description"="Current location coordinates"},
      *      {"name"="totalFilesNumber", "dataType"="string", "required"=true, "description"="Total number of files that must be uploaded"},
-     *      {"name"="batchCode", "dataType"="string", "required"=false, "description"="In case all the files were not uploaded (e.g. one or more files are corrupted or don't correspond to required size or format etc.) you'll recive 'batchCode' in response. The 'batchCode' must be sent with next request containing lost files to complete this operation."},
+     *      {"name"="batchCode", "dataType"="string", "required"=false, "description"="In case all the files were not uploaded (e.g. one or more files are corrupted or don't correspond to required size or format etc.) you'll receive 'batchCode' in response. The 'batchCode' must be sent with next request containing the lost files to complete this operation."},
      *   },
 	 *   statusCodes = {
 	 *     201 = "Returned when successful. The PDF file has been created.",
