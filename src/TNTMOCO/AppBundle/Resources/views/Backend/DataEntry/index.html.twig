@@ -47,7 +47,7 @@
 							<input type="hidden" id="data_entry_country" value="{{ app.user.country.id }}">
 					{% endif %}
 					
-					{% if countries is defined %}
+					{% if countries is defined and app.user.isAdmin %}
 						<div class="ui form borBot" style="width:100%;">
 							
 							<select id="data_entry_country" class="countries left">					
@@ -357,7 +357,7 @@
 						{% else %}
 							<div class="ui small header">
 								<i class="info letter circular icon"></i>
-								No depot found
+								No depots found
 							</div>				
 						{% endif %}
 					

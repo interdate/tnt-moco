@@ -12,10 +12,12 @@ class DataEntryController extends Controller
     public function indexAction()
     {	
     	$data = array();
-    	//$data = $this->tryDefineRoles($data);
-    	    	
-    	if(!$this->getUser()->isAdmin()){
-    		return $this->redirect($this->generateUrl('data_entry_country', array('countryId' => $this->getUser()->getCountry()->getId())));
+    	if(!$this->getUser()->isAdmin()){    		
+    		$data = null !== $this->getUser()->getCountry() 
+    			? array('countryId' => $this->getUser()->getCountry()->getId())
+    			: array('countryId' => 0)
+    		;	
+    		return $this->redirect($this->generateUrl('data_entry_country', $data));
     	}
     	
     	$data = $this->defineCountries($data);    	
@@ -27,7 +29,6 @@ class DataEntryController extends Controller
     	$request = $this->getRequest();
     	$depotRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Depot');
     	$countryRepo = $this->getDoctrine()->getRepository('TNTMOCOAppBundle:Country');
-    	//$countries = $countryRepo->findByIsActive(true);
     	$country = $countryRepo->find($countryId);
     	$orderBy = $request->query->get('orderBy', 'name');
     	$depots = $depotRepo->getOrderedDepots($country, $orderBy, $this->getUser(), $roleId);
@@ -37,9 +38,7 @@ class DataEntryController extends Controller
     		'orderBy' => $orderBy,
     	);
 
-		$data = $this->defineCountries($data);    	
-    	//$data = $this->tryDefineRoles($data);
-    	    	    	 
+		$data = $this->defineCountries($data);    	    	    	 
     	return $this->render('TNTMOCOAppBundle:Backend/DataEntry:index.html.twig', $data);
     }
     

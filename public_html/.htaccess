@@ -16,8 +16,8 @@ RewriteRule ^ - [L]
 
 
 
-RewriteCond %{HTTP_HOST} ^tnt-moco.loc$ [NC,OR]
-RewriteCond %{HTTP_HOST} ^tnt-moco.loc$
+RewriteCond %{HTTP_HOST} ^tntapp.intercallchat.info$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^tntapp.intercallchat.info$
 RewriteCond %{REQUEST_URI} !app_dev.php
 
 RewriteRule (.*) /app_dev.php/$1 [L]

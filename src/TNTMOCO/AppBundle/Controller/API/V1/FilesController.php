@@ -54,7 +54,9 @@ class FilesController extends FOSRestController{
 		$validator = $this->get('validator');
 		$waitingFilesNumber = 0;
 				
-		if(!empty($fileManager->getBatchCode())){				
+		$batchCode = $fileManager->getBatchCode();
+		
+		if(!empty($batchCode)){				
 			$waitingFiles = $fileManager->getWaitingFiles();
 			$waitingFilesNumber = count( $waitingFiles );			
 		}
