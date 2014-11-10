@@ -187,7 +187,9 @@ class UsersController extends Controller
     					$userRepo->sendMail('robot@' . $hostName, $user->getEmail(), 'My account on ' . $hostName, $body, $this->get('mailer'));
     				}
 
-	    			$userCountriesRepo->removeUserCountries($user);    			
+	    			if(!$profile){
+	    				$userCountriesRepo->removeUserCountries($user);    			
+	    			}
 	    			$em->persist($user);
 	    			$em->flush();
 	    			

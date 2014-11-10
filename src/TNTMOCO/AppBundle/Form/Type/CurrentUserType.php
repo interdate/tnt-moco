@@ -26,7 +26,6 @@ class CurrentUserType extends EditUserType{
     	$builder->remove('role');
     	$builder->remove('country');
     	$builder->remove('depot');
-    	
     	$builder->add('password', 'text', array('label' => 'New Password', 'data' => '', 'required' => false));
     	$builder->add('oldPassword', 'text', array('label' => 'Old Password', 'data' => '', 'required' => false));
     }

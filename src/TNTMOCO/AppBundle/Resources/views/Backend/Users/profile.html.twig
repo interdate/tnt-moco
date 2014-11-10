@@ -279,6 +279,8 @@
 										<div class="clear"></div>
 										{{ form_widget(userForm.depot) }}
 									</div>
+								{% else %}
+									{{ form_widget(userForm.country, { 'attr': {'class': 'hidden','id': 'hiden'}}) }}
 								{% endif %}
 								
 																
